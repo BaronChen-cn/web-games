@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>青蛙过河在线玩 - 免费经典 Frogger 游戏，支持手机电脑</title>
+<meta name="description" content="免费在线玩经典青蛙过河（Frogger），乌龟潜水、木头漂流、多关卡挑战。无需下载，手机电脑均可畅玩。">
+<meta name="keywords" content="青蛙过河,Frogger,在线青蛙过河,免费青蛙过河,网页青蛙游戏,休闲游戏">
+<meta name="author" content="Web Games">
+<meta property="og:title" content="青蛙过河在线玩 - 免费经典 Frogger">
+<meta property="og:description" content="免费在线玩经典青蛙过河，乌龟潜水、木头漂流、多关卡。无需下载，手机电脑均可畅玩。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="青蛙过河在线玩 - 免费经典 Frogger">
+<meta name="twitter:description" content="免费在线玩经典青蛙过河，乌龟潜水、木头漂流、多关卡。无需下载，手机电脑均可畅玩。">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #07080f;
+    color: #e0e0ff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 25% 35%, rgba(57,255,20,0.10) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 60% at 75% 65%, rgba(0,200,180,0.08) 0%, transparent 65%);
+    animation: bgPulse 10s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes bgPulse {
+    0%   { opacity: 0.75; }
+    100% { opacity: 1.0; }
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 120px;
+  }
+  .panel-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(57,255,20,0.18);
+    border-radius: 10px;
+    padding: 12px 10px;
+    backdrop-filter: blur(4px);
+  }
+  .panel-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(57,255,20,0.65);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 14px rgba(57,255,20,0.7);
+    letter-spacing: 1px;
+    word-break: break-all;
+  }
+  .stat-hi {
+    font-size: 15px;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255,215,0,0.6);
+    font-weight: 900;
+  }
+  .controls-list {
+    font-size: 9.5px;
+    color: rgba(180,220,190,0.6);
+    line-height: 1.9;
+  }
+  .controls-list span {
+    color: rgba(57,255,20,0.85);
+    font-weight: 700;
+    font-size: 9px;
+  }
+
+  #centerArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  canvas#board {
+    display: block;
+    border: 1px solid rgba(57,255,20,0.2);
+    border-radius: 6px;
+    box-shadow: 0 0 30px rgba(57,255,20,0.12), 0 0 60px rgba(0,200,180,0.07);
+  }
+
+  .board-wrap { position: relative; }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4,6,14,0.88);
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    z-index: 10;
+    gap: 12px;
+  }
+  .overlay.hidden { display: none; }
+
+  .overlay-title {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    background: linear-gradient(135deg, #39ff14, #00f5ff, #39ff14);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 18px rgba(57,255,20,0.5));
+    animation: titlePulse 2.5s ease-in-out infinite alternate;
+    text-align: center;
+    padding: 0 16px;
+  }
+  @keyframes titlePulse {
+    0%  { filter: drop-shadow(0 0 10px rgba(57,255,20,0.4)); }
+    100%{ filter: drop-shadow(0 0 28px rgba(0,245,255,0.7)); }
+  }
+  .overlay-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(140,220,160,0.65);
+    text-transform: uppercase;
+  }
+  .overlay-btn {
+    margin-top: 6px;
+    padding: 11px 34px;
+    background: linear-gradient(135deg, rgba(57,255,20,0.25), rgba(0,245,255,0.25));
+    border: 1px solid rgba(57,255,20,0.5);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 18px rgba(57,255,20,0.2);
+  }
+  .overlay-btn:hover, .overlay-btn:active {
+    background: linear-gradient(135deg, rgba(57,255,20,0.45), rgba(0,245,255,0.4));
+    box-shadow: 0 0 28px rgba(57,255,20,0.4);
+    transform: scale(1.04);
+  }
+  .overlay-stats {
+    font-size: 13px;
+    color: rgba(180,220,190,0.8);
+    text-align: center;
+    line-height: 2.2;
+  }
+  .overlay-stats strong { color: #fff; font-size: 18px; }
+  .overlay-hint {
+    font-size: 10px;
+    color: rgba(140,160,140,0.5);
+    letter-spacing: 1.5px;
+    text-align: center;
+    padding: 0 12px;
+  }
+
+  /* Mobile stats bar */
+  #mobileStats {
+    display: none;
+    width: 100%;
+    gap: 5px;
+    align-items: stretch;
+  }
+  .mob-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(57,255,20,0.18);
+    border-radius: 8px;
+    padding: 5px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    flex: 1;
+  }
+  .mob-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: rgba(57,255,20,0.6);
+    text-transform: uppercase;
+  }
+  .mob-value {
+    font-size: 15px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(57,255,20,0.6);
+    line-height: 1;
+  }
+
+  /* D-pad */
+  #dpad {
+    display: none;
+    position: relative;
+    width: 168px;
+    height: 168px;
+    flex-shrink: 0;
+  }
+  .dpad-btn {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(57,255,20,0.25);
+    border-radius: 12px;
+    color: rgba(200,255,210,0.85);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, transform 0.07s;
+  }
+  .dpad-btn.pressed {
+    background: rgba(57,255,20,0.18);
+    border-color: rgba(57,255,20,0.6);
+    transform: scale(0.92);
+  }
+  .dpad-up    { top:0;    left:58px; }
+  .dpad-left  { top:58px; left:0; }
+  .dpad-right { top:58px; right:0; }
+  .dpad-down  { bottom:0; left:58px; }
+  .dpad-center {
+    position: absolute;
+    top:58px; left:58px;
+    width:52px; height:52px;
+    background: rgba(57,255,20,0.03);
+    border: 1px solid rgba(57,255,20,0.08);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  #dpadRow2 {
+    display: none;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+  }
+  .action-btn {
+    flex: 1;
+    max-width: 140px;
+    height: 42px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(57,255,20,0.2);
+    border-radius: 10px;
+    color: rgba(200,255,210,0.8);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, transform 0.07s;
+  }
+  .action-btn:active {
+    background: rgba(57,255,20,0.12);
+    transform: scale(0.96);
+  }
+
+  @media (max-width: 600px) {
+    #app { flex-direction: column; align-items: center; gap: 6px; }
+    .panel { display: none !important; }
+    #mobileStats { display: flex !important; }
+    #dpad { display: block !important; }
+    #dpadRow2 { display: flex !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="panel" id="panelLeft">
+    <div class="panel-box">
+      <div class="panel-label">Score</div>
+      <div class="stat-value" id="scoreDisp">0</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">Hi-Score</div>
+      <div class="stat-hi" id="hiDisp">0</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">Level</div>
+      <div class="stat-value" id="levelDisp">1</div>
+    </div>
+  </div>
+
+  <div id="centerArea">
+    <div id="mobileStats">
+      <div class="mob-box"><div class="mob-label">Score</div><div class="mob-value" id="mScoreDisp">0</div></div>
+      <div class="mob-box"><div class="mob-label">Level</div><div class="mob-value" id="mLevelDisp">1</div></div>
+      <div class="mob-box"><div class="mob-label">Best</div><div class="mob-value" id="mHiDisp">0</div></div>
+    </div>
+
+    <div class="board-wrap">
+      <canvas id="board"></canvas>
+
+      <div class="overlay" id="overlayStart">
+        <div class="overlay-title">青蛙过河</div>
+        <div class="overlay-sub">FROGGER</div>
+        <button class="overlay-btn" id="btnStart">开始游戏</button>
+        <div class="overlay-hint">WASD / ↑↓←→ · P/Esc 暂停 · 手机滑动或方向键</div>
+      </div>
+
+      <div class="overlay hidden" id="overlayPause">
+        <div class="overlay-title" style="font-size:32px;letter-spacing:4px;">暂停</div>
+        <button class="overlay-btn" id="btnResume">继续游戏</button>
+      </div>
+
+      <div class="overlay hidden" id="overlayLevel">
+        <div class="overlay-title" style="font-size:28px;" id="levelMsg">第 1 关通过！</div>
+        <div class="overlay-sub" id="levelSubMsg">LEVEL CLEAR</div>
+      </div>
+
+      <div class="overlay hidden" id="overlayGameOver">
+        <div class="overlay-title" style="font-size:32px;">GAME OVER</div>
+        <div class="overlay-stats" id="goStats"></div>
+        <button class="overlay-btn" id="btnRestart">再来一局</button>
+      </div>
+    </div>
+
+    <div id="dpad">
+      <button class="dpad-btn dpad-up"    data-dir="up">▲</button>
+      <button class="dpad-btn dpad-left"  data-dir="left">◀</button>
+      <button class="dpad-btn dpad-right" data-dir="right">▶</button>
+      <button class="dpad-btn dpad-down"  data-dir="down">▼</button>
+      <div class="dpad-center"></div>
+    </div>
+    <div id="dpadRow2">
+      <button class="action-btn" id="btnPauseMob">Pause</button>
+    </div>
+  </div>
+
+  <div class="panel" id="panelRight">
+    <div class="panel-box">
+      <div class="panel-label">Lives</div>
+      <div class="stat-value" id="livesDisp">🐸🐸🐸</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">Controls</div>
+      <div class="controls-list">
+        <span>WASD</span> or Arrows<br>
+        <span>P / Esc</span> Pause<br>
+        <span>Touch</span> Swipe<br>
+        <span>D-pad</span> Mobile
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const COLS       = 14;
+const ROWS       = 14;
+const GOAL_ROW   = 0;
+const RIVER_TOP  = 1;
+const RIVER_BOT  = 5;
+const MEDIAN_ROW = 6;
+const ROAD_TOP   = 7;
+const ROAD_BOT   = 12;
+const START_ROW  = 13;
+const NUM_GOALS  = 5;
+const LIVES_START = 3;
+const TIMER_MAX  = 30;
+const HOP_MS     = 120;  // hop animation duration ms
+
+// 5 evenly-spaced lily pad columns within 14-col grid
+// Using cols 1, 3, 6, 9, 12  (with padding on sides)
+const GOAL_COLS = [1, 3, 6, 9, 12];
+
+// Lane definitions (row, dir, base speed cells/s, type, object sizes array, count, car color)
+const LANE_DEFS = [
+  { row:1,  dir: 1, spd:1.2, type:'log',    szs:[3,3,2],   cnt:3 },
+  { row:2,  dir:-1, spd:1.0, type:'turtle', szs:[2,2,3],   cnt:3 },
+  { row:3,  dir: 1, spd:1.5, type:'log',    szs:[4,3,4],   cnt:2 },
+  { row:4,  dir:-1, spd:0.8, type:'log',    szs:[2,2,3,2], cnt:4 },
+  { row:5,  dir: 1, spd:1.2, type:'turtle', szs:[3,2,3],   cnt:3 },
+  { row:7,  dir: 1, spd:2.0, type:'car',    szs:[1,1,1,1], cnt:4, clr:'#ff3355' },
+  { row:8,  dir:-1, spd:1.5, type:'car',    szs:[2,2,2],   cnt:3, clr:'#ffa500' },
+  { row:9,  dir: 1, spd:2.5, type:'car',    szs:[1,1,1,1], cnt:4, clr:'#4488ff' },
+  { row:10, dir:-1, spd:1.8, type:'car',    szs:[1,1,2,1], cnt:4, clr:'#ffd700' },
+  { row:11, dir: 1, spd:1.6, type:'car',    szs:[2,2,1],   cnt:3, clr:'#ff3355' },
+  { row:12, dir:-1, spd:3.0, type:'car',    szs:[1,1,1,1], cnt:4, clr:'#00f5ff' },
+];
+
+// ─── CANVAS / SIZING ─────────────────────────────────────────────────────────
+const canvas = document.getElementById('board');
+const ctx    = canvas.getContext('2d');
+let CS = 36; // cell size px
+
+function resize() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const mob = vw <= 600;
+  let cs;
+  if (mob) {
+    cs = Math.floor((vw - 8) / COLS);
+    const avH = vh - 46 - 168 - 52 - 40; // stats + dpad + row2 + gaps
+    const byH = Math.floor(avH / ROWS);
+    cs = Math.min(cs, byH);
+  } else {
+    cs = Math.floor((vh - 32) / ROWS);
+    cs = Math.min(cs, 36);
+  }
+  CS = Math.max(cs, 22);
+  canvas.width  = COLS * CS;
+  canvas.height = ROWS * CS;
+}
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let G = {};          // game state
+let particles = [];
+let rafId;
+let lastTs = 0;
+
+function newGame() {
+  G = {
+    phase:      'start',   // start | playing | paused | dying | levelclear | gameover
+    score:      0,
+    hi:         +( localStorage.getItem('frogger_hi') || 0 ),
+    lives:      LIVES_START,
+    level:      1,
+    timer:      TIMER_MAX,
+    goals:      Array(NUM_GOALS).fill(false),
+    frog:       { col: 7, row: START_ROW, dir: 'up' },
+    visX:       0,
+    visY:       0,
+    hopAnim:    null,   // { t0, fx, fy, tx, ty }
+    deathT:     0,
+    levelT:     0,
+    lanes:      [],
+    bestRow:    START_ROW,
+  };
+  particles = [];
+  G.lanes = makeLanes(1);
+  syncVisPos();
+}
+
+function makeLanes(level) {
+  const mult = Math.pow(1.15, level - 1);
+  return LANE_DEFS.map(d => {
+    const spacing = COLS / d.cnt;
+    const objs = [];
+    for (let i = 0; i < d.cnt; i++) {
+      const sz = d.szs[i % d.szs.length];
+      // stagger start positions
+      const x = (i * spacing) - sz * 0.1 * i;
+      if (d.type === 'turtle') {
+        objs.push({ x, sz, type:'turtle', diveT: 7 + Math.random()*6,
+                    divePhase:'up', diveP:0 });
+        // divePhase: up | going_down | down | coming_up
+      } else {
+        objs.push({ x, sz, type: d.type });
+      }
+    }
+    return { row: d.row, dir: d.dir, spd: d.spd * mult, type: d.type,
+             clr: d.clr || null, objs };
+  });
+}
+
+function syncVisPos() {
+  G.visX = G.frog.col * CS + CS / 2;
+  G.visY = G.frog.row * CS + CS / 2;
+  G.hopAnim = null;
+}
+
+// ─── MAIN LOOP ────────────────────────────────────────────────────────────────
+function startLoop() {
+  if (rafId) cancelAnimationFrame(rafId);
+  lastTs = performance.now();
+  rafId = requestAnimationFrame(tick);
+}
+
+function tick(ts) {
+  const dt = Math.min((ts - lastTs) / 1000, 0.1);
+  lastTs = ts;
+  update(dt);
+  render();
+  rafId = requestAnimationFrame(tick);
+}
+
+// ─── UPDATE ───────────────────────────────────────────────────────────────────
+function update(dt) {
+  updateParticles(dt);
+
+  if (G.phase === 'dying') {
+    G.deathT -= dt;
+    updateLanes(dt);
+    if (G.deathT <= 0) afterDeath();
+    return;
+  }
+  if (G.phase === 'levelclear') {
+    G.levelT -= dt;
+    updateLanes(dt);
+    if (G.levelT <= 0) nextLevel();
+    return;
+  }
+  if (G.phase !== 'playing') return;
+
+  // Countdown timer
+  G.timer -= dt;
+  if (G.timer <= 0) { G.timer = 0; die('timer'); return; }
+
+  updateLanes(dt);
+  updateHopAnim();
+  updateRiverDrift(dt);
+  checkHazards();
+}
+
+function updateLanes(dt) {
+  for (const lane of G.lanes) {
+    for (const obj of lane.objs) {
+      obj.x += lane.dir * lane.spd * dt;
+      // wrap
+      const span = COLS + obj.sz + 4;
+      if (lane.dir > 0 && obj.x > COLS + 2)     obj.x -= span;
+      if (lane.dir < 0 && obj.x + obj.sz < -2)  obj.x += span;
+
+      // turtle dive cycle
+      if (obj.type === 'turtle') {
+        if (obj.divePhase === 'up') {
+          obj.diveT -= dt;
+          if (obj.diveT <= 0) { obj.divePhase = 'going_down'; obj.diveP = 0; }
+        } else if (obj.divePhase === 'going_down') {
+          obj.diveP = Math.min(1, obj.diveP + dt / 0.8);
+          if (obj.diveP >= 1) { obj.divePhase = 'down'; obj.diveT = 2.0; }
+        } else if (obj.divePhase === 'down') {
+          obj.diveT -= dt;
+          if (obj.diveT <= 0) { obj.divePhase = 'coming_up'; obj.diveP = 1; }
+        } else if (obj.divePhase === 'coming_up') {
+          obj.diveP = Math.max(0, obj.diveP - dt / 0.8);
+          if (obj.diveP <= 0) { obj.divePhase = 'up'; obj.diveT = 5 + Math.random()*5; }
+        }
+      }
+    }
+  }
+}
+
+function updateHopAnim() {
+  if (!G.hopAnim) return;
+  const elapsed = (performance.now() - G.hopAnim.t0) / HOP_MS;
+  if (elapsed >= 1) {
+    G.visX = G.hopAnim.tx;
+    G.visY = G.hopAnim.ty;
+    G.hopAnim = null;
+  } else {
+    const t = 1 - (1 - elapsed) * (1 - elapsed); // easeOut quad
+    G.visX = G.hopAnim.fx + (G.hopAnim.tx - G.hopAnim.fx) * t;
+    G.visY = G.hopAnim.fy + (G.hopAnim.ty - G.hopAnim.fy) * t;
+  }
+}
+
+function updateRiverDrift(dt) {
+  if (G.hopAnim) return;
+  const row = G.frog.row;
+  if (row < RIVER_TOP || row > RIVER_BOT) return;
+
+  const lane = laneAt(row);
+  if (!lane) return;
+  const riding = ridingObj(lane, G.frog.col);
+  if (!riding) return;
+  if (riding.type === 'turtle' && riding.divePhase === 'down') return;
+
+  // Drift visual x with lane
+  const driftPx = lane.dir * lane.spd * CS * dt;
+  G.visX += driftPx;
+  // Sync logical col (center of frog cell)
+  const newCol = Math.round((G.visX / CS) - 0.5);
+  if (newCol !== G.frog.col) {
+    G.frog.col = newCol;
+  }
+}
+
+function checkHazards() {
+  if (G.hopAnim) return;
+  const col = G.frog.col;
+  const row = G.frog.row;
+
+  // Off canvas edges
+  if (col < 0 || col >= COLS) { die('edge'); return; }
+
+  // Road collision
+  if (row >= ROAD_TOP && row <= ROAD_BOT) {
+    const lane = laneAt(row);
+    if (lane && hitsCar(lane, col)) { die('car'); return; }
+  }
+
+  // River — must be on log or turtle
+  if (row >= RIVER_TOP && row <= RIVER_BOT) {
+    const lane = laneAt(row);
+    if (!lane) { die('water'); return; }
+    const riding = ridingObj(lane, col);
+    if (!riding) { die('water'); return; }
+    if (riding.type === 'turtle' && riding.divePhase === 'down') { die('turtle'); return; }
+  }
+
+  // Goal row
+  if (row === GOAL_ROW) {
+    const gi = GOAL_COLS.indexOf(col);
+    if (gi < 0) { die('water'); return; }
+    if (G.goals[gi]) { die('water'); return; } // already filled
+    // Score the goal
+    G.goals[gi] = true;
+    G.score += 50 + Math.floor(G.timer * 2);
+    G.timer = TIMER_MAX;
+    G.bestRow = START_ROW;
+    resetFrog();
+    updateHUD();
+    if (G.goals.every(Boolean)) { levelClear(); }
+  }
+}
+
+function hitsCar(lane, col) {
+  const frogL = col + 0.1;
+  const frogR = col + 0.9;
+  for (const obj of lane.objs) {
+    const objL = obj.x + 0.05;
+    const objR = obj.x + obj.sz - 0.05;
+    if (frogR > objL && frogL < objR) return true;
+    // wrap check
+    if (obj.x + obj.sz > COLS) {
+      const wL = obj.x - COLS;
+      if (frogR > wL + 0.05 && frogL < wL + obj.sz - 0.05) return true;
+    }
+    if (obj.x < 0) {
+      const wL = obj.x + COLS;
+      if (frogR > wL + 0.05 && frogL < wL + obj.sz - 0.05) return true;
+    }
+  }
+  return false;
+}
+
+function ridingObj(lane, col) {
+  const fc = col + 0.5;
+  for (const obj of lane.objs) {
+    if (fc > obj.x && fc < obj.x + obj.sz) return obj;
+    // wrap
+    if (obj.x + obj.sz > COLS && fc < (obj.x + obj.sz) - COLS) return obj;
+    if (obj.x < 0 && fc > COLS + obj.x) return obj;
+  }
+  return null;
+}
+
+function laneAt(row) {
+  return G.lanes.find(l => l.row === row) || null;
+}
+
+function resetFrog() {
+  G.frog.col = 7;
+  G.frog.row = START_ROW;
+  G.frog.dir = 'up';
+  G.bestRow  = START_ROW;
+  syncVisPos();
+}
+
+// ─── INPUT ────────────────────────────────────────────────────────────────────
+function moveFrog(dir) {
+  if (G.phase !== 'playing') return;
+  G.frog.dir = dir;
+
+  const fc = { fx: G.visX, fy: G.visY }; // start of visual hop
+  const prevRow = G.frog.row;
+
+  if (dir === 'up')    G.frog.row--;
+  if (dir === 'down')  G.frog.row++;
+  if (dir === 'left')  G.frog.col--;
+  if (dir === 'right') G.frog.col++;
+
+  // Can't hop below start
+  if (G.frog.row > START_ROW) G.frog.row = START_ROW;
+
+  // Score for hopping up
+  if (G.frog.row < G.bestRow) {
+    G.bestRow = G.frog.row;
+    G.score += 10;
+    updateHUD();
+  }
+
+  // Kick off hop animation
+  const tx = G.frog.col * CS + CS / 2;
+  const ty = G.frog.row * CS + CS / 2;
+  G.hopAnim = { t0: performance.now(), fx: fc.fx, fy: fc.fy, tx, ty };
+}
+
+document.addEventListener('keydown', e => {
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+       'w','a','s','d','W','A','S','D'].includes(e.key)) e.preventDefault();
+
+  if (G.phase === 'playing') {
+    if (e.key==='ArrowUp'  ||e.key==='w'||e.key==='W') moveFrog('up');
+    if (e.key==='ArrowDown'||e.key==='s'||e.key==='S') moveFrog('down');
+    if (e.key==='ArrowLeft'||e.key==='a'||e.key==='A') moveFrog('left');
+    if (e.key==='ArrowRight'||e.key==='d'||e.key==='D') moveFrog('right');
+    if (e.key==='p'||e.key==='P'||e.key==='Escape') pause();
+  } else if (G.phase === 'paused') {
+    if (e.key==='p'||e.key==='P'||e.key==='Escape') resume();
+  }
+});
+
+// D-pad
+document.querySelectorAll('.dpad-btn').forEach(btn => {
+  const onPress = e => {
+    e.preventDefault();
+    btn.classList.add('pressed');
+    moveFrog(btn.dataset.dir);
+  };
+  const onRelease = () => btn.classList.remove('pressed');
+  btn.addEventListener('pointerdown', onPress);
+  btn.addEventListener('pointerup',   onRelease);
+  btn.addEventListener('pointercancel', onRelease);
+});
+
+// Touch swipe on canvas
+let swX = 0, swY = 0;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  swX = e.touches[0].clientX;
+  swY = e.touches[0].clientY;
+}, { passive:false });
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  const dx = e.changedTouches[0].clientX - swX;
+  const dy = e.changedTouches[0].clientY - swY;
+  if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+  if (Math.abs(dx) > Math.abs(dy)) moveFrog(dx > 0 ? 'right' : 'left');
+  else moveFrog(dy > 0 ? 'down' : 'up');
+}, { passive:false });
+
+// Buttons
+document.getElementById('btnStart').addEventListener('click', () => {
+  newGame(); hideAll(); G.phase = 'playing'; updateHUD();
+});
+document.getElementById('btnResume').addEventListener('click', resume);
+document.getElementById('btnRestart').addEventListener('click', () => {
+  newGame(); hideAll(); G.phase = 'playing'; updateHUD();
+});
+document.getElementById('btnPauseMob').addEventListener('click', () => {
+  if (G.phase === 'playing') pause();
+  else if (G.phase === 'paused') resume();
+});
+
+function pause() {
+  if (G.phase !== 'playing') return;
+  G.phase = 'paused';
+  showOverlay('overlayPause');
+}
+function resume() {
+  if (G.phase !== 'paused') return;
+  G.phase = 'playing';
+  hideAll();
+  lastTs = performance.now();
+}
+
+function showOverlay(id) {
+  hideAll();
+  document.getElementById(id).classList.remove('hidden');
+}
+function hideAll() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+}
+
+// ─── DEATH / LEVEL ────────────────────────────────────────────────────────────
+function die(reason) {
+  if (G.phase !== 'playing') return;
+  G.phase = 'dying';
+  G.deathT = 1.5;
+  spawnParticles(G.visX, G.visY, reason === 'water' || reason === 'turtle' ? '#00aaff' : '#39ff14');
+  G.hopAnim = null;
+}
+
+function afterDeath() {
+  G.lives--;
+  if (G.lives <= 0) {
+    saveHi();
+    G.phase = 'gameover';
+    document.getElementById('goStats').innerHTML =
+      `分数 <strong>${G.score}</strong><br>最高 <strong>${G.hi}</strong>`;
+    showOverlay('overlayGameOver');
+  } else {
+    resetFrog();
+    G.timer = TIMER_MAX;
+    G.phase = 'playing';
+  }
+  updateHUD();
+}
+
+function levelClear() {
+  G.score += 200;
+  G.phase = 'levelclear';
+  G.levelT = 2.2;
+  document.getElementById('levelMsg').textContent = `第 ${G.level} 关通过！`;
+  document.getElementById('levelSubMsg').textContent = `LEVEL ${G.level} CLEAR`;
+  showOverlay('overlayLevel');
+  updateHUD();
+  saveHi();
+}
+
+function nextLevel() {
+  G.level++;
+  G.goals = Array(NUM_GOALS).fill(false);
+  G.lanes = makeLanes(G.level);
+  G.timer = TIMER_MAX;
+  resetFrog();
+  G.phase = 'playing';
+  hideAll();
+  updateHUD();
+}
+
+function saveHi() {
+  if (G.score > G.hi) {
+    G.hi = G.score;
+    localStorage.setItem('frogger_hi', G.hi);
+  }
+}
+
+// ─── HUD ──────────────────────────────────────────────────────────────────────
+function updateHUD() {
+  document.getElementById('scoreDisp').textContent  = G.score;
+  document.getElementById('hiDisp').textContent     = G.hi;
+  document.getElementById('levelDisp').textContent  = G.level;
+  document.getElementById('livesDisp').textContent  = '🐸'.repeat(Math.max(0, G.lives));
+  document.getElementById('mScoreDisp').textContent = G.score;
+  document.getElementById('mLevelDisp').textContent = G.level;
+  document.getElementById('mHiDisp').textContent    = G.hi;
+}
+
+// ─── PARTICLES ───────────────────────────────────────────────────────────────
+function spawnParticles(x, y, color) {
+  for (let i = 0; i < 18; i++) {
+    const a = (Math.PI * 2 / 18) * i + Math.random() * 0.3;
+    const spd = 50 + Math.random() * 80;
+    particles.push({ x, y,
+      vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+      life: 1, decay: 0.7 + Math.random() * 0.5,
+      r: 2 + Math.random() * 3, color });
+  }
+}
+function updateParticles(dt) {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x  += p.vx * dt;
+    p.y  += p.vy * dt;
+    p.vy += 80 * dt;
+    p.life -= p.decay * dt;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBg();
+  drawLaneObjects();
+  drawGoalZone();
+  drawFrog();
+  drawParticlesFn();
+  drawTimerBar();
+}
+
+function drawBg() {
+  // Background bands
+  for (let r = 0; r < ROWS; r++) {
+    ctx.fillStyle = rowBg(r);
+    ctx.fillRect(0, r * CS, canvas.width, CS);
+  }
+  // Road lane dividers
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+  ctx.setLineDash([CS * 0.28, CS * 0.45]);
+  ctx.lineWidth = 1;
+  for (let r = ROAD_TOP; r <= ROAD_BOT; r++) {
+    ctx.beginPath();
+    ctx.moveTo(0,            r * CS + CS * 0.5);
+    ctx.lineTo(canvas.width, r * CS + CS * 0.5);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // Subtle river wave lines
+  ctx.save();
+  ctx.strokeStyle = 'rgba(0,100,180,0.15)';
+  ctx.lineWidth = 1;
+  for (let r = RIVER_TOP; r <= RIVER_BOT; r++) {
+    ctx.beginPath();
+    ctx.moveTo(0,            r * CS + CS * 0.75);
+    ctx.lineTo(canvas.width, r * CS + CS * 0.75);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function rowBg(r) {
+  if (r === GOAL_ROW)                       return '#050e14';
+  if (r >= RIVER_TOP && r <= RIVER_BOT)     return '#060c18';
+  if (r === MEDIAN_ROW)                     return '#0a1a08';
+  if (r >= ROAD_TOP  && r <= ROAD_BOT)      return '#0d0d0d';
+  if (r === START_ROW)                      return '#0a1a08';
+  return '#07080f';
+}
+
+function drawGoalZone() {
+  for (let i = 0; i < NUM_GOALS; i++) {
+    const cx = GOAL_COLS[i] * CS + CS / 2;
+    const cy = CS / 2;
+    const rx = CS * 0.44;
+    const ry = CS * 0.33;
+    const filled = G.goals[i];
+
+    ctx.save();
+    if (filled) { ctx.shadowColor = '#39ff14'; ctx.shadowBlur = 20; }
+    ctx.fillStyle = filled ? 'rgba(20,80,20,0.92)' : 'rgba(8,35,18,0.75)';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = filled ? 'rgba(57,255,20,0.9)' : 'rgba(57,255,20,0.35)';
+    ctx.lineWidth = filled ? 2 : 1;
+    ctx.stroke();
+    ctx.restore();
+
+    if (filled) {
+      drawFrogAt(cx, cy, CS * 0.38, 1.0, 'up', 1.0);
+    }
+  }
+}
+
+function drawLaneObjects() {
+  for (const lane of G.lanes) {
+    for (const obj of lane.objs) {
+      if (obj.type === 'log')    drawLog(obj, lane.row);
+      else if (obj.type === 'car') drawCar(obj, lane.row, lane.dir, lane.clr);
+      else if (obj.type === 'turtle') drawTurtle(obj, lane.row);
+    }
+  }
+}
+
+function drawLog(obj, row) {
+  const x = obj.x * CS;
+  const y = row  * CS;
+  const w = obj.sz * CS;
+  const h = CS;
+  const r = CS * 0.28;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(200,140,50,0.5)';
+  ctx.shadowBlur  = 8;
+
+  ctx.fillStyle = '#7a5217';
+  rrect(ctx, x + 1, y + CS * 0.1, w - 2, h * 0.8, r);
+  ctx.fill();
+
+  // highlight stripe
+  ctx.fillStyle = 'rgba(180,120,50,0.3)';
+  rrect(ctx, x + 2, y + CS * 0.12, w - 4, h * 0.22, r * 0.5);
+  ctx.fill();
+
+  // grain lines
+  ctx.strokeStyle = 'rgba(100,65,15,0.45)';
+  ctx.lineWidth = 0.8;
+  for (let k = 1; k < obj.sz; k++) {
+    ctx.beginPath();
+    ctx.moveTo(x + k * CS, y + CS * 0.14);
+    ctx.lineTo(x + k * CS, y + CS * 0.86);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = 'rgba(200,140,50,0.5)';
+  ctx.lineWidth = 1.5;
+  rrect(ctx, x + 1, y + CS * 0.1, w - 2, h * 0.8, r);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawTurtle(obj, row) {
+  const alpha = obj.divePhase === 'down' ? 0.05 :
+                obj.divePhase === 'going_down' ? 1 - obj.diveP * 0.95 :
+                obj.divePhase === 'coming_up'  ? obj.diveP * 0.95 + 0.05 : 1.0;
+
+  for (let k = 0; k < obj.sz; k++) {
+    const cx = (obj.x + k + 0.5) * CS;
+    const cy = row * CS + CS / 2;
+    const r  = CS * 0.33;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = 'rgba(40,200,70,0.5)';
+    ctx.shadowBlur  = 6;
+
+    // Shell body
+    ctx.fillStyle = '#2d7a38';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, r, r * 0.78, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Shell segments
+    ctx.strokeStyle = 'rgba(80,210,80,0.55)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, r * 0.52, r * 0.4, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    for (let a = 0; a < 3; a++) {
+      const ang = (a / 3) * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(ang) * r * 0.52, cy + Math.sin(ang) * r * 0.4);
+      ctx.lineTo(cx - Math.cos(ang) * r * 0.52, cy - Math.sin(ang) * r * 0.4);
+      ctx.stroke();
+    }
+
+    // Head
+    ctx.fillStyle = '#40bb50';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - r * 0.82, r * 0.22, r * 0.18, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Eye
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.arc(cx + r * 0.06, cy - r * 0.85, r * 0.05, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+function drawCar(obj, row, dir, color) {
+  const x = obj.x * CS;
+  const y = row  * CS;
+  const w = obj.sz * CS;
+  const r = CS * 0.22;
+
+  ctx.save();
+  ctx.shadowColor = color;
+  ctx.shadowBlur  = 12;
+
+  // body
+  ctx.globalAlpha = 0.88;
+  ctx.fillStyle = color;
+  rrect(ctx, x + 1, y + CS * 0.16, w - 2, CS * 0.68, r);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // windshield / windows
+  ctx.fillStyle = 'rgba(180,230,255,0.38)';
+  if (obj.sz >= 2) {
+    rrect(ctx, x + CS * 0.22, y + CS * 0.22, w - CS * 0.44, CS * 0.28, r * 0.3);
+  } else {
+    rrect(ctx, x + CS * 0.2, y + CS * 0.22, CS * 0.6, CS * 0.28, r * 0.3);
+  }
+  ctx.fill();
+
+  // headlights
+  const hlx = dir > 0 ? x + w - CS * 0.18 : x + CS * 0.18;
+  ctx.fillStyle = 'rgba(255,255,210,0.95)';
+  ctx.shadowColor = 'rgba(255,255,180,0.9)';
+  ctx.shadowBlur = 7;
+  ctx.beginPath();
+  ctx.arc(hlx, y + CS * 0.29, CS * 0.065, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(hlx, y + CS * 0.71, CS * 0.065, 0, Math.PI * 2); ctx.fill();
+
+  // tail lights
+  const tlx = dir > 0 ? x + CS * 0.14 : x + w - CS * 0.14;
+  ctx.fillStyle = 'rgba(255,30,30,0.7)';
+  ctx.shadowColor = 'rgba(255,0,0,0.5)';
+  ctx.shadowBlur = 5;
+  ctx.beginPath();
+  ctx.arc(tlx, y + CS * 0.29, CS * 0.055, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(tlx, y + CS * 0.71, CS * 0.055, 0, Math.PI * 2); ctx.fill();
+
+  ctx.restore();
+}
+
+function drawFrog() {
+  if (G.phase === 'dying' && G.deathT < 0.6) return;
+  const alpha = G.phase === 'dying' ? Math.min(1, G.deathT) : 1.0;
+
+  // Hop squish: scale Y
+  let scaleY = 1.0;
+  if (G.hopAnim) {
+    const t = Math.min(1, (performance.now() - G.hopAnim.t0) / HOP_MS);
+    scaleY = 1 + Math.sin(t * Math.PI) * 0.28;
+  }
+
+  drawFrogAt(G.visX, G.visY, CS * 0.375, alpha, G.frog.dir, scaleY);
+}
+
+function drawFrogAt(cx, cy, r, alpha, facing, scaleY) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(cx, cy);
+
+  const angles = { up: 0, down: Math.PI, left: -Math.PI / 2, right: Math.PI / 2 };
+  ctx.rotate(angles[facing] || 0);
+  ctx.scale(1, scaleY || 1);
+
+  ctx.shadowColor = '#39ff14';
+  ctx.shadowBlur  = 16;
+
+  // Body
+  ctx.fillStyle = '#39ff14';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, r, r * 0.84, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Belly lighter patch
+  ctx.fillStyle = 'rgba(160,255,80,0.45)';
+  ctx.beginPath();
+  ctx.ellipse(0, r * 0.12, r * 0.55, r * 0.48, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Back legs
+  ctx.fillStyle = '#28c00c';
+  ctx.shadowBlur = 0;
+  ctx.beginPath();
+  ctx.ellipse(-r * 0.85, r * 0.48, r * 0.22, r * 0.13, 0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(r * 0.85, r * 0.48, r * 0.22, r * 0.13, -0.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Front legs
+  ctx.beginPath();
+  ctx.ellipse(-r * 0.88, -r * 0.22, r * 0.18, r * 0.1, -0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(r * 0.88, -r * 0.22, r * 0.18, r * 0.1, 0.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eyes
+  const ey = -r * 0.54;
+  const ex = r * 0.4;
+  ctx.shadowColor = '#fff';
+  ctx.shadowBlur = 4;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.ellipse(-ex, ey, r * 0.24, r * 0.24, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(ex, ey, r * 0.24, r * 0.24, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#050f00';
+  ctx.beginPath();
+  ctx.ellipse(-ex + r * 0.06, ey + r * 0.04, r * 0.12, r * 0.12, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(ex + r * 0.06, ey + r * 0.04, r * 0.12, r * 0.12, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawParticlesFn() {
+  for (const p of particles) {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle   = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur  = 8;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawTimerBar() {
+  const ratio = Math.max(0, G.timer / TIMER_MAX);
+  const bh = 5;
+  const by = canvas.height - bh;
+
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillRect(0, by, canvas.width, bh);
+
+  const clr = ratio > 0.5 ? '#39ff14' : ratio > 0.25 ? '#ffa500' : '#ff3355';
+  ctx.fillStyle   = clr;
+  ctx.shadowColor = clr;
+  ctx.shadowBlur  = 7;
+  ctx.fillRect(0, by, canvas.width * ratio, bh);
+  ctx.shadowBlur = 0;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function rrect(ctx, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y,     x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x,     y + h, r);
+  ctx.arcTo(x,     y + h, x,     y,     r);
+  ctx.arcTo(x,     y,     x + w, y,     r);
+  ctx.closePath();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  resize();
+  if (G.frog) syncVisPos();
+  render();
+});
+document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+resize();
+newGame();
+updateHUD();
+showOverlay('overlayStart');
+startLoop();
+
+})();
+</script>
+</body>
+</html>

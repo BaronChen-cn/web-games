@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>免费在线小游戏合集 - 俄罗斯方块、贪吃蛇、扫雷等10款经典游戏</title>
+<meta name="description" content="免费在线玩10款经典小游戏：俄罗斯方块、贪吃蛇、打砖块、2048、太空侵略者、打地鼠、扫雷、青蛙过河、消消乐、乒乓球。无需下载，手机电脑均可畅玩。">
+<meta name="keywords" content="在线小游戏,免费游戏,俄罗斯方块,贪吃蛇,扫雷,2048,打砖块,消消乐,网页游戏,手机游戏">
+<meta name="author" content="Web Games">
+<meta property="og:title" content="免费在线小游戏合集 - 10款经典游戏">
+<meta property="og:description" content="免费在线玩10款经典小游戏，无需下载，手机电脑均可畅玩。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="免费在线小游戏合集 - 10款经典游戏">
+<meta name="twitter:description" content="免费在线玩10款经典小游戏，无需下载，手机电脑均可畅玩。">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #07080f;
+    --surface:   #0e1020;
+    --border:    rgba(255,255,255,0.07);
+    --text:      #e8eaff;
+    --muted:     rgba(180,185,230,0.55);
+    --accent:    #5b6aff;
+    --glow-a:    rgba(91,106,255,0.18);
+    --glow-b:    rgba(0,220,255,0.12);
+    --radius:    16px;
+    --card-w:    260px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated background ── */
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 20%, rgba(91,106,255,0.13) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 80% at 85% 75%, rgba(0,200,255,0.09) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(180,0,255,0.07) 0%, transparent 70%);
+    animation: bgShift 12s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes bgShift {
+    0%   { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1.0; transform: scale(1.04); }
+  }
+
+  /* Stars */
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%   { opacity: 0;    transform: scale(0.8); }
+    100% { opacity: 0.55; transform: scale(1.2); }
+  }
+
+  /* ── Layout ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 0 48px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #5b6aff, #00dcff);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 24px rgba(91,106,255,0.45);
+    flex-shrink: 0;
+  }
+
+  .logo-text h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #ffffff, #a8b0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo-text p {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .header-count {
+    font-size: 13px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    letter-spacing: 0.5px;
+  }
+  .header-count strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* ── Section ── */
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 48px 0 20px;
+  }
+
+  /* ── Game Grid ── */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
+    gap: 20px;
+  }
+
+  /* ── Game Card ── */
+  .game-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.22s cubic-bezier(.25,.8,.25,1),
+                box-shadow 0.22s cubic-bezier(.25,.8,.25,1),
+                border-color 0.22s;
+    cursor: pointer;
+  }
+  .game-card:hover {
+    transform: translateY(-6px) scale(1.015);
+    border-color: rgba(255,255,255,0.18);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--card-glow, rgba(91,106,255,0.3));
+  }
+  .game-card:active {
+    transform: translateY(-2px) scale(1.005);
+  }
+
+  /* Card preview area */
+  .card-preview {
+    height: 148px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .card-preview::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, var(--surface) 100%);
+  }
+
+  .card-icon {
+    font-size: 64px;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 20px var(--card-glow, rgba(91,106,255,0.6)));
+    animation: floatIcon 4s ease-in-out infinite;
+  }
+  @keyframes floatIcon {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-8px); }
+  }
+
+  /* Tetromino preview canvas */
+  .card-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.55;
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 16px 18px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .card-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .card-name-en {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: rgba(180,185,230,0.65);
+    line-height: 1.55;
+    margin-top: 4px;
+    flex: 1;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .card-footer {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.1s;
+    text-decoration: none;
+    background: var(--card-btn-bg, linear-gradient(135deg, #5b6aff, #00dcff));
+    color: #fff;
+    box-shadow: 0 4px 16px var(--card-glow, rgba(91,106,255,0.4));
+    flex-shrink: 0;
+  }
+  .play-btn:hover  { filter: brightness(1.15); transform: scale(1.03); }
+  .play-btn:active { transform: scale(0.97); }
+
+  .play-arrow {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+  }
+
+  /* ── Coming soon placeholder ── */
+  .card-coming {
+    opacity: 0.45;
+    pointer-events: none;
+    filter: grayscale(0.5);
+  }
+  .coming-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 12px;
+    color: rgba(180,185,230,0.3);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    :root { --card-w: 100%; }
+    header { padding: 20px 0 28px; }
+    .logo-text h1 { font-size: 18px; }
+    .section-title { margin: 32px 0 14px; }
+    .game-grid { gap: 14px; }
+    .card-preview { height: 120px; }
+    .card-icon { font-size: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="stars" id="stars"></div>
+
+<div class="page">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🕹️</div>
+      <div class="logo-text">
+        <h1>游戏中心</h1>
+        <p>ARCADE · MINI GAMES</p>
+      </div>
+    </div>
+    <div class="header-count" id="headerCount">
+      共 <strong id="gameCount">0</strong> 款游戏
+    </div>
+  </header>
+
+  <div class="section-title">全部游戏</div>
+  <div class="game-grid" id="gameGrid"></div>
+
+  <footer>
+    每款游戏均为独立网页，无需安装，即点即玩
+  </footer>
+</div>
+
+<script>
+// ============================================================
+// GAME LIST — 添加新游戏时在此追加一项
+// ============================================================
+const GAMES = [
+  {
+    name:    '俄罗斯方块',
+    nameEn:  'Tetris',
+    desc:    '经典益智消方块游戏。7种方块、SRS旋转、幽灵块、连击加分，越玩越快。',
+    path:    'tetris/index.html',
+    icon:    '🧱',
+    tags:    ['益智', '经典', '休闲'],
+    // Theme colors
+    previewBg:   'linear-gradient(135deg, #0a0020 0%, #180040 60%, #001830 100%)',
+    glowColor:   'rgba(0,220,255,0.35)',
+    btnGradient: 'linear-gradient(135deg, #7b2fff, #00dcff)',
+    // For the animated preview: list of tetromino shapes to scatter
+    tetrominoes: ['I','O','T','S','Z','J','L'],
+  },
+  {
+    name:    '贪吃蛇',
+    nameEn:  'Snake',
+    desc:    '操控小蛇吞食苹果，越吃越长，碰墙即亡。每5颗出现限时黄金食物，越级越快！',
+    path:    'snake/index.html',
+    icon:    '🐍',
+    tags:    ['经典', '休闲', '技巧'],
+    previewBg:   'linear-gradient(135deg, #010f04 0%, #001a08 60%, #000d1a 100%)',
+    glowColor:   'rgba(57,255,20,0.35)',
+    btnGradient: 'linear-gradient(135deg, #00aa33, #39ff14)',
+  },
+  {
+    name:    '打砖块',
+    nameEn:  'Breakout',
+    desc:    '操控挡板反弹小球，击碎所有砖块。物理弹射、三种道具加持，关卡越深越刺激！',
+    path:    'breakout/index.html',
+    icon:    '🧱',
+    tags:    ['动作', '物理', '经典'],
+    previewBg:   'linear-gradient(135deg, #150400 0%, #2a0800 60%, #150a00 100%)',
+    glowColor:   'rgba(255,107,53,0.35)',
+    btnGradient: 'linear-gradient(135deg, #cc3300, #ff6b35)',
+  },
+  {
+    name:    '2048',
+    nameEn:  '2048',
+    desc:    '滑动方块让相同数字合并，目标凑出 2048。看似简单，越玩越上瘾！',
+    path:    '2048/index.html',
+    icon:    '🔢',
+    tags:    ['益智', '数字', '策略'],
+    previewBg:   'linear-gradient(135deg, #120c00 0%, #241600 60%, #120800 100%)',
+    glowColor:   'rgba(255,215,0,0.35)',
+    btnGradient: 'linear-gradient(135deg, #aa7700, #ffd700)',
+  },
+  {
+    name:    '太空侵略者',
+    nameEn:  'Space Invaders',
+    desc:    '经典射击游戏！消灭蜂拥而至的外星舰队，守护地球。UFO 出现时射击可获超高分！',
+    path:    'invaders/index.html',
+    icon:    '👾',
+    tags:    ['射击', '动作', '经典'],
+    previewBg:   'linear-gradient(135deg, #001208 0%, #002010 60%, #000c18 100%)',
+    glowColor:   'rgba(0,255,136,0.35)',
+    btnGradient: 'linear-gradient(135deg, #007744, #00ff88)',
+  },
+  {
+    name:    '打地鼠',
+    nameEn:  'Whack-a-Mole',
+    desc:    '60秒内疯狂敲击冒出的地鼠！金色地鼠得高分，红色炸弹地鼠千万别打！',
+    path:    'mole/index.html',
+    icon:    '🔨',
+    tags:    ['反应', '休闲', '触屏'],
+    previewBg:   'linear-gradient(135deg, #150009 0%, #200010 60%, #100518 100%)',
+    glowColor:   'rgba(255,110,180,0.35)',
+    btnGradient: 'linear-gradient(135deg, #cc3380, #ff6eb4)',
+  },
+  {
+    name:    '扫雷',
+    nameEn:  'Minesweeper',
+    desc:    '经典逻辑推理游戏。根据数字推断地雷位置，初级到高级三种难度，第一步永远安全！',
+    path:    'minesweeper/index.html',
+    icon:    '💣',
+    tags:    ['益智', '逻辑', '经典'],
+    previewBg:   'linear-gradient(135deg, #000a1a 0%, #001030 60%, #000a20 100%)',
+    glowColor:   'rgba(68,136,255,0.35)',
+    btnGradient: 'linear-gradient(135deg, #1144bb, #4488ff)',
+  },
+  {
+    name:    '青蛙过河',
+    nameEn:  'Frogger',
+    desc:    '引导青蛙穿越车流、跳上木头漂过河流，占领彼岸的睡莲。躲车、借力、抢时间！',
+    path:    'frogger/index.html',
+    icon:    '🐸',
+    tags:    ['动作', '闯关', '经典'],
+    previewBg:   'linear-gradient(135deg, #001400 0%, #002208 60%, #000e08 100%)',
+    glowColor:   'rgba(57,255,20,0.35)',
+    btnGradient: 'linear-gradient(135deg, #118800, #39ff14)',
+  },
+  {
+    name:    '消消乐',
+    nameEn:  'Match-3',
+    desc:    '交换相邻宝石凑成3个或更多消除！连锁爆炸、条纹宝石、炸弹宝石，越消越爽！',
+    path:    'match3/index.html',
+    icon:    '💎',
+    tags:    ['益智', '消除', '休闲'],
+    previewBg:   'linear-gradient(135deg, #0d0020 0%, #1a0035 60%, #000d20 100%)',
+    glowColor:   'rgba(191,0,255,0.38)',
+    btnGradient: 'linear-gradient(135deg, #7700cc, #bf00ff)',
+  },
+  {
+    name:    '乒乓球',
+    nameEn:  'Pong',
+    desc:    '经典对战球类游戏！与AI或好友对打，先得7分获胜。球速随对拍次数加快！',
+    path:    'pong/index.html',
+    icon:    '🏓',
+    tags:    ['对战', '竞技', '双人'],
+    previewBg:   'linear-gradient(135deg, #000d18 0%, #00101a 60%, #100018 100%)',
+    glowColor:   'rgba(0,220,255,0.35)',
+    btnGradient: 'linear-gradient(135deg, #007799, #00f5ff)',
+  },
+  // ── 更多游戏将自动出现在此 ──
+];
+
+// ============================================================
+// STARS
+// ============================================================
+(function spawnStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = [
+      `width:${size}px`, `height:${size}px`,
+      `left:${Math.random()*100}%`, `top:${Math.random()*100}%`,
+      `--dur:${(2.5 + Math.random()*4).toFixed(1)}s`,
+      `animation-delay:${(Math.random()*5).toFixed(1)}s`,
+    ].join(';');
+    container.appendChild(s);
+  }
+})();
+
+// ============================================================
+// TETROMINO PREVIEW CANVAS
+// ============================================================
+const PIECE_COLORS = {
+  I:'#00f5ff', O:'#ffd700', T:'#bf00ff',
+  S:'#39ff14', Z:'#ff4444', J:'#4488ff', L:'#ff8c00',
+};
+const PIECE_SHAPES = {
+  I:[[0,0],[0,1],[0,2],[0,3]],
+  O:[[0,0],[0,1],[1,0],[1,1]],
+  T:[[0,1],[1,0],[1,1],[1,2]],
+  S:[[0,1],[0,2],[1,0],[1,1]],
+  Z:[[0,0],[0,1],[1,1],[1,2]],
+  J:[[0,0],[1,0],[1,1],[1,2]],
+  L:[[0,2],[1,0],[1,1],[1,2]],
+};
+
+function drawTetrominoPreview(canvas, types) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const bs = 14; // block size
+  const count = types.length;
+
+  types.forEach((type, idx) => {
+    const color = PIECE_COLORS[type];
+    const shape = PIECE_SHAPES[type];
+    // Spread pieces across the canvas
+    const cols = Math.ceil(W / (bs * 6));
+    const gx = (idx % cols) * (W / cols) + 10;
+    const gy = Math.floor(idx / cols) * (H / Math.ceil(count / cols)) + 14;
+
+    ctx.save();
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 8;
+    shape.forEach(([r, c]) => {
+      const x = gx + c * (bs + 1);
+      const y = gy + r * (bs + 1);
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, bs, bs);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillRect(x, y, bs, 3);
+      ctx.fillRect(x, y, 3, bs);
+    });
+    ctx.restore();
+  });
+}
+
+// ============================================================
+// RENDER CARDS
+// ============================================================
+function renderGames() {
+  const grid = document.getElementById('gameGrid');
+  grid.innerHTML = '';
+  document.getElementById('gameCount').textContent = GAMES.length;
+
+  GAMES.forEach((game, idx) => {
+    const card = document.createElement('a');
+    card.href = game.path;
+    card.className = 'game-card';
+    card.style.setProperty('--card-glow', game.glowColor || 'rgba(91,106,255,0.3)');
+    card.style.setProperty('--card-btn-bg', game.btnGradient || 'linear-gradient(135deg,#5b6aff,#00dcff)');
+
+    // Delay for stagger animation
+    card.style.animation = `cardIn 0.4s ${idx * 0.07}s both`;
+
+    // Preview area
+    const preview = document.createElement('div');
+    preview.className = 'card-preview';
+    preview.style.background = game.previewBg || '#0e1020';
+
+    if (game.tetrominoes) {
+      // Animated canvas preview
+      const cvs = document.createElement('canvas');
+      cvs.className = 'card-canvas';
+      cvs.width = 260;
+      cvs.height = 148;
+      preview.appendChild(cvs);
+      setTimeout(() => drawTetrominoPreview(cvs, game.tetrominoes), 0);
+    }
+
+    const icon = document.createElement('div');
+    icon.className = 'card-icon';
+    icon.textContent = game.icon;
+    icon.style.animationDelay = `${idx * 0.3}s`;
+    preview.appendChild(icon);
+    card.appendChild(preview);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    body.innerHTML = `
+      <div class="card-name">${game.name}</div>
+      <div class="card-name-en">${game.nameEn}</div>
+      <div class="card-desc">${game.desc}</div>
+      <div class="card-tags">${(game.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="card-footer">
+        <div></div>
+        <a href="${game.path}" class="play-btn" onclick="event.stopPropagation()">
+          开始游戏 <span class="play-arrow">▶</span>
+        </a>
+      </div>
+    `;
+
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+// Card entrance animation
+const cardStyle = document.createElement('style');
+cardStyle.textContent = `
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+`;
+document.head.appendChild(cardStyle);
+
+renderGames();
+</script>
+</body>
+</html>

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>打地鼠在线玩 - 免费休闲小游戏，支持手机电脑</title>
+<meta name="description" content="免费在线玩打地鼠游戏，三种地鼠、连击加分、评级系统。无需下载，手机触屏完美支持，轻松解压。">
+<meta name="keywords" content="打地鼠,打地鼠游戏,在线打地鼠,免费打地鼠,休闲游戏,解压游戏,手机游戏">
+<meta name="author" content="Web Games">
+<meta property="og:title" content="打地鼠在线玩 - 免费休闲解压游戏">
+<meta property="og:description" content="免费在线玩打地鼠，三种地鼠、连击加分。手机触屏完美支持，无需下载。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="打地鼠在线玩 - 免费休闲解压游戏">
+<meta name="twitter:description" content="免费在线玩打地鼠，三种地鼠、连击加分。手机触屏完美支持，无需下载。">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100dvh;
+    overflow: hidden;
+    background: #07080f;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e0e0ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 40% 40%, rgba(255,110,180,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 65%, rgba(255,215,0,0.08) 0%, transparent 55%);
+    animation: bgPulse 6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes bgPulse {
+    0%   { opacity: 0.6; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.08); }
+  }
+
+  #game-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100dvh;
+  }
+
+  canvas {
+    display: block;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  /* Overlay shared styles */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: rgba(4,6,14,0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .overlay-box {
+    background: rgba(10,12,28,0.92);
+    border: 1px solid rgba(255,110,180,0.25);
+    border-radius: 12px;
+    padding: 36px 40px;
+    text-align: center;
+    max-width: min(90vw, 360px);
+    width: 100%;
+    box-shadow: 0 0 40px rgba(255,110,180,0.12), 0 0 80px rgba(255,215,0,0.06);
+  }
+
+  .overlay-title {
+    font-size: clamp(2.4rem, 10vw, 3.2rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff6eb4 30%, #ffd700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+
+  .overlay-subtitle {
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    color: rgba(224,224,255,0.55);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .overlay-desc {
+    font-size: clamp(0.78rem, 3.2vw, 0.9rem);
+    color: rgba(224,224,255,0.65);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 36px;
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
+    font-weight: 700;
+    font-family: inherit;
+    color: #07080f;
+    background: linear-gradient(135deg, #ff6eb4, #ffd700);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 0 18px rgba(255,110,180,0.45);
+  }
+
+  .btn:hover  { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 28px rgba(255,110,180,0.65); }
+  .btn:active { transform: translateY(0) scale(0.97); }
+
+  .grade-display {
+    font-size: clamp(3.5rem, 16vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+    text-shadow: 0 0 30px currentColor;
+  }
+
+  .result-score {
+    font-size: clamp(1.1rem, 5vw, 1.4rem);
+    margin-bottom: 4px;
+    color: #e0e0ff;
+  }
+
+  .result-best {
+    font-size: clamp(0.8rem, 3.5vw, 0.95rem);
+    color: rgba(224,224,255,0.5);
+    margin-bottom: 26px;
+  }
+
+  #overlay-start, #overlay-end { }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div id="game-wrap">
+  <canvas id="c"></canvas>
+</div>
+
+<!-- Start overlay -->
+<div class="overlay" id="overlay-start">
+  <div class="overlay-box">
+    <div class="overlay-title">打地鼠</div>
+    <div class="overlay-subtitle">Whack-a-Mole</div>
+    <div class="overlay-desc">60秒内打击地鼠，连击得更多分！<br>金色地鼠 +30，炸弹 −20！</div>
+    <button class="btn" id="btn-start">开始游戏</button>
+  </div>
+</div>
+
+<!-- End overlay -->
+<div class="overlay hidden" id="overlay-end">
+  <div class="overlay-box">
+    <div class="grade-display" id="end-grade">A</div>
+    <div class="result-score" id="end-score">得分：0</div>
+    <div class="result-best" id="end-best">最高分：0</div>
+    <button class="btn" id="btn-restart">再来一局</button>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ─── Canvas setup ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+
+const COLS = 3, ROWS = 3, TOTAL_HOLES = 9;
+const GAME_DURATION = 60;
+
+let cw, ch, cellSize, holeW, holeH, holeRimH;
+let holeCenters = []; // {x, y} center of each hole
+let gridOffsetX, gridOffsetY;
+let headerH; // height of header (score/timer section)
+
+function resize() {
+  const maxW = Math.min(window.innerWidth - 16, 420);
+  cw = maxW;
+  cellSize = Math.floor(cw / COLS);
+  holeW    = Math.floor(cellSize * 0.68);
+  holeH    = Math.floor(holeW * 0.42);
+  holeRimH = Math.floor(holeH * 0.4);
+  headerH  = Math.floor(cellSize * 0.72);
+  const gridH   = ROWS * cellSize;
+  const comboH  = Math.floor(cellSize * 0.45);
+  const timerBarH = 10;
+  const paddingV  = 14;
+  ch = headerH + timerBarH + gridH + comboH + paddingV * 2 + 8;
+
+  canvas.width  = cw;
+  canvas.height = ch;
+  canvas.style.width  = cw + 'px';
+  canvas.style.height = ch + 'px';
+
+  // Hole centers
+  gridOffsetY = headerH + timerBarH + paddingV;
+  gridOffsetX = 0;
+  holeCenters = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      holeCenters.push({
+        x: gridOffsetX + c * cellSize + cellSize / 2,
+        y: gridOffsetY + r * cellSize + cellSize * 0.62,
+      });
+    }
+  }
+}
+
+// ─── Game state ──────────────────────────────────────────────────────────────
+let gameActive = false;
+let score = 0;
+let timeLeft = GAME_DURATION;
+let lastTimestamp = 0;
+let timeSinceLastSpawn = 0;
+let combo = 0;
+let comboTimer = 0;    // fade timer for combo display
+let lastCombo = 0;     // last non-zero combo, for fade-out label
+
+// Per-hole state
+let holes = []; // array of hole objects
+
+// Particles
+let particles = [];
+
+// Score popups
+let popups = [];
+
+// RAF id
+let rafId = null;
+
+// Miss flash
+let missFlash = { active: false, x: 0, y: 0, t: 0 };
+
+// Difficulty helpers (inline in update/createMole)
+// 0-20s: max 2, 2s interval | 20-40s: max 3, 1.5s | 40-60s: max 4, 1.0s
+
+function initHoles() {
+  holes = [];
+  for (let i = 0; i < TOTAL_HOLES; i++) {
+    holes.push({
+      id: i,
+      mole: null,        // null or mole object
+      active: false,     // hole glowing
+    });
+  }
+}
+
+function createMole(holeId) {
+  const rand = Math.random();
+  let type, color, points;
+  const elapsed = GAME_DURATION - timeLeft;
+  const minShow = elapsed < 20 ? 800 : elapsed < 40 ? 600 : 400;
+  const maxShow = elapsed < 20 ? 2000 : elapsed < 40 ? 1600 : 1200;
+  const dur = minShow + Math.random() * (maxShow - minShow);
+
+  if (rand < 0.70) {
+    type = 'normal'; color = '#ff6eb4'; points = 10;
+  } else if (rand < 0.90) {
+    type = 'golden'; color = '#ffd700'; points = 30;
+  } else {
+    type = 'bomb';   color = '#ff3355'; points = -20;
+  }
+
+  return {
+    holeId,
+    type,
+    color,
+    points,
+    showDuration: dur,
+    elapsed: 0,        // time since spawned
+    state: 'rising',   // rising | visible | falling | whacked | done
+    yOffset: 0,        // pixels above hole center (negative = up)
+    targetY: 0,
+    animT: 0,          // 0→1 animation progress
+    whacked: false,
+    sparkAngle: 0,     // golden sparkle rotation
+    fuseT: 0,          // bomb fuse animation
+    flattenT: 0,       // whack flatten animation
+  };
+}
+
+function spawnMole() {
+  // Find empty holes
+  const empty = holes.filter(h => !h.mole);
+  if (empty.length === 0) return;
+  const hole = empty[Math.floor(Math.random() * empty.length)];
+  hole.mole = createMole(hole.id);
+  hole.active = true;
+}
+
+function countActiveMoles() {
+  return holes.filter(h => h.mole && h.mole.state !== 'done').length;
+}
+
+// ─── Drawing helpers ──────────────────────────────────────────────────────────
+function lerp(a, b, t) { return a + (b - a) * t; }
+function easeOut(t) { return 1 - Math.pow(1 - t, 2); }
+function easeIn(t)  { return t * t; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function drawHole(idx, highlight) {
+  const { x, y } = holeCenters[idx];
+  const rx = holeW / 2, ry = holeH / 2;
+
+  // Shadow depth
+  const shadowGrad = ctx.createRadialGradient(x, y + ry * 0.2, 0, x, y, rx);
+  shadowGrad.addColorStop(0, 'rgba(0,0,0,0.8)');
+  shadowGrad.addColorStop(1, 'rgba(5,2,15,0.9)');
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = shadowGrad;
+  ctx.fill();
+
+  // Rim gradient
+  const rimGrad = ctx.createLinearGradient(x - rx, y - ry, x + rx, y + ry);
+  rimGrad.addColorStop(0, 'rgba(80,40,60,0.7)');
+  rimGrad.addColorStop(1, 'rgba(20,10,30,0.9)');
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = highlight ? '#ff6eb4' : rimGrad;
+  if (highlight) {
+    ctx.shadowColor = '#ff6eb4';
+    ctx.shadowBlur = 12;
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawMoleHead(x, y, radius, color, type, flattenT) {
+  // flattenT: 0=normal, 1=fully flattened
+  const scaleY = flattenT > 0 ? lerp(1, 0.55, flattenT) : 1;
+  const scaleX = flattenT > 0 ? lerp(1, 1.3, flattenT) : 1;
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scaleX, scaleY);
+
+  // Body / head
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  if (type === 'golden') {
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur = 16;
+  } else if (type === 'bomb') {
+    ctx.shadowColor = '#ff3355';
+    ctx.shadowBlur = 10;
+  } else {
+    ctx.shadowColor = 'rgba(255,110,180,0.5)';
+    ctx.shadowBlur = 8;
+  }
+  ctx.fill();
+
+  // Ears
+  const earR = radius * 0.28;
+  const earDarken = type === 'golden' ? '#e6a800' : type === 'bomb' ? '#cc1133' : '#e05090';
+  ctx.fillStyle = earDarken;
+  ctx.beginPath();
+  ctx.arc(-radius * 0.55, -radius * 0.7, earR, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc( radius * 0.55, -radius * 0.7, earR, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ear inner
+  ctx.fillStyle = type === 'bomb' ? 'rgba(255,80,120,0.5)' : 'rgba(255,200,220,0.6)';
+  const earInnerR = earR * 0.55;
+  ctx.beginPath();
+  ctx.arc(-radius * 0.55, -radius * 0.7, earInnerR, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc( radius * 0.55, -radius * 0.7, earInnerR, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  // Eyes
+  ctx.fillStyle = '#fff';
+  const eyeR = radius * 0.18;
+  ctx.beginPath(); ctx.arc(-radius * 0.3, -radius * 0.1, eyeR, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc( radius * 0.3, -radius * 0.1, eyeR, 0, Math.PI * 2); ctx.fill();
+  // Pupils
+  ctx.fillStyle = '#222';
+  ctx.beginPath(); ctx.arc(-radius * 0.3 + 1, -radius * 0.1 + 1, eyeR * 0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc( radius * 0.3 + 1, -radius * 0.1 + 1, eyeR * 0.5, 0, Math.PI * 2); ctx.fill();
+
+  // Nose
+  ctx.fillStyle = type === 'golden' ? '#c8860a' : type === 'bomb' ? '#fff' : '#c0306a';
+  ctx.beginPath();
+  ctx.ellipse(0, radius * 0.2, radius * 0.18, radius * 0.13, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Mouth - small curved smile
+  ctx.strokeStyle = type === 'bomb' ? '#fff' : 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(0, radius * 0.28, radius * 0.18, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+
+  // Hands gripping rim
+  const handColor = type === 'golden' ? '#e6a800' : type === 'bomb' ? '#cc1133' : '#e05090';
+  ctx.fillStyle = handColor;
+  // Left hand
+  ctx.beginPath();
+  ctx.ellipse(-radius * 0.75, radius * 0.55, radius * 0.22, radius * 0.16, -0.4, 0, Math.PI * 2);
+  ctx.fill();
+  // Right hand
+  ctx.beginPath();
+  ctx.ellipse( radius * 0.75, radius * 0.55, radius * 0.22, radius * 0.16,  0.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawBombFuse(x, y, radius, fuseT) {
+  // Fuse stick above head
+  const fuseBaseX = x + radius * 0.35;
+  const fuseBaseY = y - radius * 0.9;
+  const fuseTipX  = fuseBaseX + Math.sin(fuseT * 5) * 3;
+  const fuseTipY  = fuseBaseY - radius * 0.55;
+
+  ctx.save();
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(fuseBaseX, fuseBaseY);
+  ctx.quadraticCurveTo(fuseBaseX + 8, fuseBaseY - radius * 0.3, fuseTipX, fuseTipY);
+  ctx.stroke();
+
+  // Spark
+  const sparkR = 4 + Math.sin(fuseT * 8) * 2;
+  ctx.shadowColor = '#ff8800';
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = '#ffaa00';
+  ctx.beginPath();
+  ctx.arc(fuseTipX, fuseTipY, sparkR, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Small spark streaks
+  ctx.strokeStyle = '#ffcc44';
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = '#ffcc44';
+  ctx.shadowBlur = 6;
+  for (let i = 0; i < 4; i++) {
+    const a = fuseT * 3 + i * (Math.PI / 2);
+    ctx.beginPath();
+    ctx.moveTo(fuseTipX, fuseTipY);
+    ctx.lineTo(fuseTipX + Math.cos(a) * (3 + sparkR), fuseTipY + Math.sin(a) * (3 + sparkR));
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function drawGoldenSparkles(x, y, radius, angle) {
+  ctx.save();
+  const count = 6;
+  for (let i = 0; i < count; i++) {
+    const a = angle + (i / count) * Math.PI * 2;
+    const dist = radius * 1.4;
+    const sx = x + Math.cos(a) * dist;
+    const sy = y + Math.sin(a) * dist;
+    const r = 2.5 + Math.sin(angle * 2 + i) * 1.5;
+    ctx.beginPath();
+    ctx.arc(sx, sy, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,215,0,${0.6 + Math.sin(angle * 3 + i) * 0.3})`;
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur = 8;
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+// The mole head sits at the hole center - yOffset (up is negative)
+// Clip the mole at the hole top edge
+function drawMole(hole, mole) {
+  const { x, y } = holeCenters[hole.id];
+  const ry = holeH / 2;
+  const rx = holeW / 2;
+
+  // The visible area of the mole is above the hole top edge (y - ry)
+  const holeTop = y - ry;
+
+  // Mole center Y: starts at hole center, rises up
+  // yOffset is how many px above hole center the mole center is (positive = up)
+  const moleRadius = Math.floor(cellSize * 0.23);
+  const moleY = y - mole.yOffset;
+
+  if (mole.state === 'done') return;
+
+  ctx.save();
+  // Clip to hole + above (mole pops out above)
+  ctx.beginPath();
+  ctx.rect(x - rx - 20, -100, rx * 2 + 40, holeTop + 100);
+  ctx.clip();
+
+  // Animate whack flatten
+  const flatT = mole.flattenT || 0;
+
+  if (mole.type === 'golden') {
+    drawGoldenSparkles(x, moleY, moleRadius, mole.sparkAngle);
+  }
+
+  drawMoleHead(x, moleY, moleRadius, mole.color, mole.type, flatT);
+
+  if (mole.type === 'bomb') {
+    drawBombFuse(x, moleY, moleRadius, mole.fuseT);
+  }
+
+  ctx.restore();
+}
+
+function drawHoleFront(idx) {
+  // Draw the "front rim" of the hole over the mole's body to create depth
+  const { x, y } = holeCenters[idx];
+  const rx = holeW / 2, ry = holeH / 2;
+
+  ctx.save();
+  // Bottom half ellipse as a "dirt front"
+  const frontGrad = ctx.createLinearGradient(x, y, x, y + ry * 1.6);
+  frontGrad.addColorStop(0, 'rgba(22,10,38,0.0)');
+  frontGrad.addColorStop(0.3, 'rgba(22,10,38,0.7)');
+  frontGrad.addColorStop(1, 'rgba(7,8,15,0.95)');
+
+  ctx.beginPath();
+  ctx.ellipse(x, y + ry * 0.1, rx + 2, ry * 1.1, 0, 0, Math.PI);
+  ctx.fillStyle = frontGrad;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawHeader() {
+  const pad = 16;
+  const midY = headerH / 2 + 2;
+
+  // Score
+  ctx.save();
+  ctx.font = `bold ${Math.floor(cellSize * 0.22)}px 'Segoe UI', system-ui`;
+  ctx.fillStyle = 'rgba(224,224,255,0.55)';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('SCORE', pad, midY - cellSize * 0.1);
+  ctx.font = `900 ${Math.floor(cellSize * 0.38)}px 'Segoe UI', system-ui`;
+  ctx.fillStyle = '#ff6eb4';
+  ctx.shadowColor = '#ff6eb4';
+  ctx.shadowBlur = 10;
+  ctx.fillText(score, pad, midY + cellSize * 0.14);
+  ctx.restore();
+
+  // Timer
+  const secs = Math.ceil(timeLeft);
+  const urgent = timeLeft <= 10;
+  const timerStr = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+  const pulse = urgent ? 1 + Math.sin(Date.now() * 0.008) * 0.06 : 1;
+  const timerFontSize = Math.floor(cellSize * 0.42) * pulse;
+
+  ctx.save();
+  ctx.font = `900 ${timerFontSize}px 'Segoe UI', system-ui`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = urgent ? '#ff3355' : '#e0e0ff';
+  if (urgent) { ctx.shadowColor = '#ff3355'; ctx.shadowBlur = 14; }
+  ctx.fillText(timerStr, cw / 2, midY);
+  ctx.restore();
+
+  // Combo (right side)
+  const displayCombo = combo >= 3 ? combo : (comboTimer > 0 ? lastCombo : 0);
+  if (displayCombo >= 3) {
+    const alpha = (combo < 3 && comboTimer > 0) ? Math.min(1, comboTimer / 0.4) : 1;
+    const comboColor = displayCombo >= 8 ? `rgba(255,50,50,${alpha})`
+                     : displayCombo >= 6 ? `rgba(255,120,0,${alpha})`
+                     : displayCombo >= 4 ? `rgba(255,200,0,${alpha})`
+                     :                    `rgba(255,215,0,${alpha})`;
+    ctx.save();
+    ctx.font = `900 ${Math.floor(cellSize * 0.18)}px 'Segoe UI', system-ui`;
+    ctx.fillStyle = `rgba(224,224,255,${0.45 * alpha})`;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('COMBO', cw - pad, midY - cellSize * 0.1);
+    ctx.font = `900 ${Math.floor(cellSize * 0.35)}px 'Segoe UI', system-ui`;
+    ctx.fillStyle = comboColor;
+    ctx.shadowColor = comboColor;
+    ctx.shadowBlur = 10;
+    ctx.fillText(`×${displayCombo}`, cw - pad, midY + cellSize * 0.14);
+    ctx.restore();
+  }
+}
+
+function drawTimerBar() {
+  const barY = headerH + 2;
+  const barH = 6;
+  const progress = clamp(timeLeft / GAME_DURATION, 0, 1);
+
+  // Background track
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  roundRect(ctx, 12, barY, cw - 24, barH, 3);
+  ctx.fill();
+
+  // Fill
+  const barW = (cw - 24) * progress;
+  if (barW > 0) {
+    const grad = ctx.createLinearGradient(12, barY, 12 + barW, barY);
+    if (timeLeft <= 10) {
+      grad.addColorStop(0, '#ff3355');
+      grad.addColorStop(1, '#ff6644');
+    } else {
+      grad.addColorStop(0, '#ff6eb4');
+      grad.addColorStop(1, '#ffd700');
+    }
+    ctx.fillStyle = grad;
+    roundRect(ctx, 12, barY, barW, barH, 3);
+    ctx.fill();
+
+    // Glow on tip
+    ctx.shadowColor = timeLeft <= 10 ? '#ff3355' : '#ffd700';
+    ctx.shadowBlur = 6;
+    roundRect(ctx, 12 + barW - 4, barY, 4, barH, 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+function drawComboBar() {
+  // Bottom area: combo info
+  const dc = combo >= 3 ? combo : (comboTimer > 0 ? lastCombo : 0);
+  if (dc < 3) return;
+  const alpha = (combo < 3 && comboTimer > 0) ? Math.min(1, comboTimer / 0.5) : 1;
+  const comboY = gridOffsetY + ROWS * cellSize + Math.floor(cellSize * 0.22);
+
+  const label = dc >= 8 ? 'UNSTOPPABLE!'
+              : dc >= 6 ? 'ON FIRE!'
+              : dc >= 4 ? 'GREAT COMBO!'
+              :            `${dc} COMBO!`;
+  const color = dc >= 8 ? `rgba(255,50,50,${alpha})`
+              : dc >= 6 ? `rgba(255,120,0,${alpha})`
+              : dc >= 4 ? `rgba(255,200,0,${alpha})`
+              :            `rgba(255,230,100,${alpha})`;
+
+  ctx.save();
+  ctx.font = `900 ${Math.floor(cellSize * 0.22)}px 'Segoe UI', system-ui`;
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 12;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, cw / 2, comboY);
+  ctx.restore();
+}
+
+function drawMissFlash() {
+  if (!missFlash.active) return;
+  const alpha = Math.max(0, 1 - missFlash.t / 0.5);
+  ctx.save();
+  ctx.font = `bold ${Math.floor(cellSize * 0.22)}px 'Segoe UI', system-ui`;
+  ctx.fillStyle = `rgba(180,180,200,${alpha})`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('MISS', missFlash.x, missFlash.y - 20 * (missFlash.t / 0.5));
+  ctx.restore();
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    if (p.life <= 0) continue;
+    const alpha = p.life / p.maxLife;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * alpha, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawPopups() {
+  for (const p of popups) {
+    if (p.life <= 0) continue;
+    const alpha = Math.min(1, p.life / 0.3);
+    const y = p.startY - (1 - p.life / p.maxLife) * 48;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = `900 ${Math.floor(cellSize * 0.26)}px 'Segoe UI', system-ui`;
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 10;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(p.text, p.x, y);
+    ctx.restore();
+  }
+}
+
+// ─── Mole animation update ────────────────────────────────────────────────────
+const RISE_DUR  = 0.2;  // seconds
+const FALL_DUR  = 0.15;
+const WHACK_DUR = 0.12;
+const FLAT_DUR  = 0.1;
+
+function updateMole(hole, mole, dt) {
+  mole.sparkAngle += dt * 3;
+  mole.fuseT += dt;
+
+  const moleHeight = cellSize * 0.55; // how far up mole rises
+
+  switch (mole.state) {
+    case 'rising': {
+      mole.animT += dt / RISE_DUR;
+      if (mole.animT >= 1) { mole.animT = 1; mole.state = 'visible'; }
+      mole.yOffset = easeOut(mole.animT) * moleHeight;
+      break;
+    }
+    case 'visible': {
+      mole.elapsed += dt;
+      if (mole.elapsed >= mole.showDuration / 1000) {
+        // Escaped!
+        if (mole.type === 'bomb') {
+          // survived bomb without hitting: +5
+          addScore(5, holeCenters[hole.id].x, holeCenters[hole.id].y - mole.yOffset, '+5', '#aaaaff');
+        } else if (mole.type !== 'bomb') {
+          // mole escaped, break combo
+          breakCombo();
+        }
+        mole.state = 'falling';
+        mole.animT = 0;
+        mole.startYOffset = mole.yOffset;
+      }
+      break;
+    }
+    case 'falling': {
+      mole.animT += dt / FALL_DUR;
+      if (mole.animT >= 1) {
+        mole.state = 'done';
+        hole.mole = null;
+        hole.active = false;
+      }
+      mole.yOffset = mole.startYOffset * (1 - easeIn(mole.animT));
+      break;
+    }
+    case 'whacked': {
+      mole.animT += dt / (WHACK_DUR + FLAT_DUR);
+      if (mole.animT < 0.4) {
+        mole.flattenT = mole.animT / 0.4;
+      } else {
+        mole.flattenT = 1 - (mole.animT - 0.4) / 0.6;
+      }
+      if (mole.animT >= 1) {
+        mole.state = 'falling';
+        mole.animT = 0;
+        mole.flattenT = 0;
+        mole.startYOffset = mole.yOffset;
+      }
+      break;
+    }
+  }
+}
+
+// ─── Scoring & combo ─────────────────────────────────────────────────────────
+function addScore(pts, x, y, label, color) {
+  score = Math.max(0, score + pts);
+  popups.push({ x, y, startY: y, text: label, color, life: 0.9, maxLife: 0.9 });
+}
+
+function breakCombo() {
+  if (combo >= 3) { lastCombo = combo; comboTimer = 0.7; }
+  combo = 0;
+}
+
+// ─── Hit detection ────────────────────────────────────────────────────────────
+function hitTest(px, py) {
+  if (!gameActive) return;
+
+  let hitSomething = false;
+
+  for (const hole of holes) {
+    const mole = hole.mole;
+    if (!mole || (mole.state !== 'rising' && mole.state !== 'visible')) continue;
+
+    const { x, y } = holeCenters[hole.id];
+    const moleRadius = cellSize * 0.23;
+    const moleY = y - mole.yOffset;
+
+    // Hit area: circle around mole head + slightly larger touch target
+    const dx = px - x, dy = py - moleY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const hitRadius = moleRadius * 1.5 + 8;
+
+    if (dist <= hitRadius) {
+      hitSomething = true;
+      whackMole(hole, mole, px, py);
+      break;
+    }
+  }
+
+  if (!hitSomething) {
+    missFlash = { active: true, x: px, y: py, t: 0 };
+    breakCombo();
+  }
+}
+
+function whackMole(hole, mole, px, py) {
+  if (mole.whacked) return;
+  mole.whacked = true;
+  mole.state = 'whacked';
+  mole.animT = 0;
+  hole.active = false;
+
+  let pts = mole.points;
+  if (combo >= 3) pts += combo * 2; // combo bonus
+  const label = pts >= 0 ? `+${pts}` : `${pts}`;
+  const color = mole.type === 'golden' ? '#ffd700' : mole.type === 'bomb' ? '#ff3355' : '#ff6eb4';
+
+  addScore(pts, px, holeCenters[hole.id].y - mole.yOffset, label, color);
+
+  // Particles
+  spawnParticles(px, holeCenters[hole.id].y - mole.yOffset, mole.color, mole.type === 'golden' ? 8 : 6);
+
+  if (mole.type !== 'bomb') {
+    combo++;
+  } else {
+    breakCombo();
+  }
+}
+
+function spawnParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2 + Math.random() * 0.4;
+    const speed = 60 + Math.random() * 80;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 30,
+      r: 3 + Math.random() * 3,
+      color,
+      life: 0.6 + Math.random() * 0.3,
+      maxLife: 0.6 + Math.random() * 0.3,
+    });
+  }
+}
+
+// ─── Game loop ────────────────────────────────────────────────────────────────
+function update(ts) {
+  const dt = Math.min((ts - lastTimestamp) / 1000, 0.05);
+  lastTimestamp = ts;
+
+  if (!gameActive) return;
+
+  // Timer
+  timeLeft -= dt;
+  if (timeLeft <= 0) {
+    timeLeft = 0;
+    endGame();
+    return;
+  }
+
+  // Spawn
+  const elapsed = GAME_DURATION - timeLeft;
+  const spawnInterval = elapsed < 20 ? 2.0 : elapsed < 40 ? 1.5 : 1.0;
+  timeSinceLastSpawn += dt;
+  const maxMoles = elapsed < 20 ? 2 : elapsed < 40 ? 3 : 4;
+
+  if (timeSinceLastSpawn >= spawnInterval && countActiveMoles() < maxMoles) {
+    spawnMole();
+    timeSinceLastSpawn = 0;
+  }
+
+  // Update moles
+  for (const hole of holes) {
+    if (hole.mole) updateMole(hole, hole.mole, dt);
+  }
+
+  // Particles
+  for (const p of particles) {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vy += 180 * dt; // gravity
+    p.life -= dt;
+  }
+  particles = particles.filter(p => p.life > 0);
+
+  // Popups
+  for (const p of popups) p.life -= dt;
+  popups = popups.filter(p => p.life > 0);
+
+  // Miss flash
+  if (missFlash.active) {
+    missFlash.t += dt;
+    if (missFlash.t >= 0.5) missFlash.active = false;
+  }
+
+  // Combo timer
+  if (comboTimer > 0) comboTimer -= dt;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, cw, ch);
+
+  // Subtle grid bg
+  ctx.fillStyle = 'rgba(255,110,180,0.015)';
+  ctx.fillRect(0, 0, cw, ch);
+
+  drawTimerBar();
+  drawHeader();
+
+  // Draw holes (back layer)
+  for (let i = 0; i < TOTAL_HOLES; i++) {
+    drawHole(i, holes[i] && holes[i].active);
+  }
+
+  // Draw moles behind front rim
+  for (const hole of holes) {
+    if (hole.mole) drawMole(hole, hole.mole);
+  }
+
+  // Draw front rim over moles for depth
+  for (let i = 0; i < TOTAL_HOLES; i++) {
+    drawHoleFront(i);
+  }
+
+  drawParticles();
+  drawPopups();
+  drawMissFlash();
+  drawComboBar();
+}
+
+function gameLoop(ts) {
+  update(ts);
+  draw();
+  rafId = requestAnimationFrame(gameLoop);
+}
+
+// ─── Game flow ────────────────────────────────────────────────────────────────
+function startGame() {
+  score = 0;
+  timeLeft = GAME_DURATION;
+  combo = 0;
+  lastCombo = 0;
+  comboTimer = 0;
+  timeSinceLastSpawn = 0;
+  particles = [];
+  popups = [];
+  missFlash = { active: false, x: 0, y: 0, t: 0 };
+  initHoles();
+  gameActive = true;
+
+  document.getElementById('overlay-start').classList.add('hidden');
+  document.getElementById('overlay-end').classList.add('hidden');
+
+  if (rafId) cancelAnimationFrame(rafId);
+  lastTimestamp = performance.now();
+  rafId = requestAnimationFrame(gameLoop);
+}
+
+function endGame() {
+  gameActive = false;
+
+  // Clear remaining moles
+  for (const hole of holes) {
+    hole.mole = null;
+    hole.active = false;
+  }
+
+  // Determine grade
+  let grade, gradeColor;
+  if (score >= 500)      { grade = 'S'; gradeColor = '#ffd700'; }
+  else if (score >= 300) { grade = 'A'; gradeColor = '#ff6eb4'; }
+  else if (score >= 150) { grade = 'B'; gradeColor = '#88aaff'; }
+  else                   { grade = 'C'; gradeColor = '#aaaaaa'; }
+
+  // Best score
+  let best = parseInt(localStorage.getItem('mole_best') || '0', 10);
+  if (score > best) { best = score; localStorage.setItem('mole_best', best); }
+
+  document.getElementById('end-grade').textContent = grade;
+  document.getElementById('end-grade').style.color = gradeColor;
+  document.getElementById('end-score').textContent = `得分：${score}`;
+  document.getElementById('end-best').textContent  = `最高分：${best}`;
+
+  document.getElementById('overlay-end').classList.remove('hidden');
+}
+
+// ─── Event listeners ──────────────────────────────────────────────────────────
+document.getElementById('btn-start').addEventListener('click', startGame);
+document.getElementById('btn-restart').addEventListener('click', startGame);
+
+canvas.addEventListener('click', (e) => {
+  if (!gameActive) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = cw / rect.width;
+  const scaleY = ch / rect.height;
+  hitTest((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
+});
+
+canvas.addEventListener('touchstart', (e) => {
+  if (!gameActive) return;
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = cw / rect.width;
+  const scaleY = ch / rect.height;
+  for (const touch of e.changedTouches) {
+    hitTest((touch.clientX - rect.left) * scaleX, (touch.clientY - rect.top) * scaleY);
+  }
+}, { passive: false });
+
+window.addEventListener('resize', () => {
+  resize();
+  if (!gameActive) {
+    // Redraw idle frame
+    draw();
+  }
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+resize();
+initHoles();
+
+// Draw idle board (static, no RAF needed before game starts)
+draw();
+
+})();
+</script>
+</body>
+</html>
