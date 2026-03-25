@@ -1581,15 +1581,12 @@ window.addEventListener('resize', () => {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 computeSize();
+grid = buildGrid();
+initVisuals();
 drawBoard(0);
 updateUI();
 document.getElementById('best-val').textContent = highScore;
 requestAnimationFrame(gameLoop);
-
-// Draw a preview board on start screen
-grid = buildGrid();
-initVisuals();
-drawBoard(0);
 
 })();
 </script>
