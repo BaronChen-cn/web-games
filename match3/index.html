@@ -548,12 +548,12 @@ function hasMatchAt(g, r, c) {
   if (t === NONE) return false;
   // horizontal
   if (c >= 2 && g[r][c-1].type === t && g[r][c-2].type === t) return true;
-  if (c >= 1 && c < COLS-1 && g[r][c-1].type === t && g[r][c+1].type === t) return true;
-  if (c < COLS-2 && g[r][c+1].type === t && g[r][c+2].type === t) return true;
+  if (c >= 1 && c < COLS-1 && g[r][c-1].type === t && g[r][c+1] && g[r][c+1].type === t) return true;
+  if (c < COLS-2 && g[r][c+1] && g[r][c+1].type === t && g[r][c+2] && g[r][c+2].type === t) return true;
   // vertical
   if (r >= 2 && g[r-1][c].type === t && g[r-2][c].type === t) return true;
-  if (r >= 1 && r < ROWS-1 && g[r-1][c].type === t && g[r+1][c].type === t) return true;
-  if (r < ROWS-2 && g[r+1][c].type === t && g[r+2][c].type === t) return true;
+  if (r >= 1 && r < ROWS-1 && g[r-1][c].type === t && g[r+1] && g[r+1][c] && g[r+1][c].type === t) return true;
+  if (r < ROWS-2 && g[r+1] && g[r+1][c] && g[r+1][c].type === t && g[r+2] && g[r+2][c] && g[r+2][c].type === t) return true;
   return false;
 }
 
