@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>连连看在线玩 - 免费经典连连看游戏，支持手机电脑</title>
+<meta name="description" content="免费在线玩经典连连看游戏，8×9棋盘，多种图案，关卡递进挑战。无需下载，手机触屏完美支持。">
+<meta name="keywords" content="连连看,连连看在线,免费连连看,经典连连看,消除游戏,网页连连看">
+<meta name="author" content="Web Games">
+<link rel="canonical" href="https://play.mini-games.win/lianliankhan/">
+<meta property="og:title" content="连连看在线玩 - 免费经典连连看游戏">
+<meta property="og:description" content="免费在线玩经典连连看，8×9棋盘，彩色图案，关卡挑战。手机触屏完美支持，无需下载。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="连连看在线玩 - 免费经典连连看游戏">
+<meta name="twitter:description" content="免费在线玩经典连连看，多种彩色图案，关卡递进挑战。手机触屏完美支持，无需下载。">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-X9Q3GDPLZC');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962"
+     crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: #07080f;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e0e0ff;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 25% 35%, rgba(0,150,255,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse at 75% 65%, rgba(0,204,255,0.08) 0%, transparent 60%);
+    animation: bgPulse 10s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes bgPulse {
+    0%   { opacity: 0.7; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.05); }
+  }
+
+  #app {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .panel-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,204,255,0.2);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+
+  .panel-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0,204,255,0.7);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 14px rgba(0,204,255,0.7);
+    line-height: 1;
+  }
+
+  .hint-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,204,255,0.2);
+    border-radius: 10px;
+    padding: 12px 10px;
+    font-size: 10px;
+    color: rgba(150,220,255,0.7);
+    line-height: 1.6;
+  }
+
+  .hint-box .hint-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0,204,255,0.8);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .hint-item {
+    margin-bottom: 6px;
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .hint-item strong {
+    color: rgba(160,230,255,0.9);
+    display: block;
+    font-size: 9px;
+  }
+
+  .panel-btn {
+    background: linear-gradient(135deg, rgba(0,100,180,0.3), rgba(0,204,255,0.2));
+    border: 1px solid rgba(0,204,255,0.4);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 8px 6px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    text-shadow: 0 0 8px rgba(0,204,255,0.5);
+    width: 100%;
+  }
+
+  .panel-btn:hover {
+    background: linear-gradient(135deg, rgba(0,120,200,0.5), rgba(0,204,255,0.35));
+    box-shadow: 0 0 16px rgba(0,204,255,0.4);
+    transform: translateY(-1px);
+  }
+
+  #board-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  #gameCanvas {
+    display: block;
+    border: 1px solid rgba(0,204,255,0.25);
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0,150,255,0.2), 0 0 80px rgba(0,204,255,0.08);
+    cursor: pointer;
+  }
+
+  /* Time bar */
+  #time-bar-wrap {
+    width: 100%;
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+    margin-top: 2px;
+  }
+
+  #time-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00ccff, #0066ff);
+    border-radius: 4px;
+    transition: width 0.3s linear, background 0.5s;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(4,6,14,0.88);
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 10;
+    transition: opacity 0.3s;
+  }
+
+  .overlay.hidden { display: none; }
+
+  .overlay-title {
+    font-size: 48px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #00ccff, #0066ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .overlay-sub {
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: rgba(100,200,255,0.8);
+    text-transform: uppercase;
+  }
+
+  .overlay-desc {
+    font-size: 12px;
+    color: rgba(140,200,240,0.7);
+    text-align: center;
+    max-width: 220px;
+    line-height: 1.7;
+  }
+
+  .btn {
+    background: linear-gradient(135deg, rgba(0,100,180,0.3), rgba(0,204,255,0.2));
+    border: 1px solid rgba(0,204,255,0.5);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 28px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    text-shadow: 0 0 10px rgba(0,204,255,0.5);
+  }
+
+  .btn:hover {
+    background: linear-gradient(135deg, rgba(0,120,200,0.5), rgba(0,204,255,0.35));
+    box-shadow: 0 0 20px rgba(0,204,255,0.4);
+    transform: translateY(-1px);
+  }
+
+  .overlay-score-display {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.6);
+  }
+
+  .ad-container {
+    width: 250px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(0,204,255,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  /* Mobile stats bar */
+  #mobile-stats {
+    display: none;
+    gap: 0;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,204,255,0.2);
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+  }
+
+  .mobile-stat {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    border-right: 1px solid rgba(0,204,255,0.15);
+  }
+
+  .mobile-stat:last-child { border-right: none; }
+  .mobile-stat .panel-label { margin-bottom: 2px; }
+  .mobile-stat .stat-value { font-size: 16px; }
+
+  /* Level up toast */
+  #level-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(4,6,14,0.92);
+    border: 2px solid rgba(0,204,255,0.6);
+    border-radius: 16px;
+    padding: 20px 40px;
+    z-index: 100;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 60px rgba(0,204,255,0.4);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+
+  #level-toast.show {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  #level-toast .toast-title {
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #00ccff, #0066ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  #level-toast .toast-sub {
+    font-size: 12px;
+    color: rgba(100,200,255,0.7);
+    letter-spacing: 3px;
+    margin-top: 4px;
+  }
+
+  /* Shuffle toast */
+  #shuffle-toast {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: rgba(4,6,14,0.92);
+    border: 1px solid rgba(0,204,255,0.5);
+    border-radius: 10px;
+    padding: 10px 24px;
+    z-index: 100;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    font-size: 13px;
+    color: #00ccff;
+    letter-spacing: 2px;
+    box-shadow: 0 0 30px rgba(0,204,255,0.3);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  #shuffle-toast.show { transform: translateX(-50%) scale(1); }
+
+  /* Mobile layout */
+  @media (max-width: 600px) {
+    #app {
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .panel { display: none; }
+
+    #mobile-stats {
+      display: flex;
+      width: calc(min(100vw - 0px, 480px));
+    }
+
+    #board-wrap {
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+    }
+
+    #gameCanvas {
+      border-radius: 0 0 8px 8px;
+      border-top: none;
+    }
+
+    #time-bar-wrap {
+      border-radius: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Left panel -->
+  <div class="panel" id="left-panel">
+    <div class="panel-box">
+      <div class="panel-label">SCORE</div>
+      <div class="stat-value" id="score-display">0</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">LEVEL</div>
+      <div class="stat-value" id="level-display">1</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">TIME</div>
+      <div class="stat-value" id="time-display">120</div>
+    </div>
+    <div class="panel-box">
+      <div class="panel-label">BEST</div>
+      <div class="stat-value" id="best-display">0</div>
+    </div>
+    <button class="panel-btn" id="hint-btn">提示</button>
+    <button class="panel-btn" id="shuffle-btn">洗牌</button>
+  </div>
+
+  <!-- Board -->
+  <div id="board-wrap">
+    <!-- Mobile stats bar -->
+    <div id="mobile-stats">
+      <div class="mobile-stat">
+        <div class="panel-label">SCORE</div>
+        <div class="stat-value" id="m-score">0</div>
+      </div>
+      <div class="mobile-stat">
+        <div class="panel-label">LEVEL</div>
+        <div class="stat-value" id="m-level">1</div>
+      </div>
+      <div class="mobile-stat">
+        <div class="panel-label">TIME</div>
+        <div class="stat-value" id="m-time">120</div>
+      </div>
+      <div class="mobile-stat">
+        <div class="panel-label">BEST</div>
+        <div class="stat-value" id="m-best">0</div>
+      </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+    <div id="time-bar-wrap"><div id="time-bar"></div></div>
+
+    <!-- Start overlay -->
+    <div class="overlay" id="start-overlay">
+      <div class="overlay-title">连连看</div>
+      <div class="overlay-sub">LINK LINK SEE</div>
+      <div class="overlay-desc">点击两个相同图案，若能用不超过2个弯折的路径连通则消除。<br>120秒内清除所有图案！</div>
+      <button class="btn" id="start-btn">开始游戏</button>
+    </div>
+
+    <!-- Game over overlay -->
+    <div class="overlay hidden" id="gameover-overlay">
+      <div class="overlay-title" id="gameover-title">时间到</div>
+      <div class="overlay-sub" id="gameover-sub">GAME OVER</div>
+      <div class="overlay-score-display" id="final-score">0</div>
+      <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:250px;height:90px"
+             data-ad-client="ca-pub-4328689115224962"
+             data-ad-slot="7765106927"></ins>
+      </div>
+      <button class="btn" id="restart-btn">再来一局</button>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="panel" id="right-panel">
+    <div class="hint-box">
+      <div class="hint-title">玩法</div>
+      <div class="hint-item"><strong>点击格子</strong>选中图案</div>
+      <div class="hint-item"><strong>再点相同图案</strong>若可连通则消除</div>
+      <div class="hint-item"><strong>路径规则</strong>最多2个弯折，不穿过其他格子</div>
+    </div>
+    <div class="hint-box">
+      <div class="hint-title">按钮</div>
+      <div class="hint-item"><strong>提示</strong>高亮一对可消除的格子</div>
+      <div class="hint-item"><strong>洗牌</strong>当无法消除时重排棋盘</div>
+    </div>
+    <div class="hint-box">
+      <div class="hint-title">关卡</div>
+      <div class="hint-item">每关图案种类增加</div>
+      <div class="hint-item">时间稍减，难度递进</div>
+      <div class="hint-item">消完全部图案过关</div>
+    </div>
+  </div>
+</div>
+
+<div id="level-toast">
+  <div class="toast-title">LEVEL UP!</div>
+  <div class="toast-sub" id="toast-level-sub">LEVEL 2</div>
+</div>
+<div id="shuffle-toast">自动洗牌中...</div>
+
+<script>
+// ============================================================
+//  CONSTANTS & CONFIG
+// ============================================================
+const COLS = 9;
+const ROWS = 8;
+const BASE_TIME = 120;
+
+// 8 shape types
+const SHAPES = ['circle','square','triangle','diamond','star','heart','hexagon','cross'];
+
+// Colors for each shape type (neon palette)
+const SHAPE_COLORS = [
+  '#ff4466', // circle  - red-pink
+  '#ffcc00', // square  - gold
+  '#00ff88', // triangle- green
+  '#aa44ff', // diamond - purple
+  '#ff8800', // star    - orange
+  '#ff44cc', // heart   - magenta
+  '#00ccff', // hexagon - cyan
+  '#44ffff', // cross   - aqua
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+let canvas, ctx;
+let CELL_W, CELL_H;
+let canvasW, canvasH;
+
+let board = [];         // ROWS x COLS, null = empty, else {type, color}
+let selected = null;    // {r, c}
+let score = 0;
+let level = 1;
+let timeLeft = BASE_TIME;
+let bestScore = parseInt(localStorage.getItem('llk_best') || '0');
+let gameRunning = false;
+let timerInterval = null;
+
+let particles = [];     // active particle effects
+let linePath = null;    // { points, alpha } for path display
+let hintPair = null;    // { a: {r,c}, b: {r,c} }
+let hintTimer = 0;
+
+// ============================================================
+//  INIT & RESIZE
+// ============================================================
+function init() {
+  canvas = document.getElementById('gameCanvas');
+  ctx = canvas.getContext('2d');
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  canvas.addEventListener('click', onCanvasClick);
+  canvas.addEventListener('touchend', onCanvasTouch, { passive: false });
+
+  document.getElementById('start-btn').addEventListener('click', startGame);
+  document.getElementById('restart-btn').addEventListener('click', restartGame);
+  document.getElementById('hint-btn').addEventListener('click', showHint);
+  document.getElementById('shuffle-btn').addEventListener('click', () => shuffleBoard(true));
+
+  updateUI();
+  requestAnimationFrame(gameLoop);
+}
+
+function resize() {
+  const isMobile = window.innerWidth <= 600;
+  const maxW = isMobile ? Math.min(window.innerWidth, 480) : Math.min(window.innerWidth - 320, 560);
+  const maxH = isMobile ? (window.innerHeight - 70) : (window.innerHeight - 40);
+
+  // Compute cell size
+  CELL_W = Math.floor(Math.min(maxW / COLS, maxH / ROWS));
+  CELL_H = CELL_W;
+  canvasW = CELL_W * COLS;
+  canvasH = CELL_H * ROWS;
+
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  canvas.style.width = canvasW + 'px';
+  canvas.style.height = canvasH + 'px';
+}
+
+// ============================================================
+//  GAME FLOW
+// ============================================================
+function startGame() {
+  score = 0;
+  level = 1;
+  timeLeft = BASE_TIME;
+  particles = [];
+  linePath = null;
+  hintPair = null;
+  selected = null;
+
+  buildBoard();
+  document.getElementById('start-overlay').classList.add('hidden');
+  document.getElementById('gameover-overlay').classList.add('hidden');
+  gameRunning = true;
+
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(tickTimer, 1000);
+
+  updateUI();
+}
+
+function restartGame() {
+  document.getElementById('gameover-overlay').classList.add('hidden');
+  startGame();
+}
+
+function endGame(won) {
+  gameRunning = false;
+  clearInterval(timerInterval);
+
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('llk_best', bestScore);
+  }
+
+  const overlay = document.getElementById('gameover-overlay');
+  document.getElementById('gameover-title').textContent = won ? '恭喜通关！' : '时间到';
+  document.getElementById('gameover-sub').textContent = won ? 'YOU WIN' : 'GAME OVER';
+  document.getElementById('final-score').textContent = score;
+  overlay.classList.remove('hidden');
+
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+
+  updateUI();
+}
+
+function tickTimer() {
+  if (!gameRunning) return;
+  timeLeft--;
+  if (timeLeft <= 0) {
+    timeLeft = 0;
+    updateUI();
+    endGame(false);
+  } else {
+    updateUI();
+  }
+}
+
+function nextLevel() {
+  level++;
+  timeLeft = Math.max(60, BASE_TIME - (level - 1) * 10);
+  selected = null;
+  hintPair = null;
+  particles = [];
+  linePath = null;
+
+  buildBoard();
+  updateUI();
+
+  const toast = document.getElementById('level-toast');
+  document.getElementById('toast-level-sub').textContent = 'LEVEL ' + level;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+// ============================================================
+//  BOARD GENERATION
+// ============================================================
+function numTypes() {
+  // level 1: 4 types, increases up to 8
+  return Math.min(4 + (level - 1), 8);
+}
+
+function buildBoard() {
+  const types = numTypes();
+  const totalCells = ROWS * COLS; // 72
+  // Must be even count per type; each type appears even number of times
+  // Distribute evenly: 72 / types, ensure even
+  let counts = new Array(types).fill(0);
+  const pairsTotal = totalCells / 2; // 36 pairs
+  // Distribute pairs roughly equally
+  for (let i = 0; i < pairsTotal; i++) {
+    counts[i % types]++;
+  }
+
+  let cells = [];
+  for (let t = 0; t < types; t++) {
+    for (let k = 0; k < counts[t] * 2; k++) {
+      cells.push(t);
+    }
+  }
+
+  // Shuffle cells
+  shuffle(cells);
+
+  // Build board 2D
+  board = [];
+  let idx = 0;
+  for (let r = 0; r < ROWS; r++) {
+    board[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      const t = cells[idx++];
+      board[r][c] = { type: t };
+    }
+  }
+
+  // Ensure at least one valid pair exists (reshuffle if not)
+  let attempts = 0;
+  while (!hasAnyMatch() && attempts < 200) {
+    shuffle(cells);
+    idx = 0;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        board[r][c] = { type: cells[idx++] };
+      }
+    }
+    attempts++;
+  }
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function shuffleBoard(showToast) {
+  if (!gameRunning) return;
+
+  // Collect all remaining cells
+  let remaining = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = board[r] && board[r][c];
+      if (cell !== null && cell !== undefined) {
+        remaining.push(cell.type);
+      }
+    }
+  }
+
+  if (remaining.length === 0) return;
+
+  shuffle(remaining);
+
+  let idx = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (board[r] && board[r][c] !== null && board[r][c] !== undefined) {
+        board[r][c] = { type: remaining[idx++] };
+      }
+    }
+  }
+
+  // Try until match found
+  let attempts = 0;
+  while (!hasAnyMatch() && attempts < 300 && remaining.length >= 2) {
+    shuffle(remaining);
+    idx = 0;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (board[r] && board[r][c] !== null && board[r][c] !== undefined) {
+          board[r][c] = { type: remaining[idx++] };
+        }
+      }
+    }
+    attempts++;
+  }
+
+  selected = null;
+  hintPair = null;
+
+  if (showToast) {
+    const toast = document.getElementById('shuffle-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1200);
+  }
+}
+
+// ============================================================
+//  MATCHING & PATH FINDING
+// ============================================================
+
+function getCell(r, c) {
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return undefined;
+  if (!board[r]) return undefined;
+  return board[r][c];
+}
+
+function isEmpty(r, c) {
+  // Out of board bounds: treat as passable (the "virtual border")
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return true;
+  const cell = getCell(r, c);
+  return cell === null || cell === undefined;
+}
+
+// Check if two cells can be connected with at most 2 bends.
+// Returns the path (array of {r,c} points) or null.
+function findPath(r1, c1, r2, c2) {
+  if (r1 === r2 && c1 === c2) return null;
+
+  // Direct line: 0 bends
+  if (r1 === r2) {
+    if (lineClear(r1, c1, r1, c2, r1, c1, r2, c2)) {
+      return [{r:r1,c:c1}, {r:r2,c:c2}];
+    }
+  }
+  if (c1 === c2) {
+    if (lineClear(r1, c1, r2, c2, r1, c1, r2, c2)) {
+      return [{r:r1,c:c1}, {r:r2,c:c2}];
+    }
+  }
+
+  // 1 bend: L-shape via corner (r1,c2) or (r2,c1)
+  // Corner (r1, c2)
+  {
+    const cr = r1, cc = c2;
+    if (isEmpty(cr, cc) &&
+        lineClear(r1, c1, cr, cc, r1, c1, r2, c2) &&
+        lineClear(cr, cc, r2, c2, r1, c1, r2, c2)) {
+      return [{r:r1,c:c1}, {r:cr,c:cc}, {r:r2,c:c2}];
+    }
+  }
+  // Corner (r2, c1)
+  {
+    const cr = r2, cc = c1;
+    if (isEmpty(cr, cc) &&
+        lineClear(r1, c1, cr, cc, r1, c1, r2, c2) &&
+        lineClear(cr, cc, r2, c2, r1, c1, r2, c2)) {
+      return [{r:r1,c:c1}, {r:cr,c:cc}, {r:r2,c:c2}];
+    }
+  }
+
+  // 2 bends: try every row as intermediate row, then every col
+  // Two bends via same row segment:
+  // (r1,c1) -> (r1,cx) -> (r2,cx) -> (r2,c2)  for any valid cx (including outside board)
+  // Extend col range to include virtual border
+  for (let cx = -1; cx <= COLS; cx++) {
+    if (cx === c1 && cx === c2) continue; // already covered by 1 bend
+    if (isEmpty(r1, cx) && isEmpty(r2, cx) &&
+        lineClear(r1, c1, r1, cx, r1, c1, r2, c2) &&
+        lineClear(r1, cx, r2, cx, r1, c1, r2, c2) &&
+        lineClear(r2, cx, r2, c2, r1, c1, r2, c2)) {
+      return [{r:r1,c:c1}, {r:r1,c:cx}, {r:r2,c:cx}, {r:r2,c:c2}];
+    }
+  }
+
+  // Two bends via same col segment:
+  // (r1,c1) -> (ry,c1) -> (ry,c2) -> (r2,c2)  for any valid ry
+  for (let ry = -1; ry <= ROWS; ry++) {
+    if (ry === r1 && ry === r2) continue;
+    if (isEmpty(ry, c1) && isEmpty(ry, c2) &&
+        lineClear(r1, c1, ry, c1, r1, c1, r2, c2) &&
+        lineClear(ry, c1, ry, c2, r1, c1, r2, c2) &&
+        lineClear(ry, c2, r2, c2, r1, c1, r2, c2)) {
+      return [{r:r1,c:c1}, {r:ry,c:c1}, {r:ry,c:c2}, {r:r2,c:c2}];
+    }
+  }
+
+  return null;
+}
+
+// Check if a straight line from (r1,c1) to (r2,c2) is clear.
+// The line must be horizontal or vertical.
+// Ignores the two original tile positions (sr1,sc1) and (sr2,sc2).
+function lineClear(r1, c1, r2, c2, sr1, sc1, sr2, sc2) {
+  if (r1 === r2) {
+    const minC = Math.min(c1, c2);
+    const maxC = Math.max(c1, c2);
+    for (let c = minC + 1; c < maxC; c++) {
+      if (!isCellPassable(r1, c, sr1, sc1, sr2, sc2)) return false;
+    }
+    return true;
+  }
+  if (c1 === c2) {
+    const minR = Math.min(r1, r2);
+    const maxR = Math.max(r1, r2);
+    for (let r = minR + 1; r < maxR; r++) {
+      if (!isCellPassable(r, c1, sr1, sc1, sr2, sc2)) return false;
+    }
+    return true;
+  }
+  return false; // Not straight line
+}
+
+function isCellPassable(r, c, sr1, sc1, sr2, sc2) {
+  // Out of board -> passable (virtual border)
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return true;
+  // The two selected tiles themselves are "passable" for path through them
+  if (r === sr1 && c === sc1) return true;
+  if (r === sr2 && c === sc2) return true;
+  return isEmpty(r, c);
+}
+
+function hasAnyMatch() {
+  const pairs = findAllPairs();
+  return pairs.length > 0;
+}
+
+function findAllPairs() {
+  const pairs = [];
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = getCell(r, c);
+      if (cell !== null && cell !== undefined) {
+        cells.push({r, c, type: cell.type});
+      }
+    }
+  }
+
+  for (let i = 0; i < cells.length; i++) {
+    for (let j = i + 1; j < cells.length; j++) {
+      if (cells[i].type === cells[j].type) {
+        const path = findPath(cells[i].r, cells[i].c, cells[j].r, cells[j].c);
+        if (path) {
+          pairs.push({a: cells[i], b: cells[j], path});
+          if (pairs.length >= 5) return pairs; // enough for hint check
+        }
+      }
+    }
+  }
+  return pairs;
+}
+
+function isBoardEmpty() {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = getCell(r, c);
+      if (cell !== null && cell !== undefined) return false;
+    }
+  }
+  return true;
+}
+
+// ============================================================
+//  INTERACTION
+// ============================================================
+function getCellFromPos(x, y) {
+  const c = Math.floor(x / CELL_W);
+  const r = Math.floor(y / CELL_H);
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+  return {r, c};
+}
+
+function onCanvasClick(e) {
+  if (!gameRunning) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  handleSelect(x, y);
+}
+
+function onCanvasTouch(e) {
+  e.preventDefault();
+  if (!gameRunning) return;
+  if (e.changedTouches.length === 0) return;
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.changedTouches[0];
+  const x = touch.clientX - rect.left;
+  const y = touch.clientY - rect.top;
+  handleSelect(x, y);
+}
+
+function handleSelect(x, y) {
+  hintPair = null;
+  const pos = getCellFromPos(x, y);
+  if (!pos) return;
+  const {r, c} = pos;
+
+  const cell = getCell(r, c);
+  if (cell === null || cell === undefined) {
+    // Clicked empty cell
+    selected = null;
+    return;
+  }
+
+  if (!selected) {
+    selected = {r, c};
+    return;
+  }
+
+  // Same cell -> deselect
+  if (selected.r === r && selected.c === c) {
+    selected = null;
+    return;
+  }
+
+  const selCell = getCell(selected.r, selected.c);
+  if (!selCell) { selected = {r, c}; return; }
+
+  if (selCell.type === cell.type) {
+    // Try to connect
+    const path = findPath(selected.r, selected.c, r, c);
+    if (path) {
+      // Eliminate!
+      eliminatePair(selected.r, selected.c, r, c, path);
+      selected = null;
+      linePath = null;
+    } else {
+      // Can't connect, re-select new cell
+      selected = {r, c};
+    }
+  } else {
+    // Different type
+    selected = {r, c};
+  }
+}
+
+function eliminatePair(r1, c1, r2, c2, path) {
+  // Spawn particles
+  spawnParticles(r1, c1);
+  spawnParticles(r2, c2);
+
+  // Show path briefly
+  linePath = { points: path, alpha: 1.0, timer: 0 };
+
+  // Remove cells
+  board[r1][c1] = null;
+  board[r2][c2] = null;
+
+  // Score
+  score += 100 * level;
+  updateUI();
+
+  // Check win
+  if (isBoardEmpty()) {
+    setTimeout(() => {
+      nextLevel();
+    }, 600);
+    return;
+  }
+
+  // Check if any match remains
+  setTimeout(() => {
+    if (!gameRunning) return;
+    if (!hasAnyMatch()) {
+      shuffleBoard(true);
+    }
+  }, 300);
+}
+
+function showHint() {
+  if (!gameRunning) return;
+  const pairs = findAllPairs();
+  if (pairs.length > 0) {
+    const p = pairs[Math.floor(Math.random() * pairs.length)];
+    hintPair = {a: p.a, b: p.b};
+    hintTimer = 0;
+  } else {
+    shuffleBoard(true);
+  }
+}
+
+// ============================================================
+//  PARTICLES
+// ============================================================
+function spawnParticles(r, c) {
+  const cx = c * CELL_W + CELL_W / 2;
+  const cy = r * CELL_H + CELL_H / 2;
+  const cell = getCell(r, c);
+  const color = cell ? SHAPE_COLORS[cell.type] : '#00ccff';
+
+  for (let i = 0; i < 12; i++) {
+    const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.3;
+    const speed = 1.5 + Math.random() * 2.5;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1.0,
+      decay: 0.025 + Math.random() * 0.02,
+      size: 2 + Math.random() * 3,
+      color
+    });
+  }
+}
+
+// ============================================================
+//  RENDERING
+// ============================================================
+let lastTime = 0;
+function gameLoop(ts) {
+  const dt = Math.min(ts - lastTime, 50);
+  lastTime = ts;
+
+  update(dt);
+  draw();
+
+  requestAnimationFrame(gameLoop);
+}
+
+function update(dt) {
+  // Update particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.08; // gravity
+    p.life -= p.decay;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  // Update line path
+  if (linePath) {
+    linePath.timer += dt;
+    linePath.alpha = Math.max(0, 1 - linePath.timer / 400);
+    if (linePath.alpha <= 0) linePath = null;
+  }
+
+  // Update hint blink
+  if (hintPair) {
+    hintTimer += dt;
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvasW, canvasH);
+
+  // Background grid
+  drawGrid();
+
+  // Cells
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = getCell(r, c);
+      if (cell !== null && cell !== undefined) {
+        drawCell(r, c, cell);
+      }
+    }
+  }
+
+  // Selection highlight
+  if (selected) {
+    const cell = getCell(selected.r, selected.c);
+    if (cell !== null && cell !== undefined) {
+      drawSelection(selected.r, selected.c);
+    }
+  }
+
+  // Hint highlight
+  if (hintPair) {
+    const blinkOn = Math.floor(hintTimer / 300) % 2 === 0;
+    if (blinkOn) {
+      drawHint(hintPair.a.r, hintPair.a.c);
+      drawHint(hintPair.b.r, hintPair.b.c);
+    }
+  }
+
+  // Line path
+  if (linePath && linePath.alpha > 0) {
+    drawLinePath(linePath);
+  }
+
+  // Particles
+  for (const p of particles) {
+    ctx.save();
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawGrid() {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(0, 204, 255, 0.07)';
+  ctx.lineWidth = 1;
+  for (let r = 0; r <= ROWS; r++) {
+    ctx.beginPath();
+    ctx.moveTo(0, r * CELL_H);
+    ctx.lineTo(canvasW, r * CELL_H);
+    ctx.stroke();
+  }
+  for (let c = 0; c <= COLS; c++) {
+    ctx.beginPath();
+    ctx.moveTo(c * CELL_W, 0);
+    ctx.lineTo(c * CELL_W, canvasH);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawCell(r, c, cell) {
+  const x = c * CELL_W;
+  const y = r * CELL_H;
+  const pad = Math.max(4, CELL_W * 0.1);
+  const color = SHAPE_COLORS[cell.type];
+  const shape = SHAPES[cell.type];
+
+  // Cell background
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,30,60,0.5)';
+  roundRect(ctx, x + 1, y + 1, CELL_W - 2, CELL_H - 2, 4);
+  ctx.fill();
+
+  // Draw shape
+  const cx = x + CELL_W / 2;
+  const cy = y + CELL_H / 2;
+  const size = (Math.min(CELL_W, CELL_H) / 2) - pad;
+
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+
+  drawShape(ctx, shape, cx, cy, size);
+
+  ctx.restore();
+}
+
+function drawShape(ctx, shape, cx, cy, size) {
+  ctx.beginPath();
+  switch (shape) {
+    case 'circle':
+      ctx.arc(cx, cy, size, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+
+    case 'square':
+      ctx.fillRect(cx - size * 0.85, cy - size * 0.85, size * 1.7, size * 1.7);
+      break;
+
+    case 'triangle':
+      ctx.moveTo(cx, cy - size);
+      ctx.lineTo(cx + size * 0.866, cy + size * 0.5);
+      ctx.lineTo(cx - size * 0.866, cy + size * 0.5);
+      ctx.closePath();
+      ctx.fill();
+      break;
+
+    case 'diamond':
+      ctx.moveTo(cx, cy - size);
+      ctx.lineTo(cx + size * 0.7, cy);
+      ctx.lineTo(cx, cy + size);
+      ctx.lineTo(cx - size * 0.7, cy);
+      ctx.closePath();
+      ctx.fill();
+      break;
+
+    case 'star':
+      drawStar(ctx, cx, cy, 5, size, size * 0.42);
+      ctx.fill();
+      break;
+
+    case 'heart':
+      drawHeart(ctx, cx, cy, size);
+      ctx.fill();
+      break;
+
+    case 'hexagon':
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i - Math.PI / 6;
+        const hx = cx + size * Math.cos(angle);
+        const hy = cy + size * Math.sin(angle);
+        if (i === 0) ctx.moveTo(hx, hy); else ctx.lineTo(hx, hy);
+      }
+      ctx.closePath();
+      ctx.fill();
+      break;
+
+    case 'cross':
+      const arm = size * 0.35;
+      ctx.fillRect(cx - arm, cy - size, arm * 2, size * 2);
+      ctx.fillRect(cx - size, cy - arm, size * 2, arm * 2);
+      break;
+  }
+}
+
+function drawStar(ctx, cx, cy, points, outerR, innerR) {
+  ctx.beginPath();
+  for (let i = 0; i < points * 2; i++) {
+    const angle = (Math.PI * i) / points - Math.PI / 2;
+    const r = i % 2 === 0 ? outerR : innerR;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+}
+
+function drawHeart(ctx, cx, cy, size) {
+  const s = size * 0.9;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy + s * 0.8);
+  ctx.bezierCurveTo(cx - s * 1.2, cy + s * 0.2, cx - s * 1.2, cy - s * 0.8, cx, cy - s * 0.2);
+  ctx.bezierCurveTo(cx + s * 1.2, cy - s * 0.8, cx + s * 1.2, cy + s * 0.2, cx, cy + s * 0.8);
+  ctx.closePath();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawSelection(r, c) {
+  const x = c * CELL_W + 1;
+  const y = r * CELL_H + 1;
+  const w = CELL_W - 2;
+  const h = CELL_H - 2;
+
+  ctx.save();
+  ctx.strokeStyle = '#00ccff';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#00ccff';
+  ctx.shadowBlur = 12;
+  roundRect(ctx, x, y, w, h, 4);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawHint(r, c) {
+  const x = c * CELL_W + 1;
+  const y = r * CELL_H + 1;
+  const w = CELL_W - 2;
+  const h = CELL_H - 2;
+
+  ctx.save();
+  ctx.strokeStyle = '#ffcc00';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#ffcc00';
+  ctx.shadowBlur = 16;
+  roundRect(ctx, x, y, w, h, 4);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawLinePath(lp) {
+  if (!lp || lp.points.length < 2) return;
+
+  ctx.save();
+  ctx.globalAlpha = lp.alpha;
+  ctx.strokeStyle = '#00ccff';
+  ctx.lineWidth = 3;
+  ctx.shadowColor = '#00ccff';
+  ctx.shadowBlur = 12;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.setLineDash([6, 4]);
+
+  ctx.beginPath();
+  for (let i = 0; i < lp.points.length; i++) {
+    const pt = lp.points[i];
+    // Clamp coordinates to canvas for virtual border points
+    const px = Math.max(0, Math.min(canvasW - 1, pt.c * CELL_W + CELL_W / 2));
+    const py = Math.max(0, Math.min(canvasH - 1, pt.r * CELL_H + CELL_H / 2));
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+// ============================================================
+//  UI UPDATE
+// ============================================================
+function updateUI() {
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('level-display').textContent = level;
+  document.getElementById('time-display').textContent = timeLeft;
+  document.getElementById('best-display').textContent = bestScore;
+
+  document.getElementById('m-score').textContent = score;
+  document.getElementById('m-level').textContent = level;
+  document.getElementById('m-time').textContent = timeLeft;
+  document.getElementById('m-best').textContent = bestScore;
+
+  // Time bar
+  const maxTime = Math.max(60, BASE_TIME - (level - 1) * 10);
+  const pct = Math.max(0, timeLeft / maxTime * 100);
+  const bar = document.getElementById('time-bar');
+  bar.style.width = pct + '%';
+  if (pct > 50) {
+    bar.style.background = 'linear-gradient(90deg, #00ccff, #0066ff)';
+  } else if (pct > 25) {
+    bar.style.background = 'linear-gradient(90deg, #ffaa00, #ff6600)';
+  } else {
+    bar.style.background = 'linear-gradient(90deg, #ff3300, #ff0066)';
+  }
+}
+
+// ============================================================
+//  START
+// ============================================================
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

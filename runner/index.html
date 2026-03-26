@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跑酷在线玩 - 免费无尽跑酷游戏，支持手机电脑</title>
+<meta name="description" content="免费在线玩跑酷无尽奔跑游戏，支持手机和电脑。跳跃躲避障碍，收集金币，挑战最高分！无需下载，即开即玩。">
+<meta name="keywords" content="跑酷游戏,无尽奔跑,在线游戏,免费游戏,跳跃游戏,手机游戏,网页游戏">
+<meta name="author" content="Web Games">
+<link rel="canonical" href="https://play.mini-games.win/runner/">
+<meta property="og:title" content="跑酷在线玩 - 免费无尽跑酷游戏">
+<meta property="og:description" content="免费在线玩跑酷无尽奔跑游戏，支持手机和电脑。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跑酷在线玩 - 免费无尽跑酷游戏">
+<meta name="twitter:description" content="免费在线玩跑酷无尽奔跑游戏，支持手机和电脑。">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-X9Q3GDPLZC');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962"
+     crossorigin="anonymous"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #07080f;
+  --surface: #0e1020;
+  --border: rgba(255,140,0,0.15);
+  --text: #e8eaff;
+  --muted: rgba(180,185,230,0.55);
+  --accent: #ff8c00;
+  --glow-a: rgba(255,140,0,0.25);
+  --glow-b: rgba(255,60,0,0.15);
+  --radius: 14px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  color: var(--accent);
+  text-shadow: 0 0 16px var(--glow-a);
+  text-align: center;
+  padding: 18px 12px 10px;
+  letter-spacing: 0.04em;
+}
+
+.game-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 900px;
+  padding: 0 12px 24px;
+}
+
+.side-panel {
+  width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+}
+
+.panel-card h3 {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--glow-a);
+}
+
+.stat-value.gold { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.5); }
+.stat-value.speed { color: #00e5ff; text-shadow: 0 0 8px rgba(0,229,255,0.4); }
+
+.key-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.key-hint span {
+  display: inline-block;
+  background: rgba(255,140,0,0.12);
+  border: 1px solid rgba(255,140,0,0.3);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.62rem;
+  color: var(--accent);
+  margin: 1px 2px;
+}
+
+.canvas-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#gameCanvas {
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,140,0,0.25);
+  box-shadow: 0 0 30px rgba(255,140,0,0.12), 0 0 60px rgba(255,60,0,0.06);
+  display: block;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,8,15,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.overlay-box {
+  background: #0d0f1e;
+  border: 1.5px solid rgba(255,140,0,0.35);
+  border-radius: 18px;
+  padding: 32px 36px;
+  text-align: center;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 0 40px rgba(255,140,0,0.18);
+}
+
+.overlay-box h2 {
+  font-size: 1.5rem;
+  color: var(--accent);
+  text-shadow: 0 0 16px var(--glow-a);
+  margin-bottom: 8px;
+}
+
+.overlay-box .sub {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.overlay-stats {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.o-stat { text-align: center; }
+.o-stat .val { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+.o-stat .lbl { font-size: 0.68rem; color: var(--muted); }
+
+.btn-start {
+  background: linear-gradient(135deg, #ff8c00, #ff4500);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 20px rgba(255,140,0,0.4);
+  transition: transform 0.12s, box-shadow 0.12s;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.btn-start:hover { transform: scale(1.03); box-shadow: 0 0 28px rgba(255,140,0,0.55); }
+.btn-start:active { transform: scale(0.97); }
+
+.ad-slot {
+  margin-top: 14px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile stats bar */
+.mobile-stats {
+  display: none;
+  width: 100%;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.mobile-stat { text-align: center; }
+.mobile-stat .ml { font-size: 0.6rem; color: var(--muted); display: block; }
+.mobile-stat .mv { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .side-panel { display: none; }
+  .mobile-stats { display: flex; }
+  .game-wrapper { padding: 0 0 16px; }
+  h1 { font-size: 1rem; padding: 10px 8px 6px; }
+  .overlay-box { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<h1>跑酷 — 无尽奔跑</h1>
+
+<div class="mobile-stats" id="mobileStats">
+  <div class="mobile-stat"><span class="ml">里程</span><span class="mv" id="mScore">0</span></div>
+  <div class="mobile-stat"><span class="ml">最高</span><span class="mv" id="mBest">0</span></div>
+  <div class="mobile-stat"><span class="ml">金币</span><span class="mv" id="mCoins" style="color:#ffd700">0</span></div>
+  <div class="mobile-stat"><span class="ml">速度</span><span class="mv" id="mSpeed" style="color:#00e5ff">1.0×</span></div>
+</div>
+
+<div class="game-wrapper">
+  <!-- Left Panel -->
+  <div class="side-panel">
+    <div class="panel-card">
+      <h3>本局</h3>
+      <div class="stat-row"><span class="stat-label">里程</span><span class="stat-value" id="pScore">0</span></div>
+      <div class="stat-row"><span class="stat-label">最高分</span><span class="stat-value" id="pBest">0</span></div>
+      <div class="stat-row"><span class="stat-label">金币</span><span class="stat-value gold" id="pCoins">0</span></div>
+      <div class="stat-row"><span class="stat-label">速度</span><span class="stat-value speed" id="pSpeed">1.0×</span></div>
+    </div>
+    <div class="panel-card">
+      <h3>道具说明</h3>
+      <div class="key-hint" style="line-height:1.9">
+        🛡 <b style="color:#a0cfff">护盾</b> 短暂无敌<br>
+        🌀 <b style="color:#b8ff80">弹簧</b> 超高跳<br>
+        🧲 <b style="color:#ffd700">磁铁</b> 吸金币
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-area">
+    <canvas id="gameCanvas" width="560" height="320"></canvas>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="side-panel">
+    <div class="panel-card">
+      <h3>操作说明</h3>
+      <div class="key-hint">
+        <span>空格</span> / <span>↑</span> 跳跃<br>
+        <span>点击</span> 鼠标跳跃<br><br>
+        <b style="color:#ffa040">二段跳：</b><br>
+        空中再按一次跳跃<br><br>
+        <b style="color:#ffa040">目标：</b><br>
+        躲避障碍物<br>收集金币<br>跑得越远越好！
+      </div>
+    </div>
+    <div class="panel-card">
+      <h3>障碍提示</h3>
+      <div class="key-hint">
+        <span style="color:#cc44ff">■</span> 紫色方块 矮障碍<br>
+        <span style="color:#ff3333">■</span> 红色高柱 高障碍<br>
+        <span style="color:#ff6622">■</span> 橙红悬浮 空中障碍<br><br>
+        移动平台可<br>踩上去借力！
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start Overlay -->
+<div class="overlay" id="startOverlay">
+  <div class="overlay-box">
+    <h2>跑酷</h2>
+    <p class="sub">无尽奔跑 · 躲避障碍 · 收集金币<br>看你能跑多远！</p>
+    <button class="btn-start" id="btnStart">开始游戏</button>
+    <div class="key-hint" style="color:var(--muted);font-size:0.72rem">
+      PC：<span>空格</span>/<span>↑</span>/点击 跳跃 &nbsp;|&nbsp; 手机：触摸跳跃
+    </div>
+  </div>
+</div>
+
+<!-- Game Over Overlay -->
+<div class="overlay" id="gameOverOverlay" style="display:none">
+  <div class="overlay-box">
+    <h2>游戏结束</h2>
+    <div class="overlay-stats">
+      <div class="o-stat"><div class="val" id="oScore">0</div><div class="lbl">里程</div></div>
+      <div class="o-stat"><div class="val" id="oBest">0</div><div class="lbl">最高</div></div>
+      <div class="o-stat"><div class="val" id="oCoins" style="color:#ffd700">0</div><div class="lbl">金币</div></div>
+    </div>
+    <button class="btn-start" id="btnRestart">再来一局</button>
+    <div class="ad-slot">
+      <ins class="adsbygoogle"
+        style="display:block;width:300px;height:60px"
+        data-ad-client="ca-pub-4328689115224962"
+        data-ad-slot="7765106927"
+        data-ad-format="horizontal"></ins>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ─── Canvas setup ───────────────────────────────────────────────
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const CW = canvas.width;   // 560
+const CH = canvas.height;  // 320
+const GROUND_Y = CH - 52;  // y of top of ground
+
+// ─── Game state ─────────────────────────────────────────────────
+let state = 'idle'; // idle | running | dead
+let score = 0;
+let bestScore = parseInt(localStorage.getItem('runner_best') || '0');
+let coins = 0;
+let gameSpeed = 3.5;
+let frameCount = 0;
+let lastTime = 0;
+let animId = null;
+
+// ─── Player ─────────────────────────────────────────────────────
+const PLAYER_W = 26;
+const PLAYER_H = 36;
+const PLAYER_X = 80;
+const GRAVITY = 0.52;
+const JUMP_VY = -11.5;
+const JUMP2_VY = -10;
+
+let player = {};
+
+function resetPlayer() {
+  player = {
+    x: PLAYER_X,
+    y: GROUND_Y - PLAYER_H,
+    vy: 0,
+    onGround: false,
+    jumpsLeft: 2,
+    frame: 0,
+    frameTick: 0,
+    // powerups
+    shieldTimer: 0,
+    springTimer: 0,
+    magnetTimer: 0,
+    invincibleFlash: 0,
+    dead: false
+  };
+}
+
+// ─── Background layers ──────────────────────────────────────────
+const bgLayers = [
+  { offset: 0, speed: 0.3, shapes: generateBgLayer(0) },
+  { offset: 0, speed: 0.65, shapes: generateBgLayer(1) },
+  { offset: 0, speed: 1.1, shapes: generateBgLayer(2) }
+];
+
+function generateBgLayer(layerIndex) {
+  const shapes = [];
+  const count = 12;
+  for (let i = 0; i < count; i++) {
+    const x = (CW / count) * i + Math.random() * 30;
+    if (layerIndex === 0) {
+      // Far mountains
+      shapes.push({ type: 'mountain', x, w: 60 + Math.random() * 80, h: 40 + Math.random() * 50 });
+    } else if (layerIndex === 1) {
+      // City silhouette
+      shapes.push({ type: 'building', x, w: 20 + Math.random() * 30, h: 50 + Math.random() * 80 });
+    } else {
+      // Near buildings
+      shapes.push({ type: 'nearBuilding', x, w: 14 + Math.random() * 18, h: 30 + Math.random() * 60 });
+    }
+  }
+  return shapes;
+}
+
+// ─── Obstacles ──────────────────────────────────────────────────
+let obstacles = [];
+let obstacleTimer = 0;
+let obstacleInterval = 90; // frames
+
+function spawnObstacle() {
+  const types = ['short', 'tall', 'combo', 'air', 'platform'];
+  const weights = [30, 20, 15, 20, 15];
+  const type = weightedRandom(types, weights);
+
+  if (type === 'short') {
+    obstacles.push({ x: CW + 10, y: GROUND_Y - 28, w: 22, h: 28, color: '#cc44ff', glowColor: 'rgba(200,40,255,0.6)', moving: false });
+  } else if (type === 'tall') {
+    obstacles.push({ x: CW + 10, y: GROUND_Y - 56, w: 18, h: 56, color: '#ff3333', glowColor: 'rgba(255,40,40,0.6)', moving: false });
+  } else if (type === 'combo') {
+    obstacles.push({ x: CW + 10, y: GROUND_Y - 28, w: 20, h: 28, color: '#cc44ff', glowColor: 'rgba(200,40,255,0.6)', moving: false });
+    obstacles.push({ x: CW + 42, y: GROUND_Y - 44, w: 16, h: 44, color: '#ff3333', glowColor: 'rgba(255,40,40,0.6)', moving: false });
+  } else if (type === 'air') {
+    const airY = GROUND_Y - 100 - Math.random() * 40;
+    obstacles.push({ x: CW + 10, y: airY, w: 32, h: 22, color: '#ff6622', glowColor: 'rgba(255,80,20,0.6)', moving: false });
+  } else if (type === 'platform') {
+    const platY = GROUND_Y - 70 - Math.random() * 30;
+    obstacles.push({ x: CW + 10, y: platY, w: 70, h: 14, color: '#00e5ff', glowColor: 'rgba(0,229,255,0.5)', moving: true, isPlatform: true, vy: 0, baseY: platY });
+  }
+}
+
+function weightedRandom(items, weights) {
+  let total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < items.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return items[i];
+  }
+  return items[0];
+}
+
+// ─── Coins ──────────────────────────────────────────────────────
+let coinObjects = [];
+let coinTimer = 0;
+let coinInterval = 55;
+
+function spawnCoins() {
+  const count = 3 + Math.floor(Math.random() * 4);
+  const startX = CW + 20;
+  const y = GROUND_Y - 40 - Math.random() * 60;
+  for (let i = 0; i < count; i++) {
+    coinObjects.push({ x: startX + i * 28, y, r: 8, angle: 0, collected: false });
+  }
+}
+
+// ─── Powerups ────────────────────────────────────────────────────
+let powerups = [];
+let powerupTimer = 0;
+const POWERUP_INTERVAL = 420;
+
+function spawnPowerup() {
+  const types = ['shield', 'spring', 'magnet'];
+  const type = types[Math.floor(Math.random() * types.length)];
+  powerups.push({
+    x: CW + 20,
+    y: GROUND_Y - 50 - Math.random() * 40,
+    type,
+    r: 12,
+    angle: 0
+  });
+}
+
+// ─── Particles ──────────────────────────────────────────────────
+let particles = [];
+
+function emitFootParticle(x, y) {
+  for (let i = 0; i < 5; i++) {
+    particles.push({
+      x: x + (Math.random() - 0.5) * 10,
+      y,
+      vx: (Math.random() - 0.5) * 2,
+      vy: -Math.random() * 2,
+      life: 1,
+      decay: 0.06 + Math.random() * 0.04,
+      size: 2 + Math.random() * 3,
+      color: '#ff8c00'
+    });
+  }
+}
+
+function emitExplosion(x, y) {
+  for (let i = 0; i < 22; i++) {
+    const angle = (Math.PI * 2 / 22) * i + Math.random() * 0.3;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      decay: 0.03 + Math.random() * 0.03,
+      size: 3 + Math.random() * 5,
+      color: ['#ff8c00', '#ff4500', '#ffd700', '#ffffff'][Math.floor(Math.random() * 4)]
+    });
+  }
+}
+
+// ─── Input ──────────────────────────────────────────────────────
+let lastTapTime = 0;
+
+function doJump() {
+  if (state !== 'running') return;
+  if (player.springTimer > 0 && player.jumpsLeft >= 2) {
+    // spring super jump
+    player.vy = JUMP_VY * 1.6;
+    player.jumpsLeft--;
+    player.onGround = false;
+  } else if (player.jumpsLeft > 0) {
+    player.vy = player.jumpsLeft === 2 ? JUMP_VY : JUMP2_VY;
+    player.jumpsLeft--;
+    player.onGround = false;
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') {
+    e.preventDefault();
+    doJump();
+  }
+});
+
+canvas.addEventListener('click', () => doJump());
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const now = Date.now();
+  doJump();
+  lastTapTime = now;
+}, { passive: false });
+
+document.getElementById('btnStart').addEventListener('click', startGame);
+document.getElementById('btnRestart').addEventListener('click', startGame);
+
+// ─── UI helpers ─────────────────────────────────────────────────
+function updateUI() {
+  const sc = Math.floor(score);
+  const sp = gameSpeed.toFixed(1) + '×';
+  document.getElementById('pScore').textContent = sc;
+  document.getElementById('pBest').textContent = bestScore;
+  document.getElementById('pCoins').textContent = coins;
+  document.getElementById('pSpeed').textContent = sp;
+  document.getElementById('mScore').textContent = sc;
+  document.getElementById('mBest').textContent = bestScore;
+  document.getElementById('mCoins').textContent = coins;
+  document.getElementById('mSpeed').textContent = sp;
+}
+
+function showStartOverlay() {
+  document.getElementById('startOverlay').style.display = 'flex';
+  document.getElementById('gameOverOverlay').style.display = 'none';
+}
+
+function showGameOver() {
+  document.getElementById('gameOverOverlay').style.display = 'flex';
+  document.getElementById('oScore').textContent = Math.floor(score);
+  document.getElementById('oBest').textContent = bestScore;
+  document.getElementById('oCoins').textContent = coins;
+  // Try to push adsense
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+}
+
+// ─── Game lifecycle ──────────────────────────────────────────────
+function startGame() {
+  document.getElementById('startOverlay').style.display = 'none';
+  document.getElementById('gameOverOverlay').style.display = 'none';
+
+  state = 'running';
+  score = 0;
+  coins = 0;
+  gameSpeed = 3.5;
+  frameCount = 0;
+  obstacles = [];
+  coinObjects = [];
+  powerups = [];
+  particles = [];
+  obstacleTimer = 0;
+  coinTimer = 0;
+  powerupTimer = 0;
+
+  resetPlayer();
+
+  // reset bg offsets
+  bgLayers.forEach(l => l.offset = 0);
+
+  if (animId) cancelAnimationFrame(animId);
+  lastTime = performance.now();
+  animId = requestAnimationFrame(gameLoop);
+}
+
+// ─── Main loop ───────────────────────────────────────────────────
+function gameLoop(ts) {
+  const dt = Math.min((ts - lastTime) / 16.67, 2.5); // cap at 2.5x frame
+  lastTime = ts;
+
+  if (state === 'running') {
+    update(dt);
+  }
+  render();
+  updateUI();
+
+  if (state !== 'dead') {
+    animId = requestAnimationFrame(gameLoop);
+  }
+}
+
+// ─── Update ─────────────────────────────────────────────────────
+function update(dt) {
+  frameCount++;
+
+  // Speed increase
+  gameSpeed += 0.0008 * dt;
+  if (gameSpeed > 12) gameSpeed = 12;
+
+  // Score
+  score += gameSpeed * 0.05 * dt;
+  if (score > bestScore) {
+    bestScore = Math.floor(score);
+    localStorage.setItem('runner_best', bestScore);
+  }
+
+  // Obstacle interval shrinks with speed
+  obstacleInterval = Math.max(55, 90 - (gameSpeed - 3.5) * 6);
+
+  // Spawn obstacles
+  obstacleTimer += dt;
+  if (obstacleTimer >= obstacleInterval) {
+    obstacleTimer = 0;
+    spawnObstacle();
+  }
+
+  // Spawn coins
+  coinTimer += dt;
+  if (coinTimer >= coinInterval) {
+    coinTimer = 0;
+    spawnCoins();
+  }
+
+  // Spawn powerups
+  powerupTimer += dt;
+  if (powerupTimer >= POWERUP_INTERVAL) {
+    powerupTimer = 0;
+    spawnPowerup();
+  }
+
+  // BG parallax
+  bgLayers.forEach(l => {
+    l.offset += l.speed * gameSpeed * 0.5 * dt;
+  });
+
+  // Player physics
+  player.vy += GRAVITY * dt;
+  player.y += player.vy * dt;
+
+  // Ground collision
+  if (player.y >= GROUND_Y - PLAYER_H) {
+    player.y = GROUND_Y - PLAYER_H;
+    if (player.vy > 0) {
+      if (!player.onGround) {
+        emitFootParticle(player.x + PLAYER_W / 2, GROUND_Y);
+      }
+      player.vy = 0;
+      player.onGround = true;
+      player.jumpsLeft = 2;
+    }
+  } else {
+    player.onGround = false;
+  }
+
+  // Player run animation
+  if (player.onGround) {
+    player.frameTick += dt;
+    if (player.frameTick >= 6) {
+      player.frameTick = 0;
+      player.frame = (player.frame + 1) % 4;
+    }
+  }
+
+  // Power-up timers
+  if (player.shieldTimer > 0) player.shieldTimer -= dt;
+  if (player.springTimer > 0) player.springTimer -= dt;
+  if (player.magnetTimer > 0) player.magnetTimer -= dt;
+  if (player.invincibleFlash > 0) player.invincibleFlash -= dt;
+
+  // Move & cull obstacles
+  for (let i = obstacles.length - 1; i >= 0; i--) {
+    const o = obstacles[i];
+    if (!o) continue;
+    o.x -= gameSpeed * dt;
+    if (o.isPlatform) {
+      // slight vertical oscillation
+      o.baseY = o.baseY || o.y;
+      o.angle = (o.angle || 0) + 0.03 * dt;
+      o.y = o.baseY + Math.sin(o.angle) * 12;
+    }
+    if (o.x + o.w < -20) {
+      obstacles.splice(i, 1);
+      continue;
+    }
+    // Platform: player can stand on top
+    if (o.isPlatform) {
+      const margin = 6;
+      const px = player.x + margin, pw = PLAYER_W - margin * 2;
+      const prevBottom = player.y + PLAYER_H - player.vy * dt;
+      const curBottom = player.y + PLAYER_H;
+      const overlapX = px < o.x + o.w && px + pw > o.x;
+      if (overlapX && player.vy >= 0 && prevBottom <= o.y + 2 && curBottom >= o.y) {
+        player.y = o.y - PLAYER_H;
+        player.vy = 0;
+        player.onGround = true;
+        player.jumpsLeft = 2;
+        if (!player.onGround) emitFootParticle(player.x + PLAYER_W / 2, o.y);
+      }
+      continue; // platforms don't kill
+    }
+    // Collision (AABB with margin)
+    if (player.shieldTimer > 0 || player.invincibleFlash > 0) continue;
+    if (aabbCollide(player, o, 4)) {
+      killPlayer();
+      return;
+    }
+  }
+
+  // Move & collect coins
+  const magnetRange = player.magnetTimer > 0 ? 120 : 0;
+  for (let i = coinObjects.length - 1; i >= 0; i--) {
+    const c = coinObjects[i];
+    if (!c) continue;
+    c.x -= gameSpeed * dt;
+    c.angle += 0.08 * dt;
+    // Magnet
+    if (magnetRange > 0) {
+      const dx = player.x + PLAYER_W / 2 - c.x;
+      const dy = player.y + PLAYER_H / 2 - c.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < magnetRange) {
+        c.x += dx * 0.12 * dt;
+        c.y += dy * 0.12 * dt;
+      }
+    }
+    if (c.x + c.r < -10) { coinObjects.splice(i, 1); continue; }
+    if (!c.collected) {
+      const cx = player.x + PLAYER_W / 2, cy = player.y + PLAYER_H / 2;
+      const dist = Math.sqrt((cx - c.x) ** 2 + (cy - c.y) ** 2);
+      if (dist < c.r + 14) {
+        c.collected = true;
+        coins++;
+        score += 5;
+        coinObjects.splice(i, 1);
+      }
+    }
+  }
+
+  // Move & collect powerups
+  for (let i = powerups.length - 1; i >= 0; i--) {
+    const p = powerups[i];
+    if (!p) continue;
+    p.x -= gameSpeed * dt;
+    p.angle += 0.06 * dt;
+    if (p.x + p.r < -10) { powerups.splice(i, 1); continue; }
+    const cx = player.x + PLAYER_W / 2, cy = player.y + PLAYER_H / 2;
+    const dist = Math.sqrt((cx - p.x) ** 2 + (cy - p.y) ** 2);
+    if (dist < p.r + 14) {
+      if (p.type === 'shield') player.shieldTimer = 180;
+      if (p.type === 'spring') player.springTimer = 240;
+      if (p.type === 'magnet') player.magnetTimer = 300;
+      powerups.splice(i, 1);
+    }
+  }
+
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    if (!p) continue;
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vy += 0.15 * dt;
+    p.life -= p.decay * dt;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+}
+
+function aabbCollide(p, o, margin) {
+  return (
+    p.x + margin < o.x + o.w - margin &&
+    p.x + PLAYER_W - margin > o.x + margin &&
+    p.y + margin < o.y + o.h - margin &&
+    p.y + PLAYER_H - margin > o.y + margin
+  );
+}
+
+function killPlayer() {
+  state = 'dead';
+  player.dead = true;
+  emitExplosion(player.x + PLAYER_W / 2, player.y + PLAYER_H / 2);
+  // Render one more frame then show overlay
+  render();
+  setTimeout(() => {
+    showGameOver();
+  }, 800);
+}
+
+// ─── Render ─────────────────────────────────────────────────────
+function render() {
+  ctx.clearRect(0, 0, CW, CH);
+
+  // Sky gradient
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
+  skyGrad.addColorStop(0, '#07080f');
+  skyGrad.addColorStop(1, '#110820');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, CW, GROUND_Y);
+
+  // Background layers
+  drawBgLayer(0, 'rgba(40,15,60,0.5)', 'rgba(30,10,50,0.3)');
+  drawBgLayer(1, 'rgba(60,20,100,0.6)', 'rgba(40,15,80,0.4)');
+  drawBgLayer(2, 'rgba(20,20,50,0.8)', 'rgba(10,10,30,0.6)');
+
+  // Ground
+  drawGround();
+
+  // Obstacles
+  obstacles.forEach(o => { if (o) drawObstacle(o); });
+
+  // Coins
+  coinObjects.forEach(c => { if (c) drawCoin(c); });
+
+  // Powerups
+  powerups.forEach(p => { if (p) drawPowerup(p); });
+
+  // Player
+  if (!player.dead || (player.dead && particles.length > 0)) {
+    drawPlayer();
+  }
+
+  // Particles
+  particles.forEach(p => { if (p) drawParticle(p); });
+
+  // HUD overlay (speed trail)
+  if (gameSpeed > 7) {
+    const alpha = Math.min((gameSpeed - 7) / 5, 0.15);
+    ctx.fillStyle = `rgba(255,60,0,${alpha})`;
+    ctx.fillRect(0, 0, CW, CH);
+  }
+}
+
+function drawBgLayer(idx, fillColor, accentColor) {
+  const layer = bgLayers[idx];
+  const shapes = layer.shapes;
+  const off = layer.offset % CW;
+
+  for (let rep = -1; rep <= 1; rep++) {
+    shapes.forEach(s => {
+      const sx = ((s.x - off + CW * 10) % (CW * 1.2)) - 20 + rep * CW * 1.2;
+      if (sx > CW + 100 || sx + (s.w || 60) < -100) return;
+
+      ctx.fillStyle = fillColor;
+      ctx.shadowColor = accentColor;
+      ctx.shadowBlur = 8;
+
+      if (s.type === 'mountain') {
+        ctx.beginPath();
+        ctx.moveTo(sx, GROUND_Y - 10);
+        ctx.lineTo(sx + s.w / 2, GROUND_Y - 10 - s.h);
+        ctx.lineTo(sx + s.w, GROUND_Y - 10);
+        ctx.closePath();
+        ctx.fill();
+      } else if (s.type === 'building') {
+        ctx.fillRect(sx, GROUND_Y - s.h - 8, s.w, s.h);
+        // windows
+        ctx.fillStyle = accentColor;
+        ctx.shadowBlur = 0;
+        for (let wy = GROUND_Y - s.h; wy < GROUND_Y - 12; wy += 12) {
+          for (let wx = sx + 4; wx < sx + s.w - 4; wx += 8) {
+            if (Math.random() > 0.4) ctx.fillRect(wx, wy, 4, 6);
+          }
+        }
+      } else {
+        ctx.fillRect(sx, GROUND_Y - s.h - 4, s.w, s.h);
+      }
+
+      ctx.shadowBlur = 0;
+    });
+  }
+}
+
+function drawGround() {
+  // Ground base
+  const grad = ctx.createLinearGradient(0, GROUND_Y, 0, CH);
+  grad.addColorStop(0, '#1a0a30');
+  grad.addColorStop(1, '#0a0510');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, GROUND_Y, CW, CH - GROUND_Y);
+
+  // Neon ground line
+  ctx.save();
+  ctx.shadowColor = '#ff8c00';
+  ctx.shadowBlur = 18;
+  ctx.strokeStyle = '#ff8c00';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(0, GROUND_Y);
+  ctx.lineTo(CW, GROUND_Y);
+  ctx.stroke();
+
+  // Secondary glow lines
+  ctx.shadowBlur = 6;
+  ctx.strokeStyle = 'rgba(255,140,0,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, GROUND_Y + 6);
+  ctx.lineTo(CW, GROUND_Y + 6);
+  ctx.stroke();
+  ctx.restore();
+
+  // Grid lines on ground (parallax)
+  const gridOff = (bgLayers[2].offset * 1.5) % 40;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,140,0,0.08)';
+  ctx.lineWidth = 1;
+  for (let gx = -gridOff; gx < CW; gx += 40) {
+    ctx.beginPath();
+    ctx.moveTo(gx, GROUND_Y);
+    ctx.lineTo(gx - 20, CH);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawObstacle(o) {
+  ctx.save();
+  ctx.shadowColor = o.glowColor;
+  ctx.shadowBlur = 14;
+  ctx.fillStyle = o.color;
+  ctx.fillRect(o.x, o.y, o.w, o.h);
+
+  // Edge highlight
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(o.x, o.y, o.w, o.h);
+  ctx.restore();
+}
+
+function drawCoin(c) {
+  const scaleX = Math.abs(Math.cos(c.angle));
+  ctx.save();
+  ctx.translate(c.x, c.y);
+  ctx.scale(scaleX, 1);
+  ctx.shadowColor = 'rgba(255,215,0,0.8)';
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = '#ffd700';
+  ctx.beginPath();
+  ctx.arc(0, 0, c.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffe44d';
+  ctx.beginPath();
+  ctx.arc(-2, -2, c.r * 0.45, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawPowerup(p) {
+  const colors = { shield: '#a0cfff', spring: '#b8ff80', magnet: '#ffd700' };
+  const glows = { shield: 'rgba(100,180,255,0.8)', spring: 'rgba(150,255,100,0.8)', magnet: 'rgba(255,215,0,0.8)' };
+  const labels = { shield: 'S', spring: '↑', magnet: 'M' };
+
+  ctx.save();
+  ctx.translate(p.x, p.y + Math.sin(p.angle) * 4);
+  ctx.shadowColor = glows[p.type];
+  ctx.shadowBlur = 18;
+
+  // Outer ring
+  ctx.strokeStyle = colors[p.type];
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Fill
+  ctx.fillStyle = colors[p.type] + '33';
+  ctx.fill();
+
+  // Label
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = colors[p.type];
+  ctx.font = `bold ${p.r}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(labels[p.type], 0, 0);
+  ctx.restore();
+}
+
+function drawPlayer() {
+  if (player.dead) return;
+
+  const px = player.x;
+  const py = player.y;
+  const flash = player.invincibleFlash > 0 && Math.floor(player.invincibleFlash / 4) % 2 === 0;
+  if (flash) return;
+
+  ctx.save();
+
+  // Shield bubble
+  if (player.shieldTimer > 0) {
+    const alpha = Math.min(player.shieldTimer / 60, 1) * 0.5;
+    ctx.shadowColor = 'rgba(100,180,255,0.9)';
+    ctx.shadowBlur = 20;
+    ctx.strokeStyle = `rgba(100,180,255,${alpha + 0.4})`;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(px + PLAYER_W / 2, py + PLAYER_H / 2, PLAYER_W * 0.85, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // Magnet aura
+  if (player.magnetTimer > 0) {
+    ctx.strokeStyle = 'rgba(255,215,0,0.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.arc(px + PLAYER_W / 2, py + PLAYER_H / 2, 60, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ctx.shadowColor = 'rgba(255,140,0,0.9)';
+  ctx.shadowBlur = 16;
+
+  const frame = player.frame;
+  const legY = py + PLAYER_H - 10;
+
+  // Legs (4-frame animation)
+  const legPositions = [
+    [[-4, 0], [4, -6]],
+    [[-6, -3], [2, 0]],
+    [[-4, -6], [4, 0]],
+    [[-2, 0], [6, -3]]
+  ];
+  const lp = legPositions[frame];
+
+  ctx.fillStyle = '#cc5500';
+  // Leg 1
+  ctx.fillRect(px + PLAYER_W / 2 - 7, legY, 6, 10 + lp[0][1]);
+  ctx.fillRect(px + PLAYER_W / 2 - 7 + lp[0][0], legY + 10 + lp[0][1], 8, 4);
+  // Leg 2
+  ctx.fillRect(px + PLAYER_W / 2 + 1, legY, 6, 10 + lp[1][1]);
+  ctx.fillRect(px + PLAYER_W / 2 + 1 + lp[1][0], legY + 10 + lp[1][1], 8, 4);
+
+  // Body
+  ctx.fillStyle = '#ff8c00';
+  ctx.fillRect(px + 3, py + 14, PLAYER_W - 6, PLAYER_H - 24);
+
+  // Arms
+  const armSwing = Math.sin(frame * Math.PI / 2) * 4;
+  ctx.fillStyle = '#cc5500';
+  ctx.fillRect(px - 2, py + 16 + armSwing, 5, 10);
+  ctx.fillRect(px + PLAYER_W - 3, py + 16 - armSwing, 5, 10);
+
+  // Head
+  ctx.fillStyle = '#ffaa22';
+  ctx.beginPath();
+  ctx.arc(px + PLAYER_W / 2, py + 8, 9, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = '#07080f';
+  ctx.beginPath();
+  ctx.arc(px + PLAYER_W / 2 + 3, py + 7, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(px + PLAYER_W / 2 + 4, py + 6.5, 1, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Spring glow tint
+  if (player.springTimer > 0) {
+    ctx.fillStyle = 'rgba(150,255,100,0.25)';
+    ctx.fillRect(px, py, PLAYER_W, PLAYER_H);
+  }
+
+  ctx.restore();
+}
+
+function drawParticle(p) {
+  ctx.save();
+  ctx.globalAlpha = Math.max(p.life, 0);
+  ctx.fillStyle = p.color;
+  ctx.shadowColor = p.color;
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, Math.max(p.size * p.life, 0.1), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+// ─── Initial render ──────────────────────────────────────────────
+resetPlayer();
+render();
+updateUI();
+
+})();
+</script>
+</body>
+</html>
