@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>21点在线玩 - 免费Blackjack纸牌游戏，支持手机电脑</title>
+  <link rel="canonical" href="https://play.mini-games.win/blackjack/">
+  <meta name="description" content="免费在线21点Blackjack纸牌游戏，标准拉斯维加斯规则，支持要牌、停牌、加倍、分牌，手机电脑均可畅玩。">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X9Q3GDPLZC');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962"
+       crossorigin="anonymous"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #07080f;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    #app {
+      display: flex;
+      flex: 1;
+      min-height: 100vh;
+    }
+
+    /* ── Left Panel ─────────────────────────────── */
+    #left-panel {
+      width: 200px;
+      flex-shrink: 0;
+      background: rgba(255,215,0,0.04);
+      border-right: 1px solid rgba(255,215,0,0.15);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel-title {
+      color: #ffd700;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+      padding-bottom: 6px;
+    }
+
+    .stat-card {
+      background: rgba(255,215,0,0.06);
+      border: 1px solid rgba(255,215,0,0.18);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: #aaa;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffd700;
+      margin-top: 2px;
+    }
+
+    .stat-value.bet-val { color: #ff9800; }
+
+    #history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .hist-item {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hist-item.win  { background: rgba(76,175,80,0.18); color: #81c784; }
+    .hist-item.lose { background: rgba(244,67,54,0.18);  color: #e57373; }
+    .hist-item.push { background: rgba(158,158,158,0.15); color: #bbb; }
+    .hist-item.bj   { background: rgba(255,215,0,0.18); color: #ffd700; }
+
+    /* ── Center ─────────────────────────────────── */
+    #center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 16px 0;
+    }
+
+    #canvas-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    #gameCanvas {
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 0 60px rgba(255,215,0,0.12), 0 0 120px rgba(0,0,0,0.6);
+    }
+
+    /* Floating result text */
+    #result-anim {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 42px;
+      font-weight: 900;
+      pointer-events: none;
+      opacity: 0;
+      text-shadow: 0 0 30px currentColor;
+      white-space: nowrap;
+      z-index: 20;
+      transition: none;
+    }
+
+    /* Bet chips row */
+    #bet-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .chip-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.3);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.12s, box-shadow 0.12s;
+      position: relative;
+      outline: none;
+    }
+
+    .chip-btn:hover:not(:disabled) { transform: scale(1.12); }
+    .chip-btn:active:not(:disabled) { transform: scale(0.95); }
+    .chip-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .chip-10  { background: #e0e0e0; color: #333; border-color: #bbb; }
+    .chip-25  { background: #388e3c; color: #fff; border-color: #66bb6a; }
+    .chip-50  { background: #1565c0; color: #fff; border-color: #42a5f5; }
+    .chip-100 { background: #212121; color: #ffd700; border-color: #555; }
+    .chip-all { background: #b71c1c; color: #fff; border-color: #ef5350; font-size: 10px; }
+
+    /* ── Right Panel ─────────────────────────────── */
+    #right-panel {
+      width: 180px;
+      flex-shrink: 0;
+      background: rgba(255,215,0,0.04);
+      border-left: 1px solid rgba(255,215,0,0.15);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 11px 0;
+      border-radius: 10px;
+      border: 2px solid;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: transform 0.1s, box-shadow 0.1s, opacity 0.15s;
+      outline: none;
+    }
+
+    .action-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+    .action-btn:active:not(:disabled) { transform: translateY(0); }
+    .action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .btn-deal   { background: #ffd700; color: #07080f; border-color: #ffd700; }
+    .btn-hit    { background: transparent; color: #4fc3f7; border-color: #4fc3f7; }
+    .btn-stand  { background: transparent; color: #ef9a9a; border-color: #ef9a9a; }
+    .btn-double { background: transparent; color: #ce93d8; border-color: #ce93d8; }
+    .btn-split  { background: transparent; color: #a5d6a7; border-color: #a5d6a7; }
+    .btn-clear  { background: transparent; color: #aaa; border-color: #555; font-size: 13px; }
+
+    .rules-box {
+      background: rgba(255,215,0,0.04);
+      border: 1px solid rgba(255,215,0,0.12);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 10.5px;
+      color: #999;
+      line-height: 1.7;
+      margin-top: auto;
+    }
+
+    .rules-box strong { color: #ffd700; }
+
+    /* ── Overlay ─────────────────────────────────── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    #overlay.show { display: flex; }
+
+    #overlay h2 {
+      font-size: 32px;
+      color: #ffd700;
+      text-shadow: 0 0 20px #ffd700;
+    }
+
+    #overlay p { color: #ccc; font-size: 15px; }
+
+    .overlay-ad {
+      width: 300px;
+      min-height: 60px;
+    }
+
+    .overlay-btn {
+      padding: 12px 40px;
+      border-radius: 12px;
+      background: #ffd700;
+      color: #07080f;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.12s;
+    }
+
+    .overlay-btn:hover { transform: scale(1.05); }
+
+    /* ── Mobile ─────────────────────────────────── */
+    @media (max-width: 700px) {
+      #app { flex-direction: column; }
+
+      #left-panel, #right-panel { display: none; }
+
+      #center { padding: 8px 0 0; justify-content: flex-start; }
+
+      #mobile-stats {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+        padding: 8px 12px;
+        background: rgba(255,215,0,0.05);
+        border-bottom: 1px solid rgba(255,215,0,0.12);
+      }
+
+      .m-stat { text-align: center; }
+      .m-stat-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.8px; }
+      .m-stat-value { font-size: 16px; font-weight: 700; color: #ffd700; }
+      .m-stat-value.bet { color: #ff9800; }
+
+      #gameCanvas {
+        border-radius: 0;
+        box-shadow: none;
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      #bet-row { margin-top: 8px; gap: 6px; }
+      .chip-btn { width: 44px; height: 44px; font-size: 11px; }
+
+      #mobile-actions {
+        display: flex;
+        width: 100%;
+        gap: 8px;
+        padding: 10px 10px 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .mob-btn {
+        flex: 1;
+        min-width: 70px;
+        max-width: 100px;
+        padding: 10px 4px;
+        border-radius: 10px;
+        border: 2px solid;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        outline: none;
+        transition: transform 0.1s;
+      }
+
+      .mob-btn:active { transform: scale(0.93); }
+      .mob-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+    }
+
+    @media (min-width: 701px) {
+      #mobile-stats, #mobile-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Left Panel -->
+  <div id="left-panel">
+    <div class="panel-title">我的账户</div>
+
+    <div class="stat-card">
+      <div class="stat-label">筹码</div>
+      <div class="stat-value" id="chips-display">1000</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">当前下注</div>
+      <div class="stat-value bet-val" id="bet-display">0</div>
+    </div>
+
+    <div class="panel-title" style="margin-top:4px">最近战绩</div>
+    <div id="history-list"></div>
+  </div>
+
+  <!-- Center -->
+  <div id="center">
+    <!-- Mobile stats bar -->
+    <div id="mobile-stats">
+      <div class="m-stat">
+        <div class="m-stat-label">筹码</div>
+        <div class="m-stat-value" id="m-chips">1000</div>
+      </div>
+      <div class="m-stat">
+        <div class="m-stat-label">下注</div>
+        <div class="m-stat-value bet" id="m-bet">0</div>
+      </div>
+      <div class="m-stat">
+        <div class="m-stat-label">局数</div>
+        <div class="m-stat-value" id="m-rounds">0</div>
+      </div>
+    </div>
+
+    <div id="canvas-wrap">
+      <canvas id="gameCanvas" width="500" height="420"></canvas>
+      <div id="result-anim"></div>
+    </div>
+
+    <!-- Bet chips -->
+    <div id="bet-row">
+      <button class="chip-btn chip-10"  data-amt="10"  title="下注10">10</button>
+      <button class="chip-btn chip-25"  data-amt="25"  title="下注25">25</button>
+      <button class="chip-btn chip-50"  data-amt="50"  title="下注50">50</button>
+      <button class="chip-btn chip-100" data-amt="100" title="下注100">100</button>
+      <button class="chip-btn chip-all" data-amt="all" title="全押">全押</button>
+    </div>
+
+    <!-- Mobile action buttons -->
+    <div id="mobile-actions">
+      <button class="mob-btn btn-deal"   id="m-deal"   style="background:#ffd700;color:#07080f;border-color:#ffd700">发牌</button>
+      <button class="mob-btn btn-hit"    id="m-hit"    style="background:transparent;color:#4fc3f7;border-color:#4fc3f7" disabled>要牌</button>
+      <button class="mob-btn btn-stand"  id="m-stand"  style="background:transparent;color:#ef9a9a;border-color:#ef9a9a" disabled>停牌</button>
+      <button class="mob-btn btn-double" id="m-double" style="background:transparent;color:#ce93d8;border-color:#ce93d8" disabled>加倍</button>
+      <button class="mob-btn btn-split"  id="m-split"  style="background:transparent;color:#a5d6a7;border-color:#a5d6a7" disabled>分牌</button>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div id="right-panel">
+    <div class="panel-title">操作</div>
+    <button class="action-btn btn-deal"   id="btn-deal">发牌 Deal</button>
+    <button class="action-btn btn-hit"    id="btn-hit"    disabled>要牌 Hit</button>
+    <button class="action-btn btn-stand"  id="btn-stand"  disabled>停牌 Stand</button>
+    <button class="action-btn btn-double" id="btn-double"  disabled>加倍 Double</button>
+    <button class="action-btn btn-split"  id="btn-split"   disabled>分牌 Split</button>
+    <button class="action-btn btn-clear"  id="btn-clear">清除下注</button>
+
+    <div class="rules-box">
+      <strong>游戏规则</strong><br>
+      A = 1 或 11<br>
+      J/Q/K = 10<br>
+      庄家 ≤16 要牌<br>
+      Blackjack 赔 1.5x<br>
+      赢牌赔 1x<br>
+      平局退还下注<br>
+      6副牌，剩余&lt;30%洗牌
+    </div>
+  </div>
+</div>
+
+<!-- Overlay (破产 / 游戏结束) -->
+<div id="overlay">
+  <h2 id="overlay-title">破产了！</h2>
+  <p id="overlay-msg">你已经没有筹码了</p>
+  <div class="overlay-ad">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-4328689115224962"
+         data-ad-slot="7765106927"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  </div>
+  <button class="overlay-btn" id="overlay-restart">重置筹码，继续玩！</button>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ─────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const NUM_DECKS = 6;
+const RESHUFFLE_THRESHOLD = 94; // < 94 cards (~30% of 312)
+
+const CARD_W = 58;
+const CARD_H = 82;
+const CARD_RADIUS = 6;
+
+const COLORS = {
+  bg: '#07080f',
+  felt: '#1a4a2e',
+  feltRim: '#0f2e1a',
+  gold: '#ffd700',
+  red: '#e53935',
+  textDark: '#1a1a1a',
+};
+
+// ─────────────────────────────────────────────
+// Canvas Setup
+// ─────────────────────────────────────────────
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let CW = canvas.width;
+let CH = canvas.height;
+
+// Responsive canvas size
+function resizeCanvas() {
+  const isMobile = window.innerWidth <= 700;
+  if (isMobile) {
+    const w = Math.min(window.innerWidth, 500);
+    const h = Math.round(w * 0.84);
+    canvas.width = w;
+    canvas.height = h;
+  } else {
+    canvas.width = 500;
+    canvas.height = 420;
+  }
+  CW = canvas.width;
+  CH = canvas.height;
+  drawAll();
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+// ─────────────────────────────────────────────
+// Deck
+// ─────────────────────────────────────────────
+let shoe = [];
+let deckPosition = { x: CW - 30, y: 20 }; // source for animations
+
+function buildShoe() {
+  shoe = [];
+  for (let d = 0; d < NUM_DECKS; d++) {
+    for (const suit of SUITS) {
+      for (const rank of RANKS) {
+        shoe.push({ suit, rank, faceUp: true });
+      }
+    }
+  }
+  shuffle(shoe);
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function dealCard(faceUp = true) {
+  if (shoe.length < RESHUFFLE_THRESHOLD) {
+    buildShoe();
+    showShuffleNotice();
+  }
+  const card = shoe.pop();
+  card.faceUp = faceUp;
+  return card;
+}
+
+function cardValue(rank) {
+  if (rank === 'A') return 11;
+  if (['J','Q','K'].includes(rank)) return 10;
+  return parseInt(rank);
+}
+
+function handTotal(hand) {
+  let total = 0;
+  let aces = 0;
+  for (const card of hand) {
+    if (!card.faceUp) continue;
+    const v = cardValue(card.rank);
+    total += v;
+    if (card.rank === 'A') aces++;
+  }
+  while (total > 21 && aces > 0) {
+    total -= 10;
+    aces--;
+  }
+  return total;
+}
+
+function isBlackjack(hand) {
+  return hand.length === 2 && handTotal(hand) === 21;
+}
+
+function isBust(hand) {
+  return handTotal(hand) > 21;
+}
+
+// ─────────────────────────────────────────────
+// Game State
+// ─────────────────────────────────────────────
+let state = {
+  phase: 'betting',   // betting | player | dealer | over
+  chips: 1000,
+  bet: 0,
+  hands: [[]],        // player hands (array for split)
+  handBets: [0],
+  activeHand: 0,
+  dealer: [],
+  canDouble: false,
+  canSplit: false,
+  history: [],
+  rounds: 0,
+  animQueue: [],
+  animating: false,
+  shuffleNotice: false,
+  shuffleTimer: 0,
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('bj_state');
+    if (saved) {
+      const s = JSON.parse(saved);
+      state.chips = s.chips || 1000;
+      state.history = s.history || [];
+      state.rounds = s.rounds || 0;
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('bj_state', JSON.stringify({
+      chips: state.chips,
+      history: state.history,
+      rounds: state.rounds,
+    }));
+  } catch(e) {}
+}
+
+// ─────────────────────────────────────────────
+// Animations
+// ─────────────────────────────────────────────
+let animations = []; // { card, fromX, fromY, toX, toY, t, duration, onDone }
+let flipAnim = null; // { card, t, duration, onDone }
+
+function animateCard(card, fromX, fromY, toX, toY, duration, onDone) {
+  animations.push({ card, fromX, fromY, toX, toY, t: 0, duration, onDone });
+}
+
+function animateFlip(card, onDone) {
+  flipAnim = { card, t: 0, duration: 400, onDone };
+}
+
+let lastTime = 0;
+let rafId = null;
+
+function tick(time) {
+  const dt = time - lastTime;
+  lastTime = time;
+
+  let busy = false;
+
+  // Move animations
+  for (let i = animations.length - 1; i >= 0; i--) {
+    const a = animations[i];
+    a.t += dt;
+    if (a.t >= a.duration) {
+      a.t = a.duration;
+      animations.splice(i, 1);
+      if (a.onDone) a.onDone();
+    }
+    busy = true;
+  }
+
+  // Flip animation
+  if (flipAnim) {
+    flipAnim.t += dt;
+    if (flipAnim.t >= flipAnim.duration) {
+      flipAnim.card.faceUp = true;
+      flipAnim = null;
+      busy = true;
+    } else {
+      busy = true;
+    }
+  }
+
+  drawAll();
+
+  if (busy || animations.length > 0 || flipAnim) {
+    rafId = requestAnimationFrame(tick);
+  } else {
+    rafId = null;
+  }
+}
+
+function startAnim() {
+  if (!rafId) {
+    lastTime = performance.now();
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+// ─────────────────────────────────────────────
+// Drawing
+// ─────────────────────────────────────────────
+function drawAll() {
+  ctx.clearRect(0, 0, CW, CH);
+
+  // Background
+  ctx.fillStyle = COLORS.bg;
+  ctx.fillRect(0, 0, CW, CH);
+
+  // Felt table (ellipse)
+  const cx = CW / 2, cy = CH / 2;
+  const rx = CW * 0.48, ry = CH * 0.46;
+
+  // Rim shadow
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + 4, rx + 8, ry + 8, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fill();
+  ctx.restore();
+
+  // Felt
+  const feltGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+  feltGrad.addColorStop(0, '#1e5c37');
+  feltGrad.addColorStop(0.7, '#17472c');
+  feltGrad.addColorStop(1, COLORS.felt);
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = feltGrad;
+  ctx.fill();
+  ctx.strokeStyle = COLORS.feltRim;
+  ctx.lineWidth = 10;
+  ctx.stroke();
+
+  // Gold border
+  ctx.strokeStyle = 'rgba(255,215,0,0.35)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+
+  // Deck pile (top right area of felt)
+  const deckX = CW - 55, deckY = 28;
+  drawDeckPile(deckX, deckY);
+
+  // Shuffle notice
+  if (state.shuffleNotice) {
+    ctx.save();
+    ctx.font = 'bold 13px Segoe UI';
+    ctx.fillStyle = COLORS.gold;
+    ctx.globalAlpha = 0.85;
+    ctx.textAlign = 'center';
+    ctx.fillText('♻ 重新洗牌', CW / 2, CH - 14);
+    ctx.restore();
+  }
+
+  // Dealer zone label
+  ctx.save();
+  ctx.font = '11px Segoe UI';
+  ctx.fillStyle = 'rgba(255,215,0,0.5)';
+  ctx.textAlign = 'center';
+  ctx.fillText('庄 家', cx, 30);
+  ctx.restore();
+
+  // Draw dealer hand
+  const dealerY = 55;
+  const dealerCards = state.dealer;
+  drawHand(dealerCards, cx, dealerY, 'dealer');
+
+  // Dealer score (only show if phase !== player or all face up)
+  if (state.phase !== 'player' || state.dealer.every(c => c.faceUp)) {
+    if (state.dealer.length > 0) {
+      const score = handTotal(state.dealer);
+      drawScore(cx, dealerY + CARD_H + 14, score, false);
+    }
+  } else {
+    // Show partial (only face-up card)
+    const visCards = state.dealer.filter(c => c.faceUp);
+    if (visCards.length > 0) {
+      const partialHand = visCards;
+      const score = handTotal(partialHand);
+      drawScore(cx, dealerY + CARD_H + 14, score, false);
+    }
+  }
+
+  // Player zone label
+  ctx.save();
+  ctx.font = '11px Segoe UI';
+  ctx.fillStyle = 'rgba(255,215,0,0.5)';
+  ctx.textAlign = 'center';
+  ctx.fillText('玩 家', cx, CH - 26);
+  ctx.restore();
+
+  // Draw player hands (may be split into 2)
+  const playerY = CH - 140;
+  const numHands = state.hands.length;
+
+  if (numHands === 1) {
+    drawHand(state.hands[0], cx, playerY, 'player', state.activeHand === 0);
+    if (state.hands[0].length > 0) {
+      const score = handTotal(state.hands[0]);
+      drawScore(cx, playerY - 16, score, isBust(state.hands[0]));
+    }
+  } else {
+    // Split: two hands side by side
+    const offsets = [-110, 110];
+    for (let i = 0; i < numHands; i++) {
+      const hx = cx + offsets[i];
+      const active = state.activeHand === i && state.phase === 'player';
+      drawHand(state.hands[i], hx, playerY, 'player', active);
+      if (state.hands[i].length > 0) {
+        const score = handTotal(state.hands[i]);
+        drawScore(hx, playerY - 16, score, isBust(state.hands[i]));
+        // Bet label
+        ctx.save();
+        ctx.font = '11px Segoe UI';
+        ctx.fillStyle = '#ff9800';
+        ctx.textAlign = 'center';
+        ctx.fillText('下注: ' + state.handBets[i], hx, playerY + CARD_H + 14);
+        ctx.restore();
+      }
+    }
+  }
+
+  // Betting phase: show bet/chips info on canvas
+  if (state.phase === 'betting') {
+    ctx.save();
+    ctx.font = 'bold 15px Segoe UI';
+    ctx.fillStyle = COLORS.gold;
+    ctx.textAlign = 'center';
+    ctx.fillText('请下注后点击 发牌', cx, cy + 10);
+    ctx.restore();
+  }
+
+  // Phase: over - show "Blackjack!" banner if needed
+  // (handled by result-anim div)
+
+  // Animate moving cards on top
+  for (const a of animations) {
+    const t = easeOutCubic(Math.min(a.t / a.duration, 1));
+    const x = a.fromX + (a.toX - a.fromX) * t;
+    const y = a.fromY + (a.toY - a.fromY) * t;
+    drawCard(a.card, x, y, false);
+  }
+
+  // Flip animation
+  if (flipAnim) {
+    const t = flipAnim.t / flipAnim.duration;
+    const half = 0.5;
+    // position of dealer's hidden card
+    const hx = getDealerCardX(state.dealer, 1);
+    const hy = dealerY;
+    if (t < half) {
+      // Shrinking — show back
+      const scale = 1 - (t / half);
+      ctx.save();
+      ctx.translate(hx + CARD_W / 2, hy + CARD_H / 2);
+      ctx.scale(scale, 1);
+      ctx.translate(-(hx + CARD_W / 2), -(hy + CARD_H / 2));
+      drawCardBack(hx, hy);
+      ctx.restore();
+    } else {
+      // Growing — show front
+      const scale = (t - half) / half;
+      ctx.save();
+      ctx.translate(hx + CARD_W / 2, hy + CARD_H / 2);
+      ctx.scale(scale, 1);
+      ctx.translate(-(hx + CARD_W / 2), -(hy + CARD_H / 2));
+      drawCardFace(flipAnim.card, hx, hy);
+      ctx.restore();
+    }
+  }
+}
+
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function drawDeckPile(x, y) {
+  // Stack effect
+  for (let i = 3; i >= 0; i--) {
+    ctx.save();
+    ctx.translate(i * 0.5, i * 0.5);
+    roundRect(ctx, x - i * 0.5, y, CARD_W, CARD_H, CARD_RADIUS);
+    ctx.fillStyle = i === 0 ? '#5c0a0a' : '#4a0808';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  }
+  // Diamond pattern on top card
+  drawCardBackAt(x, y);
+  // Label
+  ctx.save();
+  ctx.font = 'bold 9px Segoe UI';
+  ctx.fillStyle = 'rgba(255,215,0,0.7)';
+  ctx.textAlign = 'center';
+  ctx.fillText(shoe.length + '张', x + CARD_W / 2, y + CARD_H + 12);
+  ctx.restore();
+}
+
+function drawCardBackAt(x, y) {
+  roundRect(ctx, x, y, CARD_W, CARD_H, CARD_RADIUS);
+  ctx.fillStyle = '#7b0000';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Diamond grid
+  ctx.save();
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(255,215,0,0.2)';
+  ctx.lineWidth = 0.8;
+  const step = 10;
+  for (let i = -CARD_H; i < CARD_W + CARD_H; i += step) {
+    ctx.beginPath();
+    ctx.moveTo(x + i, y);
+    ctx.lineTo(x + i - CARD_H, y + CARD_H);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + i, y);
+    ctx.lineTo(x + i + CARD_H, y + CARD_H);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawCardBack(x, y) {
+  drawCardBackAt(x, y);
+}
+
+function drawCardFace(card, x, y) {
+  // White background
+  roundRect(ctx, x, y, CARD_W, CARD_H, CARD_RADIUS);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  ctx.strokeStyle = '#ddd';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  const isRed = card.suit === '♥' || card.suit === '♦';
+  const color = isRed ? '#cc1111' : '#111';
+
+  // Top-left rank+suit
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.font = 'bold 12px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(card.rank, x + 4, y + 14);
+  ctx.font = '11px Arial';
+  ctx.fillText(card.suit, x + 4, y + 26);
+
+  // Bottom-right (rotated)
+  ctx.save();
+  ctx.translate(x + CARD_W - 4, y + CARD_H - 4);
+  ctx.rotate(Math.PI);
+  ctx.textAlign = 'left';
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText(card.rank, 0, 12);
+  ctx.font = '11px Arial';
+  ctx.fillText(card.suit, 0, 24);
+  ctx.restore();
+
+  // Center suit / letter
+  ctx.font = ['J','Q','K'].includes(card.rank)
+    ? 'bold 32px Arial'
+    : '26px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(
+    ['J','Q','K'].includes(card.rank) ? card.rank : card.suit,
+    x + CARD_W / 2,
+    y + CARD_H / 2 + 10
+  );
+  ctx.restore();
+}
+
+function drawCard(card, x, y, isAnimating) {
+  if (!card.faceUp && !isAnimating) {
+    drawCardBack(x, y);
+  } else {
+    drawCardFace(card, x, y);
+  }
+}
+
+function getHandStartX(hand, cx) {
+  const count = Math.max(hand.length, 1);
+  const spacing = Math.min(36, (CARD_W * 3) / count);
+  const totalW = (count - 1) * spacing + CARD_W;
+  return cx - totalW / 2;
+}
+
+function getDealerCardX(hand, index) {
+  const cx = CW / 2;
+  const spacing = Math.min(36, (CARD_W * 3) / Math.max(hand.length, 1));
+  const totalW = (hand.length - 1) * spacing + CARD_W;
+  const startX = cx - totalW / 2;
+  return startX + index * spacing;
+}
+
+function drawHand(hand, cx, baseY, zone, isActive) {
+  if (hand.length === 0) return;
+
+  const spacing = Math.min(36, (CARD_W * 3) / hand.length);
+  const totalW = (hand.length - 1) * spacing + CARD_W;
+  let startX = cx - totalW / 2;
+
+  // Active hand glow
+  if (isActive) {
+    ctx.save();
+    ctx.shadowColor = COLORS.gold;
+    ctx.shadowBlur = 18;
+  }
+
+  for (let i = 0; i < hand.length; i++) {
+    const card = hand[i];
+    const x = startX + i * spacing;
+
+    // Skip card being flipped (drawn by flip anim)
+    if (flipAnim && flipAnim.card === card) continue;
+
+    // Skip cards still animating
+    const isAnim = animations.some(a => a.card === card);
+    if (isAnim) continue;
+
+    drawCard(card, x, baseY, false);
+  }
+
+  if (isActive) ctx.restore();
+}
+
+function drawScore(cx, y, score, bust) {
+  const txt = bust ? `${score} 爆牌!` : `${score}`;
+  const w = ctx.measureText(txt).width + 16;
+  const h = 20;
+  ctx.save();
+  roundRect(ctx, cx - w / 2, y - h + 4, w, h, 5);
+  ctx.fillStyle = bust ? 'rgba(200,0,0,0.75)' : 'rgba(0,0,0,0.65)';
+  ctx.fill();
+  ctx.font = `bold 13px Segoe UI`;
+  ctx.fillStyle = bust ? '#ff6b6b' : COLORS.gold;
+  ctx.textAlign = 'center';
+  ctx.fillText(txt, cx, y);
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ─────────────────────────────────────────────
+// Animated Deal
+// ─────────────────────────────────────────────
+function getPlayerCardX(handIdx, cardIdx, totalCards) {
+  const hands = state.hands;
+  const numHands = hands.length;
+  const cx = CW / 2;
+
+  if (numHands === 1) {
+    const spacing = Math.min(36, (CARD_W * 3) / Math.max(totalCards, 1));
+    const totalW = (totalCards - 1) * spacing + CARD_W;
+    const startX = cx - totalW / 2;
+    return startX + cardIdx * spacing;
+  } else {
+    const offsets = [-110, 110];
+    const hcx = cx + offsets[handIdx];
+    const hand = hands[handIdx];
+    const spacing = Math.min(36, (CARD_W * 3) / Math.max(hand.length, 1));
+    const totalW = (hand.length - 1) * spacing + CARD_W;
+    const startX = hcx - totalW / 2;
+    return startX + cardIdx * spacing;
+  }
+}
+
+function animDealCard(card, toX, toY, delay, onDone) {
+  const deckX = CW - 55 + CARD_W / 2;
+  const deckY = 28 + CARD_H / 2;
+  setTimeout(() => {
+    animateCard(card, deckX - CARD_W / 2, deckY - CARD_H / 2, toX, toY, 350, onDone);
+    startAnim();
+  }, delay);
+}
+
+// ─────────────────────────────────────────────
+// Game Logic
+// ─────────────────────────────────────────────
+function startDeal() {
+  if (state.bet === 0) {
+    flashMsg('请先下注！', '#ff9800');
+    return;
+  }
+  if (state.animating) return;
+
+  state.animating = true;
+  state.hands = [[]];
+  state.handBets = [state.bet];
+  state.dealer = [];
+  state.activeHand = 0;
+  state.phase = 'player';
+  hideResult();
+  updateUI();
+
+  const playerY = CH - 140;
+  const dealerY = 55;
+  const cx = CW / 2;
+
+  // Deal order: player, dealer, player, dealer(face-down)
+  const c1 = dealCard(true);
+  const c2 = dealCard(true);
+  const c3 = dealCard(true);
+  const c4 = dealCard(false); // dealer hole card
+
+  state.hands[0].push(c1);
+  state.hands[0].push(c3);
+  state.dealer.push(c2);
+  state.dealer.push(c4);
+
+  // Animate
+  animDealCard(c1, cx - CARD_W / 2 - 20, playerY, 0, null);
+  animDealCard(c2, cx - CARD_W / 2 - 20, dealerY, 350, null);
+  animDealCard(c3, cx - CARD_W / 2 + 24, playerY, 700, null);
+  animDealCard(c4, cx - CARD_W / 2 + 24, dealerY, 1050, () => {
+    state.animating = false;
+    checkInitialBlackjack();
+  });
+  startAnim();
+}
+
+function checkInitialBlackjack() {
+  const pBJ = isBlackjack(state.hands[0]);
+  // Reveal dealer first to check dealer BJ
+  state.dealer[1].faceUp = true;
+  const dBJ = isBlackjack(state.dealer);
+  state.dealer[1].faceUp = false; // re-hide
+
+  if (pBJ || dBJ) {
+    // Reveal and settle
+    revealDealerHole(() => {
+      if (pBJ && dBJ) {
+        settleResult('push', 0);
+      } else if (pBJ) {
+        settleResult('blackjack', 0);
+      } else {
+        settleResult('lose', 0);
+      }
+    });
+  } else {
+    setupPlayerOptions();
+  }
+  updateUI();
+}
+
+function setupPlayerOptions() {
+  const hand = state.hands[state.activeHand];
+  state.canDouble = hand.length === 2 && state.chips >= state.handBets[state.activeHand];
+  state.canSplit = hand.length === 2
+    && cardValue(hand[0].rank) === cardValue(hand[1].rank)
+    && state.chips >= state.handBets[state.activeHand]
+    && state.hands.length < 2; // max 1 split
+  updateUI();
+}
+
+function doHit() {
+  if (state.phase !== 'player' || state.animating) return;
+  state.animating = true;
+  state.canDouble = false;
+  state.canSplit = false;
+
+  const hand = state.hands[state.activeHand];
+  const card = dealCard(true);
+  hand.push(card);
+
+  const playerY = CH - 140;
+  const cx = state.hands.length === 1 ? CW / 2 : CW / 2 + (state.activeHand === 0 ? -110 : 110);
+  const spacing = Math.min(36, (CARD_W * 3) / hand.length);
+  const totalW = (hand.length - 1) * spacing + CARD_W;
+  const toX = cx - totalW / 2 + (hand.length - 1) * spacing;
+
+  animDealCard(card, toX, playerY, 0, () => {
+    state.animating = false;
+    if (isBust(hand)) {
+      advanceHand();
+    } else {
+      setupPlayerOptions();
+    }
+  });
+}
+
+function doStand() {
+  if (state.phase !== 'player' || state.animating) return;
+  advanceHand();
+}
+
+function doDouble() {
+  if (state.phase !== 'player' || state.animating || !state.canDouble) return;
+  state.animating = true;
+
+  const hi = state.activeHand;
+  const hand = state.hands[hi];
+  const extra = state.handBets[hi];
+  state.chips -= extra;
+  state.handBets[hi] += extra;
+  state.bet = state.handBets.reduce((a, b) => a + b, 0);
+
+  const card = dealCard(true);
+  hand.push(card);
+
+  const playerY = CH - 140;
+  const cx = state.hands.length === 1 ? CW / 2 : CW / 2 + (hi === 0 ? -110 : 110);
+  const spacing = Math.min(36, (CARD_W * 3) / hand.length);
+  const totalW = (hand.length - 1) * spacing + CARD_W;
+  const toX = cx - totalW / 2 + (hand.length - 1) * spacing;
+
+  animDealCard(card, toX, playerY, 0, () => {
+    state.animating = false;
+    advanceHand();
+  });
+
+  updateUI();
+}
+
+function doSplit() {
+  if (state.phase !== 'player' || state.animating || !state.canSplit) return;
+  state.animating = true;
+
+  const hand = state.hands[0];
+  const card2 = hand.pop();
+  const origBet = state.handBets[0];
+
+  state.chips -= origBet;
+  state.bet += origBet;
+
+  state.hands = [[hand[0]], [card2]];
+  state.handBets = [origBet, origBet];
+  state.activeHand = 0;
+
+  const playerY = CH - 140;
+  const cx0 = CW / 2 - 110;
+  const cx1 = CW / 2 + 110;
+
+  // Deal one card to each split hand
+  const nc1 = dealCard(true);
+  const nc2 = dealCard(true);
+  state.hands[0].push(nc1);
+  state.hands[1].push(nc2);
+
+  animDealCard(nc1, cx0 - CARD_W / 2 + 24, playerY, 100, null);
+  animDealCard(nc2, cx1 - CARD_W / 2 + 24, playerY, 450, () => {
+    state.animating = false;
+    setupPlayerOptions();
+  });
+
+  updateUI();
+}
+
+function advanceHand() {
+  const numHands = state.hands.length;
+  if (state.activeHand < numHands - 1) {
+    state.activeHand++;
+    setupPlayerOptions();
+    updateUI();
+  } else {
+    // All hands done, dealer's turn
+    state.phase = 'dealer';
+    state.canDouble = false;
+    state.canSplit = false;
+    updateUI();
+    revealDealerHole(doDealerPlay);
+  }
+}
+
+function revealDealerHole(callback) {
+  const holeCard = state.dealer[1];
+  if (holeCard.faceUp) {
+    if (callback) callback();
+    return;
+  }
+  animateFlip(holeCard, () => {
+    if (callback) callback();
+    drawAll();
+  });
+  startAnim();
+}
+
+function doDealerPlay() {
+  const dealerY = 55;
+  const cx = CW / 2;
+
+  function hitDealer() {
+    const total = handTotal(state.dealer);
+    if (total <= 16) {
+      const card = dealCard(true);
+      state.dealer.push(card);
+
+      const spacing = Math.min(36, (CARD_W * 3) / state.dealer.length);
+      const totalW = (state.dealer.length - 1) * spacing + CARD_W;
+      const toX = cx - totalW / 2 + (state.dealer.length - 1) * spacing;
+
+      animDealCard(card, toX, dealerY, 0, () => {
+        setTimeout(hitDealer, 300);
+      });
+    } else {
+      setTimeout(resolveAll, 400);
+    }
+  }
+
+  hitDealer();
+}
+
+function resolveAll() {
+  const dealerTotal = handTotal(state.dealer);
+  const dealerBust = isBust(state.dealer);
+
+  let totalWin = 0;
+  let results = [];
+
+  for (let i = 0; i < state.hands.length; i++) {
+    const hand = state.hands[i];
+    const bet = state.handBets[i];
+    const pTotal = handTotal(hand);
+    const pBust = isBust(hand);
+    const pBJ = isBlackjack(hand) && state.hands.length === 1; // BJ only counts in non-split
+
+    let outcome, win;
+
+    if (pBust) {
+      outcome = 'lose'; win = 0;
+    } else if (pBJ) {
+      outcome = 'blackjack'; win = Math.floor(bet * 2.5);
+    } else if (dealerBust) {
+      outcome = 'win'; win = bet * 2;
+    } else if (pTotal > dealerTotal) {
+      outcome = 'win'; win = bet * 2;
+    } else if (pTotal === dealerTotal) {
+      outcome = 'push'; win = bet;
+    } else {
+      outcome = 'lose'; win = 0;
+    }
+
+    totalWin += win;
+    results.push(outcome);
+  }
+
+  // Net
+  const totalBet = state.handBets.reduce((a, b) => a + b, 0);
+  state.chips += totalWin;
+
+  // Determine display result
+  let displayResult;
+  if (results.every(r => r === 'blackjack')) displayResult = 'blackjack';
+  else if (results.every(r => r === 'win' || r === 'blackjack')) displayResult = 'win';
+  else if (results.every(r => r === 'lose')) displayResult = 'lose';
+  else if (results.every(r => r === 'push')) displayResult = 'push';
+  else if (results.some(r => r === 'win' || r === 'blackjack')) displayResult = 'win';
+  else displayResult = 'lose';
+
+  settleResult(displayResult, totalWin - totalBet);
+}
+
+function settleResult(outcome, netGain) {
+  state.phase = 'over';
+
+  const labels = {
+    blackjack: { text: '♠ Blackjack! ♠', color: COLORS.gold },
+    win:       { text: '赢了！',           color: '#4caf50' },
+    lose:      { text: '输了',             color: '#f44336' },
+    push:      { text: '平局',             color: '#aaa' },
+  };
+
+  const { text, color } = labels[outcome] || labels.lose;
+
+  showResult(text, color);
+  addHistory(outcome, netGain);
+  saveState();
+  updateUI();
+  drawAll();
+
+  // Check bankruptcy
+  if (state.chips <= 0) {
+    setTimeout(showBankruptcy, 1400);
+  }
+}
+
+// ─────────────────────────────────────────────
+// Result Animation
+// ─────────────────────────────────────────────
+let resultAnimId = null;
+
+function showResult(text, color) {
+  const el = document.getElementById('result-anim');
+  el.textContent = text;
+  el.style.color = color;
+  el.style.opacity = '0';
+  el.style.transform = 'translate(-50%, -50%) scale(0.5)';
+  el.style.transition = 'none';
+
+  // Force reflow
+  el.offsetHeight;
+
+  el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  el.style.opacity = '1';
+  el.style.transform = 'translate(-50%, -50%) scale(1)';
+
+  if (resultAnimId) clearTimeout(resultAnimId);
+  resultAnimId = setTimeout(() => {
+    el.style.transition = 'opacity 0.5s ease, transform 0.8s ease';
+    el.style.opacity = '0';
+    el.style.transform = 'translate(-50%, -100%) scale(0.8)';
+  }, 1200);
+}
+
+function hideResult() {
+  const el = document.getElementById('result-anim');
+  el.style.opacity = '0';
+  el.textContent = '';
+}
+
+// ─────────────────────────────────────────────
+// History
+// ─────────────────────────────────────────────
+function addHistory(outcome, netGain) {
+  state.rounds++;
+  const labels = { blackjack: 'BJ', win: '赢', lose: '输', push: '平' };
+  const sign = netGain > 0 ? '+' : '';
+  state.history.unshift({ outcome, label: labels[outcome] || '?', gain: sign + netGain });
+  if (state.history.length > 20) state.history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const recent = state.history.slice(0, 5);
+  list.innerHTML = recent.map(h => {
+    const cls = h.outcome === 'blackjack' ? 'bj' : h.outcome;
+    return `<div class="hist-item ${cls}">
+      <span>${h.label}</span>
+      <span>${h.gain}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+// Shuffle Notice
+// ─────────────────────────────────────────────
+function showShuffleNotice() {
+  state.shuffleNotice = true;
+  clearTimeout(state.shuffleTimer);
+  state.shuffleTimer = setTimeout(() => {
+    state.shuffleNotice = false;
+    drawAll();
+  }, 2500);
+}
+
+// ─────────────────────────────────────────────
+// Bankruptcy
+// ─────────────────────────────────────────────
+function showBankruptcy() {
+  document.getElementById('overlay-title').textContent = '破产了！';
+  document.getElementById('overlay-msg').textContent = '你已经没有筹码了，要继续挑战吗？';
+  document.getElementById('overlay').classList.add('show');
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+}
+
+document.getElementById('overlay-restart').addEventListener('click', () => {
+  state.chips = 1000;
+  state.bet = 0;
+  state.hands = [[]];
+  state.handBets = [0];
+  state.dealer = [];
+  state.phase = 'betting';
+  state.history = [];
+  state.rounds = 0;
+  document.getElementById('overlay').classList.remove('show');
+  saveState();
+  updateUI();
+  drawAll();
+});
+
+// ─────────────────────────────────────────────
+// Flash message
+// ─────────────────────────────────────────────
+function flashMsg(text, color) {
+  showResult(text, color || COLORS.gold);
+}
+
+// ─────────────────────────────────────────────
+// Betting
+// ─────────────────────────────────────────────
+function placeBet(amount) {
+  if (state.phase !== 'betting' && state.phase !== 'over') return;
+  if (state.animating) return;
+
+  // After a round, reset for new betting phase
+  if (state.phase === 'over') {
+    state.phase = 'betting';
+    state.bet = 0;
+    state.hands = [[]];
+    state.handBets = [0];
+    state.dealer = [];
+    hideResult();
+    updateUI();
+    drawAll();
+  }
+
+  let add = amount === 'all' ? state.chips : amount;
+  add = Math.min(add, state.chips);
+  if (add <= 0) return;
+
+  state.bet += add;
+  state.chips -= add;
+  updateUI();
+  drawAll();
+}
+
+function clearBet() {
+  if (state.animating) return;
+  if (state.phase !== 'betting') return;
+  state.chips += state.bet;
+  state.bet = 0;
+  updateUI();
+  drawAll();
+}
+
+// ─────────────────────────────────────────────
+// UI Update
+// ─────────────────────────────────────────────
+function updateUI() {
+  const playing = state.phase === 'player';
+  const betting = state.phase === 'betting' || state.phase === 'over';
+
+  // Chips & bet displays
+  document.getElementById('chips-display').textContent = state.chips;
+  document.getElementById('bet-display').textContent = state.bet;
+  document.getElementById('m-chips').textContent = state.chips;
+  document.getElementById('m-bet').textContent = state.bet;
+  document.getElementById('m-rounds').textContent = state.rounds;
+
+  // Chip buttons
+  const chipBtns = document.querySelectorAll('.chip-btn');
+  chipBtns.forEach(btn => {
+    btn.disabled = !(betting) || state.animating || state.chips <= 0;
+  });
+
+  // Action buttons
+  const deal   = playing || betting;
+  const canDeal = betting && state.bet > 0 && !state.animating;
+
+  setBtn('btn-deal',   canDeal, true);
+  setBtn('btn-hit',    playing && !state.animating, false);
+  setBtn('btn-stand',  playing && !state.animating, false);
+  setBtn('btn-double', playing && state.canDouble && !state.animating, false);
+  setBtn('btn-split',  playing && state.canSplit && !state.animating, false);
+  setBtn('btn-clear',  betting && state.bet > 0 && !state.animating, false);
+
+  // Mobile
+  setBtn('m-deal',   canDeal, true);
+  setBtn('m-hit',    playing && !state.animating, false);
+  setBtn('m-stand',  playing && !state.animating, false);
+  setBtn('m-double', playing && state.canDouble && !state.animating, false);
+  setBtn('m-split',  playing && state.canSplit && !state.animating, false);
+
+  renderHistory();
+}
+
+function setBtn(id, enabled, alwaysShow) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.disabled = !enabled;
+}
+
+// ─────────────────────────────────────────────
+// Event Listeners
+// ─────────────────────────────────────────────
+document.getElementById('btn-deal').addEventListener('click', startDeal);
+document.getElementById('btn-hit').addEventListener('click', doHit);
+document.getElementById('btn-stand').addEventListener('click', doStand);
+document.getElementById('btn-double').addEventListener('click', doDouble);
+document.getElementById('btn-split').addEventListener('click', doSplit);
+document.getElementById('btn-clear').addEventListener('click', clearBet);
+
+document.getElementById('m-deal').addEventListener('click', startDeal);
+document.getElementById('m-hit').addEventListener('click', doHit);
+document.getElementById('m-stand').addEventListener('click', doStand);
+document.getElementById('m-double').addEventListener('click', doDouble);
+document.getElementById('m-split').addEventListener('click', doSplit);
+
+document.querySelectorAll('.chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const amt = btn.dataset.amt === 'all' ? 'all' : parseInt(btn.dataset.amt);
+    placeBet(amt);
+  });
+});
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'h' || e.key === 'H') doHit();
+  if (e.key === 's' || e.key === 'S') doStand();
+  if (e.key === 'd' || e.key === 'D') { if (state.phase === 'betting' || state.phase === 'over') startDeal(); else doDouble(); }
+  if (e.key === 'p' || e.key === 'P') doSplit();
+  if (e.key === 'Enter') startDeal();
+});
+
+// ─────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────
+loadState();
+buildShoe();
+resizeCanvas();
+updateUI();
+drawAll();
+
+})();
+</script>
+</body>
+</html>
