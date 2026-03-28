@@ -225,8 +225,19 @@
       50% { transform: rotate(90deg); }
     }
     @media (orientation: portrait) and (max-width: 900px) {
-      #portrait-notice { display: flex; }
+      #portrait-notice:not(.dismissed) { display: flex; }
     }
+    #portrait-notice .dismiss-btn {
+      margin-top: 6px;
+      padding: 8px 24px;
+      background: transparent;
+      border: 1px solid #ff335566;
+      border-radius: 20px;
+      color: #888;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    #portrait-notice .dismiss-btn:active { color: #fff; border-color: #ff3355; }
     /* Stars animation */
     @keyframes starPop {
       0% { transform: scale(0) rotate(0deg); opacity: 1; }
@@ -299,6 +310,7 @@
   <div class="ri">📱</div>
   <p>请旋转屏幕横屏游戏</p>
   <p style="font-size:0.85rem;color:#888;">本游戏最佳体验为横屏模式</p>
+  <button class="dismiss-btn" id="dismiss-portrait">仍然竖屏进入</button>
 </div>
 
 <script>
@@ -1451,6 +1463,11 @@ drawBackground();
 drawSlingshot();
 blocks.forEach(drawBlock);
 pigs.forEach(drawPig);
+
+// ─── PORTRAIT NOTICE DISMISS ──────────────────────────────────────────────────
+document.getElementById('dismiss-portrait').addEventListener('click', () => {
+  document.getElementById('portrait-notice').classList.add('dismissed');
+});
 
 // ─── LANDSCAPE SCALING ────────────────────────────────────────────────────────
 function handleResize() {
