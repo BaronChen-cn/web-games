@@ -469,6 +469,73 @@ const EMPTY = 0;
 // Directions: right, down, diag-down-right, diag-down-left
 const DIRS = [[0,1],[1,0],[1,1],[1,-1]];
 
+// ==================== AI Worker ====================
+const AI_WORKER_SRC = `
+const BOARD_SIZE=15,EMPTY=0,BLACK=1,WHITE=2;
+const DIRS=[[0,1],[1,0],[1,1],[1,-1]];
+let timeLimit=0;
+function evalLine(board,r,c,dr,dc,player){
+  let count=1,openEnds=0,blocked=0,b1=true;
+  for(let d=1;d<=4;d++){const nr=r+dr*d,nc=c+dc*d;if(nr<0||nr>=BOARD_SIZE||nc<0||nc>=BOARD_SIZE)break;if(board[nr][nc]===player)count++;else if(board[nr][nc]===EMPTY){openEnds++;b1=false;break;}else break;}
+  if(b1)blocked++;
+  let b2=true;
+  for(let d=1;d<=4;d++){const nr=r-dr*d,nc=c-dc*d;if(nr<0||nr>=BOARD_SIZE||nc<0||nc>=BOARD_SIZE)break;if(board[nr][nc]===player)count++;else if(board[nr][nc]===EMPTY){openEnds++;b2=false;break;}else break;}
+  if(b2)blocked++;
+  if(count>=5)return 50000;if(blocked>=2)return 0;
+  const t={4:{2:10000,1:1000},3:{2:1000,1:100},2:{2:100,1:10},1:{2:10,1:1}};
+  const s=t[Math.min(count,4)];return s?(s[openEnds]||0):0;
+}
+function evalCell(board,r,c,player){let t=0;for(const[dr,dc]of DIRS)t+=evalLine(board,r,c,dr,dc,player);return t;}
+function evalPos(board,r,c,player){board[r][c]=player;const s=evalCell(board,r,c,player);board[r][c]=EMPTY;return s;}
+function evalBoard(board,aiP){const hP=aiP===BLACK?WHITE:BLACK;let s=0;for(let r=0;r<BOARD_SIZE;r++)for(let c=0;c<BOARD_SIZE;c++){if(board[r][c]===aiP)s+=evalCell(board,r,c,aiP);else if(board[r][c]===hP)s-=evalCell(board,r,c,hP)*1.1;}return s;}
+function checkWin(board,r,c,player){for(const[dr,dc]of DIRS){let n=1;for(let d=1;d<=4;d++){const nr=r+dr*d,nc=c+dc*d;if(nr<0||nr>=BOARD_SIZE||nc<0||nc>=BOARD_SIZE||board[nr][nc]!==player)break;n++;}for(let d=1;d<=4;d++){const nr=r-dr*d,nc=c-dc*d;if(nr<0||nr>=BOARD_SIZE||nc<0||nc>=BOARD_SIZE||board[nr][nc]!==player)break;n++;}if(n>=5)return true;}return false;}
+function findWin(board,player){for(let r=0;r<BOARD_SIZE;r++)for(let c=0;c<BOARD_SIZE;c++)if(board[r][c]===EMPTY){board[r][c]=player;const w=checkWin(board,r,c,player);board[r][c]=EMPTY;if(w)return{r,c};}return null;}
+function getCands(board,maxN){
+  const range=2,set=new Set();let has=false;
+  for(let r=0;r<BOARD_SIZE;r++)for(let c=0;c<BOARD_SIZE;c++)if(board[r][c]!==EMPTY){has=true;for(let dr=-range;dr<=range;dr++)for(let dc=-range;dc<=range;dc++){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<BOARD_SIZE&&nc>=0&&nc<BOARD_SIZE&&board[nr][nc]===EMPTY)set.add(nr*BOARD_SIZE+nc);}}
+  if(!has)return[{r:7,c:7}];
+  return Array.from(set).map(k=>({r:Math.floor(k/BOARD_SIZE),c:k%BOARD_SIZE}))
+    .sort((a,b)=>(evalPos(board,b.r,b.c,WHITE)+evalPos(board,b.r,b.c,BLACK)*0.9)-(evalPos(board,a.r,a.c,WHITE)+evalPos(board,a.r,a.c,BLACK)*0.9))
+    .slice(0,maxN);
+}
+function minimax(board,depth,alpha,beta,isMax,aiP,maxN){
+  if(Date.now()>timeLimit)return evalBoard(board,aiP);
+  if(depth===0)return evalBoard(board,aiP);
+  const hP=aiP===BLACK?WHITE:BLACK,curP=isMax?aiP:hP;
+  const nextN=Math.max(7,maxN-3);
+  const cands=getCands(board,maxN);
+  if(cands.length===0)return 0;
+  if(isMax){
+    let best=-Infinity;
+    for(const m of cands){board[m.r][m.c]=curP;if(checkWin(board,m.r,m.c,curP)){board[m.r][m.c]=EMPTY;return 100000+depth;}const s=minimax(board,depth-1,alpha,beta,false,aiP,nextN);board[m.r][m.c]=EMPTY;if(s>best)best=s;alpha=Math.max(alpha,s);if(beta<=alpha)break;}
+    return best;
+  }else{
+    let best=Infinity;
+    for(const m of cands){board[m.r][m.c]=curP;if(checkWin(board,m.r,m.c,curP)){board[m.r][m.c]=EMPTY;return-(100000+depth);}const s=minimax(board,depth-1,alpha,beta,true,aiP,nextN);board[m.r][m.c]=EMPTY;if(s<best)best=s;beta=Math.min(beta,s);if(beta<=alpha)break;}
+    return best;
+  }
+}
+function getBestMove(board,player,depth){
+  timeLimit=Date.now()+2500;
+  const w=findWin(board,player);if(w)return w;
+  const hP=player===BLACK?WHITE:BLACK;
+  const b=findWin(board,hP);if(b)return b;
+  const cands=getCands(board,15);
+  if(cands.length===0){for(let r=0;r<BOARD_SIZE;r++)for(let c=0;c<BOARD_SIZE;c++)if(board[r][c]===EMPTY)return{r,c};return null;}
+  if(cands.length===1)return cands[0];
+  let bestS=-Infinity,bestM=cands[0];
+  for(const m of cands){board[m.r][m.c]=player;const s=minimax(board,depth-1,-Infinity,Infinity,false,player,12);board[m.r][m.c]=EMPTY;if(s>bestS){bestS=s;bestM=m;}}
+  return bestM;
+}
+self.onmessage=function(e){const{board,player,depth}=e.data;self.postMessage({move:getBestMove(board,player,depth)});};
+`;
+let _workerURL = null;
+let aiWorker = null;
+function getWorkerURL() {
+  if (!_workerURL) _workerURL = URL.createObjectURL(new Blob([AI_WORKER_SRC], { type:'application/javascript' }));
+  return _workerURL;
+}
+
 // ==================== State ====================
 let board = [];
 let currentPlayer = BLACK;
@@ -734,6 +801,7 @@ function initBoard() {
 }
 
 function newGame() {
+  if (aiWorker) { aiWorker.terminate(); aiWorker = null; }
   if (animFrame) cancelAnimationFrame(animFrame);
   animFrame = null; // must reset or all future clicks are blocked
   animPiece = null;
@@ -996,20 +1064,29 @@ function closeOverlay() {
 function doAIMove() {
   if (!aiThinking || gameOver) return;
   const depth = { easy: 2, medium: 3, hard: 4 }[aiDifficulty];
-  const move = getBestMove(WHITE, depth);
-  aiThinking = false;
-  if (move) {
-    const ok = placePiece(move.r, move.c);
-    if (!ok) {
-      // placePiece failed (e.g. cell occupied) — hand turn back to player
+  if (aiWorker) { aiWorker.terminate(); aiWorker = null; }
+  aiWorker = new Worker(getWorkerURL());
+  aiWorker.onmessage = function(e) {
+    aiWorker = null;
+    aiThinking = false;
+    if (gameOver) return;
+    const move = e.data.move;
+    if (move) {
+      const ok = placePiece(move.r, move.c);
+      if (!ok) { currentPlayer = BLACK; updateUI(); }
+    } else {
       currentPlayer = BLACK;
       updateUI();
     }
-  } else {
-    // no valid move at all — hand back to player
+  };
+  aiWorker.onerror = function() {
+    aiWorker = null;
+    aiThinking = false;
     currentPlayer = BLACK;
     updateUI();
-  }
+  };
+  // Send a deep copy of the board so the worker can mutate it freely
+  aiWorker.postMessage({ board: board.map(r => r.slice()), player: WHITE, depth });
 }
 
 function getBestMove(player, depth) {
