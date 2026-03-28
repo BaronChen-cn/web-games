@@ -1,2 +1,9 @@
 # 方案文档，仅本地保留
 *.md
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
