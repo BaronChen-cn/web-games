@@ -193,13 +193,30 @@
       #right-panel { display: none; }
       #canvas-container { width: 100%; }
     }
-    /* Mobile landscape */
-    @media (max-width: 900px) and (orientation: landscape) {
-      body { overflow: hidden; }
-      h1 { font-size: 0.85rem; padding: 3px 0; }
-      #game-wrapper { padding: 2px 6px; }
+    /* Mobile landscape — detected by short height, works for all phone widths */
+    @media (orientation: landscape) and (max-height: 500px) {
+      body { overflow: hidden; height: 100dvh; justify-content: center; padding: 0; }
+      h1 { display: none; }
+      #game-wrapper {
+        padding: 0;
+        gap: 0;
+        flex: 1;
+        width: 100%;
+        max-width: none;
+        justify-content: center;
+        align-items: center;
+      }
       .side-panel { display: none; }
-      #canvas-container { overflow: visible; flex: none; }
+      #canvas-container {
+        overflow: visible;
+        flex: none;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
     /* Portrait rotate notice */
     #portrait-notice {
@@ -224,7 +241,7 @@
       0%,100% { transform: rotate(0deg); }
       50% { transform: rotate(90deg); }
     }
-    @media (orientation: portrait) and (max-width: 900px) {
+    @media (orientation: portrait) and (max-width: 1024px) {
       #portrait-notice:not(.dismissed) { display: flex; }
     }
     #portrait-notice .dismiss-btn {
@@ -1471,11 +1488,10 @@ document.getElementById('dismiss-portrait').addEventListener('click', () => {
 
 // ─── LANDSCAPE SCALING ────────────────────────────────────────────────────────
 function handleResize() {
-  const isLandscapeMobile = window.innerWidth < 1000 && window.innerWidth > window.innerHeight;
+  // Mobile landscape: short & wide screen (height < 500px)
+  const isLandscapeMobile = window.innerHeight < 500 && window.innerWidth > window.innerHeight;
   if (isLandscapeMobile) {
-    const availH = window.innerHeight - 46; // minus h1 header
-    const availW = window.innerWidth - 12;
-    const scale = Math.min(availW / CANVAS_W, availH / CANVAS_H);
+    const scale = Math.min(window.innerWidth / CANVAS_W, window.innerHeight / CANVAS_H);
     canvas.style.width  = (CANVAS_W * scale) + 'px';
     canvas.style.height = (CANVAS_H * scale) + 'px';
   } else {
