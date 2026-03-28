@@ -255,15 +255,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "切水果",
   "alternateName": "Fruit Slash",
   "description": "划动屏幕切开飞来的水果！连切COMBO得分翻倍，小心别碰炸弹，3条命用完即止，水果忍者同款！",
   "url": "https://play.mini-games.win/fruit/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["休闲", "触屏", "动作"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -277,6 +277,38 @@
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "切水果怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用鼠标划动或触屏滑动切开飞来的水果。一次划过多个水果触发COMBO加成。红色炸弹不能切，切到炸弹扣一条命。水果落地不切也扣一条命，共3条命。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "切水果需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "切水果支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

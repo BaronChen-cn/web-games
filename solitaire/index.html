@@ -154,15 +154,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "纸牌接龙",
   "alternateName": "Klondike Solitaire",
   "description": "经典Klondike纸牌接龙！按花色从A叠到K，支持拖拽点击双模式，悔棋自动完成，Windows经典！",
   "url": "https://play.mini-games.win/solitaire/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["益智", "纸牌", "经典"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -176,6 +176,38 @@
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "纸牌接龙怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "将所有牌按花色从A到K堆到右上角四个基础堆。主区域中大数字牌可放在不同颜色的小数字牌上。点击左上角牌堆翻牌，可拖拽或点击移牌，支持悔棋操作。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "纸牌接龙需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "纸牌接龙支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

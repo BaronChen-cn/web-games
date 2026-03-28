@@ -257,15 +257,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "吃豆人",
   "alternateName": "Pac-Man",
   "description": "经典街机吃豆人！吃掉迷宫里所有豆子，躲避4只幽灵。吃大力豆反击，连吃幽灵得分翻倍！",
   "url": "https://play.mini-games.win/pacman/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["街机", "经典", "动作"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -279,6 +279,38 @@
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "吃豆人怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用方向键或WASD控制吃豆人在迷宫中移动，吃掉所有小豆子过关。吃到四角的大力豆后幽灵变蓝，此时可以反吃幽灵获得高分。被幽灵碰到扣一条命。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "吃豆人需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "吃豆人支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

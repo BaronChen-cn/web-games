@@ -390,18 +390,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "贪吃蛇",
   "alternateName": "Snake",
+  "description": "操控小蛇吞食苹果，越吃越长，碰墙即亡。每5颗出现限时黄金食物，速度越来越快，经典诺基亚玩法！",
   "url": "https://play.mini-games.win/snake/",
-  "description": "免费在线玩经典贪吃蛇（Snake），丝滑插值动画、双食物、粒子特效。无需下载，手机电脑均可畅玩。",
-  "genre": ["街机", "休闲"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["经典", "休闲", "技巧"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "贪吃蛇怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用方向键控制蛇的移动方向，吃到苹果蛇身变长得分。碰到墙壁或自己的身体游戏结束。每吃5个苹果出现限时黄金苹果，吃到可得高分。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "贪吃蛇需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "贪吃蛇支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

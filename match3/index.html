@@ -302,18 +302,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "消消乐",
-  "alternateName": "Match-3",
+  "alternateName": "Match-3 Puzzle",
+  "description": "交换相邻宝石凑成3个或更多消除！连锁爆炸、条纹宝石、炸弹宝石，越消越爽，糖果传奇风格！",
   "url": "https://play.mini-games.win/match3/",
-  "description": "免费在线玩消消乐三消游戏，特殊宝石、连锁爆炸、多关卡挑战。无需下载，手机触屏完美支持。",
-  "genre": ["益智", "休闲"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["益智", "消除", "休闲"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "消消乐怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "点击或拖拽交换相邻两个宝石，凑成同色3个或以上连线即可消除得分。消除4个生成条纹宝石，消除5个生成炸弹宝石，特殊宝石组合触发连锁消除效果。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "消消乐需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "消消乐支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

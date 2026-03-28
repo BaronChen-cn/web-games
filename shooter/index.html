@@ -293,18 +293,60 @@ body::before {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "打飞机",
-  "alternateName": "Shooter STG",
+  "alternateName": "Plane Shooter",
+  "description": "驾驶战机迎战敌军舰队！收集道具强化火力，击败Boss解锁新波次，保卫蓝天！",
   "url": "https://play.mini-games.win/shooter/",
-  "description": "免费在线玩打飞机纵版射击游戏，消灭敌机、获取道具、挑战Boss。无需下载，手机电脑均可畅玩。",
-  "genre": ["街机", "射击", "纵版射击"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["射击", "动作", "闯关"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "打飞机怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "鼠标移动或触屏拖动控制战机位置，战机自动连续射击。击败敌机获得分数，收集道具可升级武器（扩散弹、激光等）。击败每波Boss解锁下一波更强敌人，飞机被击中三次游戏结束。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "打飞机需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "打飞机支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

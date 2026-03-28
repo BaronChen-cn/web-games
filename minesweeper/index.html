@@ -319,18 +319,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "扫雷",
   "alternateName": "Minesweeper",
+  "description": "经典逻辑推理游戏。根据数字推断地雷位置，初级到高级三种难度，第一步永远安全！Windows经典重现！",
   "url": "https://play.mini-games.win/minesweeper/",
-  "description": "免费在线玩经典扫雷游戏，提供初级、中级、高级三种难度，首击安全、支持弦击操作。无需下载，手机电脑均可畅玩。",
-  "genre": ["益智"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["益智", "逻辑", "经典"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "扫雷怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "左键点击格子揭开，右键点击插旗标记地雷。数字表示周围8格内的地雷数量，根据数字逻辑推断哪些格子有雷。将所有非地雷格子全部打开即获胜，踩到地雷则游戏失败。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "扫雷需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "扫雷支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

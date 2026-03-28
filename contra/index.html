@@ -197,15 +197,15 @@ canvas {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "魂斗罗",
   "alternateName": "Contra",
   "description": "经典横版射击游戏！5种武器散弹激光火焰导弹，3关卡各有Boss，按住持续连射，FC怀旧经典！",
   "url": "https://play.mini-games.win/contra/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["射击", "动作", "经典"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -219,6 +219,38 @@ canvas {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "魂斗罗怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "方向键移动，Z键跳跃，X键射击（按住连射）。击败敌人掉落武器道具：散弹枪提升射击范围，激光穿透敌人，火焰弹范围伤害，导弹追踪目标。消灭关底Boss进入下一关。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "魂斗罗需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "魂斗罗支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

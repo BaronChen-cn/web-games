@@ -273,18 +273,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "打砖块",
   "alternateName": "Breakout",
+  "description": "操控挡板反弹小球，击碎所有砖块。物理弹射、三种道具加持，关卡越深越刺激！雅达利经典！",
   "url": "https://play.mini-games.win/breakout/",
-  "description": "免费在线玩经典打砖块（Breakout），真实角度物理、3种道具、多关卡挑战。无需下载，手机电脑均可畅玩。",
-  "genre": ["街机"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["动作", "物理", "经典"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "打砖块怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用鼠标或方向键控制底部挡板左右移动，接住弹跳的小球。小球碰到砖块会弹回并消除砖块，消灭所有砖块过关。砖块掉落道具：扩大挡板、多球、穿透弹等。球落地扣一条命。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "打砖块需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "打砖块支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

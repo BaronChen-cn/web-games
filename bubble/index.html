@@ -234,15 +234,15 @@ body::before {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "泡泡射手",
   "alternateName": "Bubble Shooter",
   "description": "瞄准射击，消除3个或更多同色泡泡！连锁消除、悬空坠落，越消越爽越上瘾！",
   "url": "https://play.mini-games.win/bubble/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["休闲", "消除", "益智"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -256,6 +256,38 @@ body::before {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "泡泡射手怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "移动鼠标瞄准方向，点击发射当前颜色泡泡。连接3个及以上同色泡泡即可消除。消除后悬空的泡泡串会整体坠落获得额外分数。清空所有泡泡过关。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "泡泡射手需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "泡泡射手支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

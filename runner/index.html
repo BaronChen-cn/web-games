@@ -251,15 +251,15 @@ h1 {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "跑酷",
   "alternateName": "Endless Runner",
   "description": "无尽奔跑，跳跃躲避障碍！二段跳、护盾、弹簧道具加持，速度越来越快，坚持到底！",
   "url": "https://play.mini-games.win/runner/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["动作", "跑酷", "休闲"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -273,6 +273,38 @@ h1 {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "跑酷怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "按空格键或点击屏幕起跳，在空中再次按键二段跳。躲避各种障碍物，收集道具：护盾抵挡一次碰撞、弹簧自动弹起、磁铁吸引金币。速度随时间加快，坚持越久分越高。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "跑酷需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "跑酷支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

@@ -166,18 +166,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "打地鼠",
   "alternateName": "Whack-a-Mole",
+  "description": "60秒内疯狂敲击冒出的地鼠！金色地鼠得高分，红色炸弹地鼠千万别打，触屏手机必玩！",
   "url": "https://play.mini-games.win/mole/",
-  "description": "免费在线玩打地鼠游戏，三种地鼠、连击加分、评级系统。无需下载，手机触屏完美支持，轻松解压。",
-  "genre": ["休闲"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["反应", "休闲", "触屏"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "打地鼠怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "点击或触摸冒出洞口的地鼠将其打回去。普通地鼠得1分，金色地鼠得3分高分。红色炸弹地鼠不能打，打到扣分。60秒内尽量多打地鼠，挑战最高分！"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "打地鼠需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "打地鼠支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

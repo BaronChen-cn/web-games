@@ -339,15 +339,15 @@ h1 {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "五子棋",
   "alternateName": "Gomoku",
   "description": "先连成五子者胜！单人挑战AI三档难度或双人本地对战，Minimax算法强敌等你来战！",
   "url": "https://play.mini-games.win/gomoku/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["棋类", "策略", "益智"],
   "playMode": "MultiPlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -361,6 +361,38 @@ h1 {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "五子棋怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "点击棋盘交叉点落子，黑棋先行。横竖斜任意方向先连成连续五子的一方获胜。人机对战可选简单、中等、困难三档AI难度；双人模式两人轮流在同一设备落子。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "五子棋需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "五子棋支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

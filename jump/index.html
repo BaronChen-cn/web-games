@@ -299,15 +299,15 @@ body {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "跳一跳",
   "alternateName": "Jump Game",
   "description": "长按蓄力，松开跳跃！落中心双倍分，连击加成，特殊方块有惊喜。微信跳一跳同款玩法！",
   "url": "https://play.mini-games.win/jump/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["休闲", "技巧", "益智"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -321,6 +321,38 @@ body {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "跳一跳怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "按住屏幕或空格键蓄力，按住时间越长跳跃距离越远，松开后小人跳出。落在目标方块中心得双倍分，连续落中心有连击加成。掉落即游戏结束。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "跳一跳需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "跳一跳支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

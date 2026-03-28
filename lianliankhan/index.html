@@ -376,15 +376,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "连连看",
   "alternateName": "Lianliankan",
   "description": "点击相同图案两个格子，可用不超过2个弯折连通则消除。120秒内清空棋盘，国民手机游戏！",
   "url": "https://play.mini-games.win/lianliankhan/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["益智", "消除", "经典"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -398,6 +398,38 @@
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "连连看怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "点击选中一个图案格子，再点击相同图案的另一个格子。若两格之间可用不超过两次转弯的路径连通则消除得分。120秒内消除所有格子过关，时间不够可点击提示。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "连连看需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "连连看支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

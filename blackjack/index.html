@@ -333,15 +333,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "21点",
   "alternateName": "Blackjack",
   "description": "经典拉斯维加斯21点！支持分牌、加倍，1000筹码起步，赢取最高奖池，扑克牌桌经典！",
   "url": "https://play.mini-games.win/blackjack/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["卡牌", "策略", "休闲"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -355,6 +355,38 @@
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "21点怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "下注后发两张牌，选择要牌（Hit）补充手牌或停牌（Stand）与庄家比较。手牌点数之和最接近21且不超过21者获胜。A可算1或11点，J/Q/K算10点。支持加倍和分牌操作。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "21点需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "21点支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

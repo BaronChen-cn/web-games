@@ -327,15 +327,15 @@ footer a { color: var(--accent); text-decoration: none; }
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "平台跳跃",
   "alternateName": "Platformer",
   "description": "霓虹世界横版冒险！踩蘑菇怪、踢乌龟壳、二段跳翻越障碍，5关卡步步惊心，超级马里奥风格！",
   "url": "https://play.mini-games.win/platform/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["动作", "跳跃", "闯关"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -349,6 +349,38 @@ footer a { color: var(--accent); text-decoration: none; }
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "平台跳跃怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "方向键或AD键左右移动，空格或W键跳跃，空中再按一次二段跳。踩在敌人头顶消灭敌人，从侧面碰到会扣血。收集星星得分，到达关底旗杆即过关。共5个关卡。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "平台跳跃需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "平台跳跃支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

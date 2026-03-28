@@ -287,15 +287,15 @@ html, body {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "华容道",
   "alternateName": "Klotski",
   "description": "经典中国滑块拼图！拖动将士士卒，帮曹操从下方出口逃脱，步数越少越厉害，5个经典布局！",
   "url": "https://play.mini-games.win/klotski/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["益智", "经典", "拼图"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -309,6 +309,38 @@ html, body {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "华容道怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "拖动棋盘上的棋子滑动（只能沿空白方向移动），目标是让最大的曹操棋子移动到底部中央出口位置。合理规划移动顺序，步数越少成绩越好。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "华容道需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "华容道支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

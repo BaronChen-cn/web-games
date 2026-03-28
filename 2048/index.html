@@ -306,17 +306,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "2048",
+  "alternateName": "2048 Game",
+  "description": "滑动方块让相同数字合并，目标凑出2048。看似简单，越玩越上瘾，数字益智经典！",
   "url": "https://play.mini-games.win/2048/",
-  "description": "免费在线玩经典2048数字益智游戏，支持撤销操作、彩虹方块动画。无需下载，手机电脑均可畅玩。",
-  "genre": ["益智"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["益智", "数字", "策略"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "2048怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用方向键或滑动屏幕让所有方块向同一方向移动，相同数字的方块碰撞后合并翻倍。目标是合并出2048这个数字。每次移动后会随机出现一个新方块，棋盘填满无法移动时游戏结束。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "2048需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "2048支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

@@ -417,18 +417,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "俄罗斯方块",
   "alternateName": "Tetris",
+  "description": "经典益智消方块游戏。7种方块、SRS旋转系统、幽灵块辅助、连击加分，越玩越快挑战极限！",
   "url": "https://play.mini-games.win/tetris/",
-  "description": "免费在线玩经典俄罗斯方块（Tetris），支持 SRS 旋转、幽灵块、暂存功能。无需下载，手机电脑均可畅玩。",
-  "genre": ["益智", "街机"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["益智", "经典", "休闲"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "俄罗斯方块怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用方向键左右移动方块，上键旋转，下键加速下落，空格键直接落底。将方块填满完整一行即可消除得分，同时消除多行得双倍分。方块堆到顶端游戏结束。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "俄罗斯方块需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "俄罗斯方块支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

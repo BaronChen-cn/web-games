@@ -93,15 +93,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "植物大战僵尸",
   "alternateName": "Plants vs Zombies",
   "description": "种植物守卫家园！豌豆射手、寒冰射手、樱桃炸弹各显神通，6关卡波次僵尸越来越猛，策略塔防游戏！",
   "url": "https://play.mini-games.win/pvz/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["塔防", "策略", "经典"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -115,6 +115,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "植物大战僵尸怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "收集阳光后点击左侧植物卡片选择植物，再点击草坪格子种植。豌豆射手自动射击同行僵尸，向日葵持续产出阳光，坚果墙用于阻挡，樱桃炸弹范围消灭僵尸。阻止所有僵尸入侵即可过关。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "植物大战僵尸需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "植物大战僵尸支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

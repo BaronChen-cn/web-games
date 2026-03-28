@@ -242,18 +242,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "太空侵略者",
   "alternateName": "Space Invaders",
+  "description": "经典街机射击！消灭蜂拥而至的外星舰队，守护地球。UFO出现时射击可获超高分！",
   "url": "https://play.mini-games.win/invaders/",
-  "description": "免费在线玩经典太空侵略者（Space Invaders），外星人动画、像素护盾、UFO奖励关。无需下载，手机电脑均可畅玩。",
-  "genre": ["街机", "射击"],
-  "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["射击", "动作", "经典"],
+  "playMode": "SinglePlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "太空侵略者怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "左右方向键移动炮台，空格键发射子弹。消灭屏幕上的所有外星人过关。外星人会逐渐加速向下移动，碰到底部游戏失败。顶部偶尔飞过的UFO击中可获得高额分数。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "太空侵略者需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "太空侵略者支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

@@ -296,18 +296,60 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "乒乓球",
   "alternateName": "Pong",
+  "description": "电子游戏始祖！与AI或好友对打，先得7分获胜。球速随对拍次数加快，史上第一款电子游戏！",
   "url": "https://play.mini-games.win/pong/",
-  "description": "免费在线玩经典乒乓球（Pong），支持 AI 对战和双人对战，角度物理真实还原。无需下载，手机电脑均可畅玩。",
-  "genre": ["街机", "体育"],
-  "playMode": ["SinglePlayer", "MultiPlayer"],
-  "applicationCategory": "Game",
+  "applicationCategory": "GameApplication",
   "operatingSystem": "Web Browser",
+  "genre": ["对战", "竞技", "双人"],
+  "playMode": "MultiPlayer",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Mini Games Win",
+    "url": "https://play.mini-games.win/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "乒乓球怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "左侧玩家用W/S键控制挡板上下移动，右侧玩家或AI控制对侧挡板。将球弹回对方区域，对手未接住则得1分，先得7分获胜。双人模式支持两人同时在一台设备对战。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "乒乓球需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "乒乓球支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

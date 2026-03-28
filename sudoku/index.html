@@ -447,15 +447,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "数独",
   "alternateName": "Sudoku",
   "description": "经典数字逻辑游戏！三种难度，铅笔候选模式，实时校验，挑战你的推理极限，日本益智经典！",
   "url": "https://play.mini-games.win/sudoku/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["益智", "逻辑", "数字"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -469,6 +469,38 @@
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "数独怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在9x9方格中填入1-9的数字，要求每行、每列、每个3x3宫格内数字1-9各出现一次且不重复。点击格子选中后输入数字，可开启铅笔模式标记候选数字辅助推理。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "数独需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "数独支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

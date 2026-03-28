@@ -262,15 +262,15 @@ canvas {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "Flappy Bird",
   "alternateName": "飞翔的鸟",
   "description": "点击屏幕让小鸟扇翅膀，穿越绿色管道。碰管即亡，坚持越久分越高，全球爆红的经典手机游戏！",
   "url": "https://play.mini-games.win/flappy/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["休闲", "动作", "经典"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -284,6 +284,38 @@ canvas {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Flappy Bird怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "点击屏幕（或按空格键）让小鸟向上扇翅膀，松开后小鸟自然下坠。控制节奏穿越一对对绿色管道之间的空隙，碰到管道或地面即游戏结束。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Flappy Bird需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Flappy Bird支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>

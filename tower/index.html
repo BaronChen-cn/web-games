@@ -295,15 +295,15 @@ h1 {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
+  "@type": ["SoftwareApplication", "VideoGame"],
   "name": "塔防",
   "alternateName": "Tower Defense",
   "description": "建造防御塔阻止敌军！箭塔炮塔冰塔激光塔各显神通，波次越来越猛，策略塔防游戏！",
   "url": "https://play.mini-games.win/tower/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web Browser",
   "genre": ["策略", "塔防", "建造"],
   "playMode": "SinglePlayer",
-  "applicationCategory": "Game",
-  "operatingSystem": "Web Browser",
   "inLanguage": "zh-CN",
   "isAccessibleForFree": true,
   "offers": {
@@ -317,6 +317,38 @@ h1 {
     "name": "Mini Games Win",
     "url": "https://play.mini-games.win/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "塔防怎么玩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "点击路径旁空地建造防御塔，不同塔有不同攻击方式：箭塔速攻、炮塔范围伤害、冰塔减速、激光塔持续高伤。每波敌人通过终点扣血，消耗金币建塔或升级，坚持到所有波次结束获胜。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "塔防需要下载安装吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不需要下载！直接在浏览器中免费游玩，打开网页即可开始，支持手机和电脑。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "塔防支持手机游玩吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全支持！游戏已针对手机和平板进行优化，包括触屏操作和移动端布局适配。"
+      }
+    }
+  ]
 }
 </script>
 </head>
