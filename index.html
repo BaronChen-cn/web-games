@@ -376,214 +376,61 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://play.mini-games.win/#website",
-      "name": "免费在线小游戏合集",
-      "url": "https://play.mini-games.win/",
-      "description": "免费在线玩12款经典小游戏：俄罗斯方块、贪吃蛇、Flappy Bird、泡泡射手、打砖块、2048、太空侵略者、打地鼠、扫雷、青蛙过河、消消乐、乒乓球。无需下载，手机电脑均可畅玩。",
-      "inLanguage": "zh-CN"
+  "@type": "WebSite",
+  "name": "迷你游戏中心",
+  "alternateName": "Mini Games Win",
+  "url": "https://play.mini-games.win/",
+  "description": "免费在线玩30款经典小游戏，包括Flappy Bird、俄罗斯方块、吃豆人、植物大战僵尸等。无需下载，手机电脑均可畅玩。",
+  "inLanguage": "zh-CN",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://play.mini-games.win/?q={search_term_string}"
     },
-    {
-      "@type": "ItemList",
-      "name": "在线小游戏列表",
-      "url": "https://play.mini-games.win/",
-      "numberOfItems": 12,
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "item": {
-            "@type": "VideoGame",
-            "name": "俄罗斯方块",
-            "alternateName": "Tetris",
-            "url": "https://play.mini-games.win/tetris/",
-            "description": "免费在线玩经典俄罗斯方块（Tetris），支持 SRS 旋转、幽灵块、暂存功能。无需下载，手机电脑均可畅玩。",
-            "genre": ["益智", "街机"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "item": {
-            "@type": "VideoGame",
-            "name": "贪吃蛇",
-            "alternateName": "Snake",
-            "url": "https://play.mini-games.win/snake/",
-            "description": "免费在线玩经典贪吃蛇（Snake），丝滑插值动画、双食物、粒子特效。无需下载，手机电脑均可畅玩。",
-            "genre": ["街机", "休闲"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "item": {
-            "@type": "VideoGame",
-            "name": "打砖块",
-            "alternateName": "Breakout",
-            "url": "https://play.mini-games.win/breakout/",
-            "description": "免费在线玩经典打砖块（Breakout），真实角度物理、3种道具、多关卡挑战。无需下载，手机电脑均可畅玩。",
-            "genre": ["街机"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "item": {
-            "@type": "VideoGame",
-            "name": "2048",
-            "url": "https://play.mini-games.win/2048/",
-            "description": "免费在线玩经典2048数字益智游戏，支持撤销操作、彩虹方块动画。无需下载，手机电脑均可畅玩。",
-            "genre": ["益智"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 5,
-          "item": {
-            "@type": "VideoGame",
-            "name": "太空侵略者",
-            "alternateName": "Space Invaders",
-            "url": "https://play.mini-games.win/invaders/",
-            "description": "免费在线玩经典太空侵略者（Space Invaders），外星人动画、像素护盾、UFO奖励关。无需下载，手机电脑均可畅玩。",
-            "genre": ["街机", "射击"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 6,
-          "item": {
-            "@type": "VideoGame",
-            "name": "打地鼠",
-            "alternateName": "Whack-a-Mole",
-            "url": "https://play.mini-games.win/mole/",
-            "description": "免费在线玩打地鼠游戏，三种地鼠、连击加分、评级系统。无需下载，手机触屏完美支持，轻松解压。",
-            "genre": ["休闲"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 7,
-          "item": {
-            "@type": "VideoGame",
-            "name": "扫雷",
-            "alternateName": "Minesweeper",
-            "url": "https://play.mini-games.win/minesweeper/",
-            "description": "免费在线玩经典扫雷游戏，提供初级、中级、高级三种难度，首击安全、支持弦击操作。无需下载，手机电脑均可畅玩。",
-            "genre": ["益智"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 8,
-          "item": {
-            "@type": "VideoGame",
-            "name": "青蛙过河",
-            "alternateName": "Frogger",
-            "url": "https://play.mini-games.win/frogger/",
-            "description": "免费在线玩经典青蛙过河（Frogger），乌龟潜水、木头漂流、多关卡挑战。无需下载，手机电脑均可畅玩。",
-            "genre": ["街机"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 9,
-          "item": {
-            "@type": "VideoGame",
-            "name": "消消乐",
-            "alternateName": "Match-3",
-            "url": "https://play.mini-games.win/match3/",
-            "description": "免费在线玩消消乐三消游戏，特殊宝石、连锁爆炸、多关卡挑战。无需下载，手机触屏完美支持。",
-            "genre": ["益智", "休闲"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 10,
-          "item": {
-            "@type": "VideoGame",
-            "name": "乒乓球",
-            "alternateName": "Pong",
-            "url": "https://play.mini-games.win/pong/",
-            "description": "免费在线玩经典乒乓球（Pong），支持 AI 对战和双人对战，角度物理真实还原。无需下载，手机电脑均可畅玩。",
-            "genre": ["街机", "体育"],
-            "playMode": ["SinglePlayer", "MultiPlayer"],
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 11,
-          "item": {
-            "@type": "VideoGame",
-            "name": "Flappy Bird",
-            "alternateName": "小鸟飞翔",
-            "url": "https://play.mini-games.win/flappy/",
-            "description": "免费在线玩 Flappy Bird 小鸟飞翔游戏，点击屏幕让小鸟扇翅膀穿越管道。无需下载，手机电脑均可畅玩。",
-            "genre": ["休闲", "街机"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 12,
-          "item": {
-            "@type": "VideoGame",
-            "name": "泡泡射手",
-            "alternateName": "Bubble Shooter",
-            "url": "https://play.mini-games.win/bubble/",
-            "description": "免费在线玩泡泡射手游戏，瞄准射击消除相同颜色的泡泡，连锁消除得高分。无需下载，手机电脑均可畅玩。",
-            "genre": ["益智", "休闲"],
-            "playMode": "SinglePlayer",
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY", "availability": "https://schema.org/InStock" }
-          }
-        }
-      ]
-    }
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "免费在线小游戏合集",
+  "description": "30款免费在线HTML5小游戏",
+  "url": "https://play.mini-games.win/",
+  "numberOfItems": 30,
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Flappy Bird","url":"https://play.mini-games.win/flappy/"},
+    {"@type":"ListItem","position":2,"name":"俄罗斯方块","url":"https://play.mini-games.win/tetris/"},
+    {"@type":"ListItem","position":3,"name":"吃豆人","url":"https://play.mini-games.win/pacman/"},
+    {"@type":"ListItem","position":4,"name":"贪吃蛇","url":"https://play.mini-games.win/snake/"},
+    {"@type":"ListItem","position":5,"name":"植物大战僵尸","url":"https://play.mini-games.win/pvz/"},
+    {"@type":"ListItem","position":6,"name":"愤怒小鸟","url":"https://play.mini-games.win/angry/"},
+    {"@type":"ListItem","position":7,"name":"2048","url":"https://play.mini-games.win/2048/"},
+    {"@type":"ListItem","position":8,"name":"扫雷","url":"https://play.mini-games.win/minesweeper/"},
+    {"@type":"ListItem","position":9,"name":"魂斗罗","url":"https://play.mini-games.win/contra/"},
+    {"@type":"ListItem","position":10,"name":"纸牌接龙","url":"https://play.mini-games.win/solitaire/"},
+    {"@type":"ListItem","position":11,"name":"坦克大战","url":"https://play.mini-games.win/tank/"},
+    {"@type":"ListItem","position":12,"name":"太空侵略者","url":"https://play.mini-games.win/invaders/"},
+    {"@type":"ListItem","position":13,"name":"打砖块","url":"https://play.mini-games.win/breakout/"},
+    {"@type":"ListItem","position":14,"name":"消消乐","url":"https://play.mini-games.win/match3/"},
+    {"@type":"ListItem","position":15,"name":"合成大西瓜","url":"https://play.mini-games.win/suika/"},
+    {"@type":"ListItem","position":16,"name":"跳一跳","url":"https://play.mini-games.win/jump/"},
+    {"@type":"ListItem","position":17,"name":"泡泡射手","url":"https://play.mini-games.win/bubble/"},
+    {"@type":"ListItem","position":18,"name":"切水果","url":"https://play.mini-games.win/fruit/"},
+    {"@type":"ListItem","position":19,"name":"五子棋","url":"https://play.mini-games.win/gomoku/"},
+    {"@type":"ListItem","position":20,"name":"华容道","url":"https://play.mini-games.win/klotski/"},
+    {"@type":"ListItem","position":21,"name":"21点","url":"https://play.mini-games.win/blackjack/"},
+    {"@type":"ListItem","position":22,"name":"塔防","url":"https://play.mini-games.win/tower/"},
+    {"@type":"ListItem","position":23,"name":"打地鼠","url":"https://play.mini-games.win/mole/"},
+    {"@type":"ListItem","position":24,"name":"数独","url":"https://play.mini-games.win/sudoku/"},
+    {"@type":"ListItem","position":25,"name":"打飞机","url":"https://play.mini-games.win/shooter/"},
+    {"@type":"ListItem","position":26,"name":"连连看","url":"https://play.mini-games.win/lianliankhan/"},
+    {"@type":"ListItem","position":27,"name":"青蛙过河","url":"https://play.mini-games.win/frogger/"},
+    {"@type":"ListItem","position":28,"name":"跑酷","url":"https://play.mini-games.win/runner/"},
+    {"@type":"ListItem","position":29,"name":"平台跳跃","url":"https://play.mini-games.win/platform/"},
+    {"@type":"ListItem","position":30,"name":"乒乓球","url":"https://play.mini-games.win/pong/"}
   ]
 }
 </script>
