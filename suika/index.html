@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>合成大西瓜在线玩 - 免费水果合成游戏，支持手机电脑</title>
+  <link rel="canonical" href="https://play.mini-games.win/suika/">
+  <meta name="description" content="合成大西瓜免费在线玩，支持手机和电脑。将相同水果合并成更大的水果，最终合成西瓜！">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X9Q3GDPLZC');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962"
+       crossorigin="anonymous"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #07080f;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 10px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: #ff6eb4;
+      font-size: 1.5rem;
+      margin-bottom: 14px;
+      text-shadow: 0 0 18px #ff6eb4aa;
+      letter-spacing: 2px;
+    }
+
+    #game-wrapper {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    /* ---- Left Panel ---- */
+    #left-panel {
+      width: 160px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel-box {
+      background: rgba(255,110,180,0.08);
+      border: 1px solid rgba(255,110,180,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .panel-label {
+      font-size: 0.7rem;
+      color: #ff6eb4;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .panel-value {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 10px #ff6eb4;
+    }
+
+    #next-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #next-canvas {
+      border-radius: 8px;
+    }
+
+    /* ---- Right Panel ---- */
+    #right-panel {
+      width: 160px;
+      flex-shrink: 0;
+    }
+
+    .fruit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .fruit-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: #ccc;
+    }
+
+    .fruit-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ---- Canvas area ---- */
+    #canvas-container {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    #game-canvas {
+      display: block;
+      cursor: crosshair;
+      border-radius: 4px;
+    }
+
+    /* ---- Overlay ---- */
+    #overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(7,8,15,0.88);
+      border-radius: 4px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    #overlay.visible { display: flex; }
+
+    #overlay h2 {
+      color: #ff6eb4;
+      font-size: 2rem;
+      text-shadow: 0 0 20px #ff6eb4;
+    }
+
+    #overlay .final-score {
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    #overlay .final-score span {
+      color: #ff6eb4;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    #restart-btn {
+      background: linear-gradient(135deg, #ff6eb4, #ff3a8a);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 10px 28px;
+      border-radius: 24px;
+      cursor: pointer;
+      box-shadow: 0 0 18px #ff6eb488;
+      transition: transform 0.1s;
+    }
+
+    #restart-btn:hover { transform: scale(1.05); }
+    #restart-btn:active { transform: scale(0.97); }
+
+    .ad-placeholder {
+      width: 240px;
+      min-height: 90px;
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,110,180,0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #555;
+      overflow: hidden;
+    }
+
+    /* ---- Mobile ---- */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.1rem; margin-bottom: 8px; }
+
+      #game-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #left-panel {
+        width: 100%;
+        max-width: 340px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .panel-box { flex: 1; min-width: 80px; }
+
+      #right-panel { display: none; }
+
+      #canvas-container { width: 100%; max-width: 340px; }
+      #game-canvas { width: 100% !important; height: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <h1>合成大西瓜</h1>
+
+  <div id="game-wrapper">
+    <!-- Left Panel -->
+    <div id="left-panel">
+      <div class="panel-box">
+        <div class="panel-label">分数</div>
+        <div class="panel-value" id="score-display">0</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-label">最高分</div>
+        <div class="panel-value" id="best-display">0</div>
+      </div>
+      <div class="panel-box" id="next-preview">
+        <div class="panel-label">下一个</div>
+        <canvas id="next-canvas" width="80" height="80"></canvas>
+      </div>
+      <div class="panel-box fruit-list" id="fruit-legend"></div>
+    </div>
+
+    <!-- Canvas -->
+    <div id="canvas-container">
+      <canvas id="game-canvas" width="300" height="520"></canvas>
+      <div id="overlay">
+        <h2>游戏结束</h2>
+        <div class="final-score">得分：<span id="final-score-val">0</span></div>
+        <div class="ad-placeholder">
+          <ins class="adsbygoogle"
+               style="display:block;width:240px;height:90px"
+               data-ad-client="ca-pub-4328689115224962"
+               data-ad-slot="7765106927"></ins>
+        </div>
+        <button id="restart-btn">再来一局</button>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div id="right-panel">
+      <div class="panel-box fruit-list" id="fruit-legend-right"></div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    // =============================================
+    //  FRUIT DEFINITIONS
+    // =============================================
+    var FRUITS = [
+      { name: '樱桃',   r: 15,  colors: ['#cc0000', '#ff4444'] },
+      { name: '草莓',   r: 22,  colors: ['#ff2244', '#ff6688'] },
+      { name: '葡萄',   r: 30,  colors: ['#7700cc', '#aa44ff'] },
+      { name: '橘子',   r: 38,  colors: ['#ff8800', '#ffbb44'] },
+      { name: '柿子',   r: 46,  colors: ['#ff5500', '#ff8844'] },
+      { name: '苹果',   r: 55,  colors: ['#cc2200', '#ff5533'] },
+      { name: '梨',     r: 64,  colors: ['#99cc00', '#ccff44'] },
+      { name: '桃子',   r: 75,  colors: ['#ff99bb', '#ffccdd'] },
+      { name: '菠萝',   r: 88,  colors: ['#ddaa00', '#ffdd44'] },
+      { name: '哈密瓜', r: 104, colors: ['#88cc44', '#bbff66'] },
+      { name: '西瓜',   r: 124, colors: ['#116611', '#33aa33'] },
+    ];
+
+    // =============================================
+    //  CANVAS SETUP
+    // =============================================
+    var canvas = document.getElementById('game-canvas');
+    var ctx    = canvas.getContext('2d');
+    var CW = canvas.width;   // 300
+    var CH = canvas.height;  // 520
+
+    var WALL_LEFT   = 2;
+    var WALL_RIGHT  = CW - 2;
+    var FLOOR       = CH - 2;
+    var DANGER_LINE = 60;
+    var DROP_Y      = 30;
+
+    // Next-preview canvas
+    var nCanvas = document.getElementById('next-canvas');
+    var nCtx    = nCanvas.getContext('2d');
+
+    // =============================================
+    //  GAME STATE
+    // =============================================
+    var circles = [];
+    var score = 0;
+    var bestScore = parseInt(localStorage.getItem('suika_best') || '0', 10);
+    var gameOver = false;
+    var cursorX = CW / 2;
+    var currentLevel = 0;
+    var nextLevel = 0;
+    var dropping = false;
+    var dangerTimers = {};
+    var circleIdCounter = 0;
+    var particles = [];
+
+    function randomLevel() {
+      return Math.floor(Math.random() * 5);
+    }
+
+    function newGame() {
+      circles = [];
+      score = 0;
+      gameOver = false;
+      dropping = false;
+      dangerTimers = {};
+      circleIdCounter = 0;
+      particles = [];
+      currentLevel = randomLevel();
+      nextLevel    = randomLevel();
+      updateUI();
+      document.getElementById('overlay').classList.remove('visible');
+    }
+
+    // =============================================
+    //  CIRCLE FACTORY
+    // =============================================
+    function makeCircle(x, y, level, vx, vy) {
+      return {
+        id:   circleIdCounter++,
+        x:    x,
+        y:    y,
+        vx:   vx || 0,
+        vy:   vy || 0,
+        level: level,
+        r:    FRUITS[level].r,
+        age:  0,
+        justDropped: true,
+      };
+    }
+
+    // =============================================
+    //  DRAW FRUIT (shared by main canvas + preview)
+    // =============================================
+    function drawFruit(context, x, y, level) {
+      var r = FRUITS[level].r;
+      var c0 = FRUITS[level].colors[0];
+      var c1 = FRUITS[level].colors[1];
+      context.save();
+
+      // Glow shadow
+      context.shadowColor = c1;
+      context.shadowBlur  = 10;
+
+      // Gradient fill
+      var g = context.createRadialGradient(x - r*0.3, y - r*0.3, r*0.05, x, y, r);
+      g.addColorStop(0,    'rgba(255,255,255,0.55)');
+      g.addColorStop(0.3,  c1);
+      g.addColorStop(1,    c0);
+
+      context.beginPath();
+      context.arc(x, y, r, 0, Math.PI * 2);
+      context.fillStyle = g;
+      context.fill();
+
+      // Border
+      context.shadowBlur = 0;
+      context.strokeStyle = c0;
+      context.lineWidth = 1.5;
+      context.stroke();
+
+      // Shine spot
+      context.beginPath();
+      context.arc(x - r*0.28, y - r*0.28, r*0.2, 0, Math.PI * 2);
+      context.fillStyle = 'rgba(255,255,255,0.28)';
+      context.fill();
+
+      // Name label
+      var name = FRUITS[level].name;
+      var fontSize = Math.max(9, Math.floor(r * 0.32));
+      context.fillStyle = 'rgba(255,255,255,0.9)';
+      context.font = 'bold ' + fontSize + 'px Arial';
+      context.textAlign    = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(name.charAt(0), x, y);
+
+      context.restore();
+    }
+
+    // =============================================
+    //  PHYSICS
+    // =============================================
+    var GRAVITY      = 0.45;
+    var BOUNCE_WALL  = 0.35;
+    var BOUNCE_CIRC  = 0.25;
+    var FRICTION     = 0.86;
+    var REST_VEL     = 0.12;
+    var ITERATIONS   = 5;
+
+    function physicsStep() {
+      var i, j, a, b, dx, dy, dist, minDist, overlap, nx, ny, ma, mb, total, relVn;
+
+      // Gravity + integrate
+      for (i = 0; i < circles.length; i++) {
+        a = circles[i];
+        a.vy += GRAVITY;
+        a.x  += a.vx;
+        a.y  += a.vy;
+        a.age++;
+        if (a.age > 25) a.justDropped = false;
+      }
+
+      // Iterative constraints
+      for (var iter = 0; iter < ITERATIONS; iter++) {
+        // Walls
+        for (i = 0; i < circles.length; i++) {
+          a = circles[i];
+          if (a.x - a.r < WALL_LEFT) {
+            a.x = WALL_LEFT + a.r;
+            a.vx = Math.abs(a.vx) * BOUNCE_WALL;
+          }
+          if (a.x + a.r > WALL_RIGHT) {
+            a.x = WALL_RIGHT - a.r;
+            a.vx = -Math.abs(a.vx) * BOUNCE_WALL;
+          }
+          if (a.y + a.r > FLOOR) {
+            a.y = FLOOR - a.r;
+            if (a.vy > 0) a.vy = -a.vy * BOUNCE_WALL;
+            a.vx *= FRICTION;
+          }
+        }
+
+        // Circle-circle
+        for (i = 0; i < circles.length; i++) {
+          for (j = i + 1; j < circles.length; j++) {
+            a = circles[i];
+            b = circles[j];
+            dx = b.x - a.x;
+            dy = b.y - a.y;
+            dist = Math.sqrt(dx*dx + dy*dy);
+            minDist = a.r + b.r;
+            if (dist < minDist && dist > 0.001) {
+              overlap = minDist - dist;
+              nx = dx / dist;
+              ny = dy / dist;
+              ma = a.r * a.r;
+              mb = b.r * b.r;
+              total = ma + mb;
+              a.x -= nx * overlap * (mb / total);
+              a.y -= ny * overlap * (mb / total);
+              b.x += nx * overlap * (ma / total);
+              b.y += ny * overlap * (ma / total);
+              // Velocity impulse
+              relVn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+              if (relVn < 0) {
+                var imp = relVn * BOUNCE_CIRC;
+                a.vx += imp * nx * (mb / total) * 2;
+                a.vy += imp * ny * (mb / total) * 2;
+                b.vx -= imp * nx * (ma / total) * 2;
+                b.vy -= imp * ny * (ma / total) * 2;
+              }
+            }
+          }
+        }
+      }
+
+      // Damp tiny velocities
+      for (i = 0; i < circles.length; i++) {
+        a = circles[i];
+        if (Math.abs(a.vx) < REST_VEL) a.vx = 0;
+        if (Math.abs(a.vy) < REST_VEL) a.vy = 0;
+      }
+    }
+
+    // =============================================
+    //  MERGE
+    // =============================================
+    function detectMerges() {
+      var toMerge = [];
+      var mergedSet = {};
+      var i, j, a, b, dx, dy, dist2, minDist;
+
+      for (i = 0; i < circles.length; i++) {
+        if (mergedSet[i]) continue;
+        for (j = i + 1; j < circles.length; j++) {
+          if (mergedSet[j]) continue;
+          a = circles[i];
+          b = circles[j];
+          if (a.level !== b.level) continue;
+          if (a.justDropped && b.justDropped) continue;
+          if (a.level >= FRUITS.length - 1) continue;
+          dx = b.x - a.x;
+          dy = b.y - a.y;
+          dist2 = dx*dx + dy*dy;
+          minDist = a.r + b.r - 1;
+          if (dist2 <= minDist * minDist) {
+            toMerge.push([i, j]);
+            mergedSet[i] = true;
+            mergedSet[j] = true;
+          }
+        }
+      }
+
+      if (toMerge.length === 0) return;
+
+      var removeSet = {};
+      var addList   = [];
+
+      for (var k = 0; k < toMerge.length; k++) {
+        i = toMerge[k][0];
+        j = toMerge[k][1];
+        a = circles[i];
+        b = circles[j];
+        var newLevel = a.level + 1;
+        var nc = makeCircle(
+          (a.x + b.x) / 2,
+          (a.y + b.y) / 2,
+          newLevel,
+          (a.vx + b.vx) / 2,
+          (a.vy + b.vy) / 2
+        );
+        nc.justDropped = false;
+        nc.age = 30;
+        addList.push(nc);
+        removeSet[i] = true;
+        removeSet[j] = true;
+        score += newLevel * 10;
+        spawnParticles((a.x+b.x)/2, (a.y+b.y)/2, FRUITS[newLevel].colors[1]);
+      }
+
+      var newCircles = [];
+      for (i = 0; i < circles.length; i++) {
+        if (!removeSet[i]) newCircles.push(circles[i]);
+      }
+      for (i = 0; i < addList.length; i++) newCircles.push(addList[i]);
+      circles = newCircles;
+      updateUI();
+    }
+
+    // =============================================
+    //  PARTICLES
+    // =============================================
+    function spawnParticles(x, y, color) {
+      for (var i = 0; i < 14; i++) {
+        var angle = Math.random() * Math.PI * 2;
+        var speed = 1.5 + Math.random() * 3.5;
+        particles.push({
+          x: x, y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          decay: 0.04 + Math.random() * 0.03,
+          r: 2 + Math.random() * 4,
+          color: color,
+        });
+      }
+    }
+
+    function updateParticles() {
+      var alive = [];
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.vy += 0.12;
+        p.life -= p.decay;
+        if (p.life > 0) alive.push(p);
+      }
+      particles = alive;
+    }
+
+    // =============================================
+    //  GAME OVER CHECK
+    // =============================================
+    function checkGameOver() {
+      var now = Date.now();
+      for (var i = 0; i < circles.length; i++) {
+        var c = circles[i];
+        if (c.justDropped) continue;
+        if (c.y - c.r < DANGER_LINE) {
+          var isResting = (Math.abs(c.vx) < 0.4 && Math.abs(c.vy) < 0.4);
+          if (isResting) {
+            if (!dangerTimers[c.id]) {
+              dangerTimers[c.id] = now;
+            } else if (now - dangerTimers[c.id] > 2000) {
+              triggerGameOver();
+              return;
+            }
+          } else {
+            delete dangerTimers[c.id];
+          }
+        } else {
+          delete dangerTimers[c.id];
+        }
+      }
+    }
+
+    function triggerGameOver() {
+      gameOver = true;
+      if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem('suika_best', String(bestScore));
+      }
+      document.getElementById('final-score-val').textContent = score;
+      document.getElementById('overlay').classList.add('visible');
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+      updateUI();
+    }
+
+    // =============================================
+    //  DROP
+    // =============================================
+    function clampX(level) {
+      var r = FRUITS[level].r;
+      return Math.max(WALL_LEFT + r + 1, Math.min(WALL_RIGHT - r - 1, cursorX));
+    }
+
+    function dropFruit() {
+      if (gameOver || dropping) return;
+      var x = clampX(currentLevel);
+      var c = makeCircle(x, DROP_Y, currentLevel, 0, 0);
+      circles.push(c);
+      dropping = true;
+
+      setTimeout(function() {
+        currentLevel = nextLevel;
+        nextLevel    = randomLevel();
+        dropping     = false;
+        updateUI();
+      }, 500);
+    }
+
+    // =============================================
+    //  RENDER
+    // =============================================
+    function drawScene() {
+      ctx.clearRect(0, 0, CW, CH);
+
+      // Background
+      ctx.fillStyle = '#07080f';
+      ctx.fillRect(0, 0, CW, CH);
+
+      // Danger line
+      ctx.save();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = 'rgba(255,60,60,0.55)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(WALL_LEFT, DANGER_LINE);
+      ctx.lineTo(WALL_RIGHT, DANGER_LINE);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(255,80,80,0.5)';
+      ctx.font = '9px Arial';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText('危险线', WALL_LEFT + 4, DANGER_LINE - 3);
+      ctx.restore();
+
+      // Fruits
+      for (var i = 0; i < circles.length; i++) {
+        var c = circles[i];
+        drawFruit(ctx, c.x, c.y, c.level);
+      }
+
+      // Particles
+      for (var p = 0; p < particles.length; p++) {
+        var pt = particles[p];
+        ctx.save();
+        ctx.globalAlpha = pt.life;
+        ctx.fillStyle   = pt.color;
+        ctx.shadowColor = pt.color;
+        ctx.shadowBlur  = 8;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Hovering fruit + guide line
+      if (!gameOver && !dropping) {
+        var cx = clampX(currentLevel);
+        var cr = FRUITS[currentLevel].r;
+        // Guide line
+        ctx.save();
+        ctx.setLineDash([4, 5]);
+        ctx.strokeStyle = 'rgba(255,110,180,0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx, DROP_Y + cr);
+        ctx.lineTo(cx, FLOOR);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        drawFruit(ctx, cx, DROP_Y, currentLevel);
+      }
+
+      // Container glass border (left + right + bottom only)
+      ctx.save();
+      ctx.shadowColor = '#ff6eb4';
+      ctx.shadowBlur  = 20;
+      ctx.strokeStyle = 'rgba(255,110,180,0.75)';
+      ctx.lineWidth   = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(WALL_LEFT,  0);
+      ctx.lineTo(WALL_LEFT,  FLOOR + 1);
+      ctx.lineTo(WALL_RIGHT, FLOOR + 1);
+      ctx.lineTo(WALL_RIGHT, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawNextPreview() {
+      nCtx.clearRect(0, 0, 80, 80);
+      nCtx.fillStyle = '#07080f';
+      nCtx.fillRect(0, 0, 80, 80);
+      // Scale preview fruit to fit in 80x80
+      var r = FRUITS[nextLevel].r;
+      var scale = Math.min(1, 34 / r);
+      nCtx.save();
+      nCtx.translate(40, 40);
+      nCtx.scale(scale, scale);
+      nCtx.translate(-40, -40);
+      drawFruit(nCtx, 40, 40, nextLevel);
+      nCtx.restore();
+    }
+
+    // =============================================
+    //  UI
+    // =============================================
+    function updateUI() {
+      document.getElementById('score-display').textContent = score;
+      document.getElementById('best-display').textContent  = bestScore;
+      drawNextPreview();
+    }
+
+    function buildFruitLegend() {
+      var ids = ['fruit-legend', 'fruit-legend-right'];
+      for (var k = 0; k < ids.length; k++) {
+        var el = document.getElementById(ids[k]);
+        if (!el) continue;
+        var header = document.createElement('div');
+        header.className = 'panel-label';
+        header.style.marginBottom = '6px';
+        header.textContent = '水果图鉴';
+        el.appendChild(header);
+        for (var i = 0; i < FRUITS.length; i++) {
+          var f = FRUITS[i];
+          var item = document.createElement('div');
+          item.className = 'fruit-item';
+          var dot = document.createElement('div');
+          dot.className = 'fruit-dot';
+          dot.style.background = 'radial-gradient(circle at 35% 35%, ' + f.colors[1] + ', ' + f.colors[0] + ')';
+          dot.style.boxShadow  = '0 0 5px ' + f.colors[1] + '88';
+          var label = document.createElement('span');
+          label.textContent = f.name + ' r' + f.r;
+          item.appendChild(dot);
+          item.appendChild(label);
+          el.appendChild(item);
+        }
+      }
+    }
+
+    // =============================================
+    //  INPUT
+    // =============================================
+    function getCanvasX(clientX) {
+      var rect = canvas.getBoundingClientRect();
+      return (clientX - rect.left) * (CW / rect.width);
+    }
+
+    canvas.addEventListener('mousemove', function(e) {
+      cursorX = getCanvasX(e.clientX);
+    });
+
+    canvas.addEventListener('click', function(e) {
+      if (gameOver) return;
+      cursorX = getCanvasX(e.clientX);
+      dropFruit();
+    });
+
+    canvas.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      cursorX = getCanvasX(e.touches[0].clientX);
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      if (e.changedTouches.length > 0) {
+        cursorX = getCanvasX(e.changedTouches[0].clientX);
+      }
+      if (gameOver) return;
+      dropFruit();
+    }, { passive: false });
+
+    document.getElementById('restart-btn').addEventListener('click', function() {
+      newGame();
+    });
+
+    // =============================================
+    //  MAIN LOOP
+    // =============================================
+    function loop() {
+      if (!gameOver) {
+        physicsStep();
+        detectMerges();
+        updateParticles();
+        checkGameOver();
+      }
+      drawScene();
+      requestAnimationFrame(loop);
+    }
+
+    // =============================================
+    //  INIT
+    // =============================================
+    buildFruitLegend();
+    newGame();
+    loop();
+
+  })();
+  </script>
+</body>
+</html>
