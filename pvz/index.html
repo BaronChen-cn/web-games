@@ -1158,9 +1158,20 @@ function update(dt){
         },1500);
         gameState='paused';
       } else {
-        addNotif('波次清除！准备下一波…','#39ff14');
         startWave(currentWave+1);
-        updateWaveUI();
+        if(allWavesDone){
+          // startWave just set allWavesDone=true (index out of range) — last wave cleared
+          addNotif('最后一波已清除！','#39ff14');
+          setTimeout(()=>{
+            if(gameState!=='playing'&&gameState!=='paused') return;
+            if(currentLevel<LEVELS.length-1){ showOverlay('levelwin'); }
+            else { showOverlay('win'); }
+          },1500);
+          gameState='paused';
+        } else {
+          addNotif('波次清除！准备下一波…','#39ff14');
+          updateWaveUI();
+        }
       }
     }
   }
@@ -1312,6 +1323,7 @@ window.addEventListener('resize',()=>{
 });
 
 resize();
+initGrid(); // must init before first draw() call to avoid grid[r][c] TypeError
 buildCardPanel();
 requestAnimationFrame(gameLoop);
 showOverlay('menu');

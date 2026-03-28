@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>跳一跳在线玩 - 免费微信跳一跳小游戏，支持手机电脑</title>
+<meta name="description" content="免费在线玩跳一跳小游戏，类微信跳一跳玩法，长按蓄力跳跃，落中心得双倍分，支持手机和电脑，无需下载。">
+<meta name="keywords" content="跳一跳,微信跳一跳,在线跳一跳,跳跃游戏,免费小游戏,手机游戏">
+<link rel="canonical" href="https://play.mini-games.win/jump/">
+<meta property="og:title" content="跳一跳在线玩 - 免费微信跳一跳小游戏">
+<meta property="og:description" content="长按蓄力，松开跳跃，落中心得双倍分！支持手机电脑。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-X9Q3GDPLZC');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962"
+     crossorigin="anonymous"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #07080f;
+  --surface: #0d0f1e;
+  --border: rgba(0,204,255,0.12);
+  --text: #e0f4ff;
+  --muted: rgba(180,225,255,0.5);
+  --accent: #00ccff;
+  --accent2: #a855f7;
+  --radius: 14px;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 16px;
+  min-height: 100dvh;
+}
+
+/* Side panels */
+.panel {
+  width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.panel-box h3 {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.panel-box .value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 0 16px rgba(0,204,255,0.6);
+  line-height: 1;
+}
+
+.panel-box .value.combo {
+  color: #ffd700;
+  text-shadow: 0 0 16px rgba(255,215,0,0.6);
+}
+
+.hint-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.hint-box strong {
+  color: var(--text);
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.hint-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.hint-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+/* Canvas wrapper */
+.canvas-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+#gameCanvas {
+  display: block;
+  border-radius: 16px;
+  cursor: pointer;
+  touch-action: none;
+  box-shadow:
+    0 0 0 1px rgba(0,204,255,0.15),
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 80px rgba(0,204,255,0.05);
+}
+
+/* Overlay */
+#overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: rgba(7,8,15,0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  z-index: 10;
+}
+
+#overlay.hidden { display: none; }
+
+.overlay-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(0,204,255,0.8);
+  margin-bottom: 8px;
+}
+
+.overlay-title.start {
+  font-size: 32px;
+}
+
+.overlay-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.score-display {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.score-display .s-label {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.score-display .s-val {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.score-display .s-best {
+  font-size: 14px;
+  color: #ffd700;
+}
+
+.ad-wrap {
+  margin: 12px 0;
+  min-height: 60px;
+  width: 300px;
+}
+
+.btn-restart {
+  background: var(--accent);
+  color: #07080f;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 36px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 20px rgba(0,204,255,0.4);
+  margin-top: 8px;
+}
+
+.btn-restart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,204,255,0.6);
+}
+
+.btn-restart:active { transform: translateY(0); }
+
+/* Mobile stats bar */
+#mobileStats {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: rgba(7,8,15,0.9);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-around;
+  z-index: 20;
+  padding: 0 16px;
+}
+
+.m-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.m-stat-label {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.m-stat-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.m-stat-val.combo { color: #ffd700; }
+
+@media (max-width: 600px) {
+  body {
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .panel { display: none; }
+
+  #mobileStats { display: flex; }
+
+  .canvas-wrap {
+    position: fixed;
+    inset: 0;
+    top: 52px;
+    border-radius: 0;
+  }
+
+  #gameCanvas {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  #overlay {
+    border-radius: 0;
+    top: 52px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Left panel -->
+<div class="panel" id="leftPanel">
+  <div class="panel-box">
+    <h3>分数</h3>
+    <div class="value" id="scoreDisplay">0</div>
+  </div>
+  <div class="panel-box">
+    <h3>最高分</h3>
+    <div class="value" id="bestDisplay">0</div>
+  </div>
+  <div class="panel-box">
+    <h3>连击</h3>
+    <div class="value combo" id="comboDisplay">×1</div>
+  </div>
+</div>
+
+<!-- Canvas -->
+<div class="canvas-wrap">
+  <canvas id="gameCanvas" width="480" height="620"></canvas>
+
+  <div id="overlay">
+    <div class="overlay-title start">跳一跳</div>
+    <div class="overlay-sub">长按蓄力 · 松开跳跃</div>
+    <button class="btn-restart" id="startBtn">开始游戏</button>
+  </div>
+</div>
+
+<!-- Right panel -->
+<div class="panel" id="rightPanel">
+  <div class="hint-box">
+    <strong>操作说明</strong>
+    <div class="hint-item"><div class="hint-dot"></div><span>长按鼠标/屏幕蓄力</span></div>
+    <div class="hint-item"><div class="hint-dot"></div><span>松开跳跃</span></div>
+    <div class="hint-item"><div class="hint-dot"></div><span>落中心 = 双倍分</span></div>
+    <div class="hint-item"><div class="hint-dot"></div><span>连续完美可连击</span></div>
+  </div>
+  <div class="hint-box">
+    <strong>特殊方块</strong>
+    <div class="hint-item"><div class="hint-dot" style="background:#ffd700"></div><span>🎵 音乐盒 +10分</span></div>
+    <div class="hint-item"><div class="hint-dot" style="background:#00ff88"></div><span>🌀 弹簧 飞更远</span></div>
+  </div>
+  <div class="hint-box" style="font-size:11px;color:var(--muted)">
+    按压时间越长，跳跃距离越远。注意把握力道！
+  </div>
+</div>
+
+<!-- Mobile stats bar -->
+<div id="mobileStats">
+  <div class="m-stat">
+    <div class="m-stat-label">分数</div>
+    <div class="m-stat-val" id="mScoreDisplay">0</div>
+  </div>
+  <div class="m-stat">
+    <div class="m-stat-label">最高</div>
+    <div class="m-stat-val" id="mBestDisplay">0</div>
+  </div>
+  <div class="m-stat">
+    <div class="m-stat-label">连击</div>
+    <div class="m-stat-val combo" id="mComboDisplay">×1</div>
+  </div>
+</div>
+
+<script>
+// ─── Config ───────────────────────────────────────────────────────────────────
+const CFG = {
+  tileW: 90,        // isometric tile width (top face)
+  tileH: 50,        // isometric tile height (top face)
+  tileD: 28,        // tile depth (side height)
+  playerR: 10,      // player head radius
+  playerBodyW: 14,
+  playerBodyH: 18,
+  maxPower: 100,
+  powerRate: 1.2,   // power units per frame
+  maxDist: 220,     // max jump world distance
+  minDist: 90,
+  gravity: 0.42,
+  jumpHeight: 120,  // peak height in pixels
+  lerpSpeed: 0.08,
+  centerRadius: 18, // perfect hit radius
+  colors: [
+    { top:'#0d3d5c', side1:'#062a42', side2:'#041e30', edge:'#00ccff' },
+    { top:'#3d1a5c', side1:'#2a0e42', side2:'#1e0a30', edge:'#a855f7' },
+    { top:'#5c3a0d', side1:'#422a06', side2:'#301e04', edge:'#f59e0b' },
+    { top:'#0d5c2a', side1:'#064220', side2:'#042f16', edge:'#00ff88' },
+  ],
+  blockMinSize: 50,
+  blockMaxSize: 75,
+};
+
+// ─── Canvas setup ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width;
+const H = canvas.height;
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let state = 'idle'; // idle | playing | pressing | jumping | dead
+let score = 0;
+let bestScore = parseInt(localStorage.getItem('jumpBest') || '0');
+let combo = 1;
+let consecutivePerfect = 0;
+
+let blocks = [];
+let currentBlockIdx = 0;
+let player = {};
+let power = 0;
+let pressStart = 0;
+let pressActive = false;
+
+let cameraX = 0, cameraY = 0;
+let targetCameraX = 0, targetCameraY = 0;
+
+let particles = [];
+let floatingTexts = [];
+let ripples = [];
+
+let colorIdx = 0;
+let frameId = null;
+
+// ─── Isometric projection ─────────────────────────────────────────────────────
+// World coords: wx, wy (flat 2D), wz (height)
+// Screen origin: canvas center offset by camera
+function toScreen(wx, wy, wz = 0) {
+  const sx = (wx - wy) * (CFG.tileW / 2);
+  const sy = (wx + wy) * (CFG.tileH / 2) - wz;
+  return { x: sx, y: sy };
+}
+
+function getOrigin() {
+  return {
+    x: W / 2 - cameraX,
+    y: H * 0.55 - cameraY,
+  };
+}
+
+function worldToCanvas(wx, wy, wz = 0) {
+  const s = toScreen(wx, wy, wz);
+  const o = getOrigin();
+  return { x: o.x + s.x, y: o.y + s.y };
+}
+
+// ─── Block generation ─────────────────────────────────────────────────────────
+function makeBlock(wx, wy, idx) {
+  const sz = CFG.blockMinSize + Math.random() * (CFG.blockMaxSize - CFG.blockMinSize);
+  // Special block types: 0=normal, 1=music, 2=spring
+  let type = 0;
+  if (idx > 2 && Math.random() < 0.12) type = 1;
+  else if (idx > 4 && Math.random() < 0.08) type = 2;
+
+  const ci = Math.floor(idx / 3) % CFG.colors.length;
+
+  return {
+    wx, wy,
+    sz,
+    halfSz: sz / CFG.tileW * 0.5, // in world units
+    colorIdx: ci,
+    type,
+    scaleY: 1, // for squish animation
+    scaleAnim: 0,
+    idx,
+  };
+}
+
+function blockHalfW(b) { return (b.sz / CFG.tileW) * 0.5; }
+function blockHalfH(b) { return (b.sz / CFG.tileH) * 0.5; }
+
+function initBlocks() {
+  blocks = [];
+  // First block near center
+  const b0 = makeBlock(0, 0, 0);
+  b0.type = 0;
+  blocks.push(b0);
+  // Second block
+  blocks.push(genNextBlock(b0, 1));
+  // Pregenerate a few more
+  for (let i = 2; i < 5; i++) {
+    blocks.push(genNextBlock(blocks[blocks.length - 1], i));
+  }
+}
+
+function genNextBlock(fromBlock, idx) {
+  const difficulty = Math.min(1, score / 200);
+  const minD = CFG.minDist + difficulty * 20;
+  const maxD = CFG.minDist + 80 + difficulty * 40;
+  const dist = minD + Math.random() * (maxD - minD);
+
+  // Direction: mostly right (+x) or down (+y), in world units
+  const angle = Math.random() < 0.5 ? 0 : Math.PI / 2;
+  const wx = fromBlock.wx + Math.cos(angle) * dist / CFG.tileW;
+  const wy = fromBlock.wy + Math.sin(angle) * dist / CFG.tileH;
+
+  return makeBlock(wx, wy, idx);
+}
+
+// ─── Drawing helpers ──────────────────────────────────────────────────────────
+function drawBlock(b) {
+  const o = getOrigin();
+  const hw = b.sz * 0.5;
+  const hh = b.sz * 0.5 * (CFG.tileH / CFG.tileW);
+  const depth = CFG.tileD * (b.scaleY || 1);
+  const col = CFG.colors[b.colorIdx];
+
+  // Apply squish: top face moves up/down based on scaleY
+  const squishOffset = (1 - (b.scaleY || 1)) * depth;
+
+  // Center screen position of top face
+  const cs = toScreen(b.wx, b.wy, 0);
+  const cx = o.x + cs.x;
+  const cy = o.y + cs.y + squishOffset;
+
+  // Top face corners (diamond shape for isometric)
+  // Top face is a rhombus: top, right, bottom, left in screen space
+  const top    = { x: cx,      y: cy - hh };
+  const right  = { x: cx + hw, y: cy };
+  const bottom = { x: cx,      y: cy + hh };
+  const left   = { x: cx - hw, y: cy };
+
+  // Right side face
+  ctx.beginPath();
+  ctx.moveTo(right.x, right.y);
+  ctx.lineTo(bottom.x, bottom.y);
+  ctx.lineTo(bottom.x, bottom.y + depth);
+  ctx.lineTo(right.x, right.y + depth);
+  ctx.closePath();
+  ctx.fillStyle = col.side2;
+  ctx.fill();
+
+  // Left side face
+  ctx.beginPath();
+  ctx.moveTo(left.x, left.y);
+  ctx.lineTo(bottom.x, bottom.y);
+  ctx.lineTo(bottom.x, bottom.y + depth);
+  ctx.lineTo(left.x, left.y + depth);
+  ctx.closePath();
+  ctx.fillStyle = col.side1;
+  ctx.fill();
+
+  // Top face
+  ctx.beginPath();
+  ctx.moveTo(top.x, top.y);
+  ctx.moveTo(cx, cy - hh);
+  ctx.lineTo(cx + hw, cy);
+  ctx.lineTo(cx, cy + hh);
+  ctx.lineTo(cx - hw, cy);
+  ctx.closePath();
+
+  // Top face fill
+  let topFill;
+  if (b.type === 1) {
+    // Music box: gold gradient
+    const grd = ctx.createLinearGradient(cx - hw, cy - hh, cx + hw, cy + hh);
+    grd.addColorStop(0, '#7c5a00');
+    grd.addColorStop(0.5, '#c8980a');
+    grd.addColorStop(1, '#7c5a00');
+    topFill = grd;
+  } else if (b.type === 2) {
+    // Spring: green gradient
+    const grd = ctx.createLinearGradient(cx - hw, cy - hh, cx + hw, cy + hh);
+    grd.addColorStop(0, '#003d1a');
+    grd.addColorStop(0.5, '#00aa4d');
+    grd.addColorStop(1, '#003d1a');
+    topFill = grd;
+  } else {
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, hw);
+    grd.addColorStop(0, lightenColor(col.top, 20));
+    grd.addColorStop(1, col.top);
+    topFill = grd;
+  }
+  ctx.fillStyle = topFill;
+  ctx.fill();
+
+  // Edge glow on top face
+  ctx.strokeStyle = col.edge;
+  ctx.lineWidth = 1.5;
+  ctx.globalAlpha = 0.6;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Center dot
+  const dotCol = b.type === 1 ? '#ffd700' : b.type === 2 ? '#00ff88' : col.edge;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+  ctx.fillStyle = dotCol;
+  ctx.globalAlpha = 0.7;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Special block icons
+  if (b.type === 1) {
+    ctx.font = `${Math.floor(b.sz * 0.3)}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText('♪', cx, cy - 4);
+    ctx.globalAlpha = 1;
+  } else if (b.type === 2) {
+    // Draw spring coil lines
+    ctx.strokeStyle = '#00ff88';
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = 0.7;
+    for (let i = 0; i < 3; i++) {
+      const py = cy - 6 + i * 5;
+      const pw = hw * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(cx - pw, py);
+      ctx.lineTo(cx + pw, py);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+function lightenColor(hex, amount) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, (num >> 16) + amount);
+  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+  const b = Math.min(255, (num & 0xff) + amount);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ─── Player drawing ───────────────────────────────────────────────────────────
+function drawPlayer() {
+  const ps = worldToCanvas(player.wx, player.wy, player.wz);
+  const cx = ps.x;
+  const cy = ps.y;
+
+  const scaleX = 1 + (player.squishX || 0);
+  const scaleY = 1 + (player.squishY || 0);
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scaleX, scaleY);
+
+  // Shadow
+  ctx.beginPath();
+  ctx.ellipse(0, 2, CFG.playerBodyW * 0.6, 4, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fill();
+
+  // Body
+  const bodyH = CFG.playerBodyH;
+  const bodyW = CFG.playerBodyW;
+  const bodyY = -bodyH * 0.5;
+
+  // Body gradient
+  const bodyGrd = ctx.createLinearGradient(-bodyW/2, bodyY, bodyW/2, bodyY + bodyH);
+  bodyGrd.addColorStop(0, '#00ddff');
+  bodyGrd.addColorStop(1, '#0077aa');
+  ctx.fillStyle = bodyGrd;
+  ctx.beginPath();
+  ctx.roundRect(-bodyW/2, bodyY, bodyW, bodyH, 4);
+  ctx.fill();
+  ctx.strokeStyle = '#00eeff';
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.5;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Head
+  const headY = bodyY - CFG.playerR - 1;
+  const headGrd = ctx.createRadialGradient(-2, headY - 2, 1, 0, headY, CFG.playerR);
+  headGrd.addColorStop(0, '#80eeff');
+  headGrd.addColorStop(1, '#00aacc');
+  ctx.fillStyle = headGrd;
+  ctx.beginPath();
+  ctx.arc(0, headY, CFG.playerR, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#00eeff';
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.5;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Eyes
+  ctx.fillStyle = '#07080f';
+  ctx.beginPath();
+  ctx.arc(-3.5, headY - 1, 2, 0, Math.PI * 2);
+  ctx.arc(3.5, headY - 1, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+// ─── Particles ────────────────────────────────────────────────────────────────
+function spawnParticles(cx, cy, count, color, speed = 4) {
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 / count) * i + Math.random() * 0.5;
+    const v = speed * (0.5 + Math.random());
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * v,
+      vy: Math.sin(angle) * v,
+      life: 1,
+      decay: 0.025 + Math.random() * 0.025,
+      r: 2 + Math.random() * 3,
+      color,
+    });
+  }
+}
+
+function spawnPerfectBurst(cx, cy) {
+  // Gold ring particles
+  for (let i = 0; i < 20; i++) {
+    const angle = (Math.PI * 2 / 20) * i;
+    const v = 3 + Math.random() * 4;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * v,
+      vy: Math.sin(angle) * v,
+      life: 1,
+      decay: 0.018,
+      r: 3 + Math.random() * 3,
+      color: '#ffd700',
+    });
+  }
+  ripples.push({ x: cx, y: cy, r: 0, maxR: 60, life: 1, color: '#ffd700' });
+}
+
+function spawnRipple(cx, cy, color) {
+  ripples.push({ x: cx, y: cy, r: 0, maxR: 40, life: 1, color });
+}
+
+function spawnFloatingText(cx, cy, text, color) {
+  floatingTexts.push({ x: cx, y: cy, text, color, life: 1, decay: 0.022, vy: -1.2 });
+}
+
+// ─── Charge ring drawing ──────────────────────────────────────────────────────
+function drawChargeRing() {
+  if (!pressActive || state !== 'pressing') return;
+  const ps = worldToCanvas(player.wx, player.wy, 0);
+
+  const maxR = 45 + power * 0.3;
+  const alpha = 0.3 + power / 100 * 0.5;
+  const pulse = Math.sin(Date.now() * 0.01) * 5;
+
+  ctx.beginPath();
+  ctx.arc(ps.x, ps.y, maxR + pulse, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(0,204,255,${alpha})`;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Inner ring
+  ctx.beginPath();
+  ctx.arc(ps.x, ps.y, (maxR + pulse) * 0.6, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(0,204,255,${alpha * 0.5})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+// ─── Power bar ────────────────────────────────────────────────────────────────
+function drawPowerBar() {
+  if (state !== 'pressing') return;
+  const bx = W / 2 - 80;
+  const by = H - 28;
+  const bw = 160;
+  const bh = 12;
+
+  // Background
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.beginPath();
+  ctx.roundRect(bx - 2, by - 2, bw + 4, bh + 4, 6);
+  ctx.fill();
+
+  // Bar fill
+  const pct = power / CFG.maxPower;
+  const barColor = pct < 0.5 ? '#00ccff' : pct < 0.8 ? '#ffd700' : '#ff4444';
+  const grd = ctx.createLinearGradient(bx, by, bx + bw, by);
+  grd.addColorStop(0, '#00ccff');
+  grd.addColorStop(0.5, barColor);
+  grd.addColorStop(1, barColor);
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.roundRect(bx, by, bw * pct, bh, 4);
+  ctx.fill();
+
+  // Label
+  ctx.fillStyle = '#fff';
+  ctx.font = '10px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('蓄力', W/2, by - 4);
+}
+
+// ─── Background drawing ───────────────────────────────────────────────────────
+function drawBackground() {
+  const grd = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, H * 0.8);
+  grd.addColorStop(0, '#0d1128');
+  grd.addColorStop(1, '#07080f');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid dots
+  ctx.fillStyle = 'rgba(0,204,255,0.04)';
+  const spacing = 30;
+  for (let gx = 0; gx < W; gx += spacing) {
+    for (let gy = 0; gy < H; gy += spacing) {
+      ctx.beginPath();
+      ctx.arc(gx, gy, 1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+// ─── Update particles / effects ───────────────────────────────────────────────
+function updateEffects() {
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.15;
+    p.life -= p.decay;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  // Floating texts
+  for (let i = floatingTexts.length - 1; i >= 0; i--) {
+    const t = floatingTexts[i];
+    t.y += t.vy;
+    t.life -= t.decay;
+    if (t.life <= 0) floatingTexts.splice(i, 1);
+  }
+
+  // Ripples
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const r = ripples[i];
+    r.r += 2.5;
+    r.life -= 0.035;
+    if (r.life <= 0) ripples.splice(i, 1);
+  }
+}
+
+function drawEffects() {
+  // Particles
+  for (const p of particles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.life;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // Ripples
+  for (const r of ripples) {
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+    ctx.strokeStyle = r.color;
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = r.life * 0.8;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // Floating texts
+  for (const t of floatingTexts) {
+    ctx.font = `bold 20px system-ui`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = t.color;
+    ctx.globalAlpha = t.life;
+    ctx.fillText(t.text, t.x, t.y);
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ─── Block squish animation ───────────────────────────────────────────────────
+function updateBlockSquish() {
+  for (const b of blocks) {
+    if (b.scaleAnim > 0) {
+      b.scaleAnim -= 0.08;
+      if (b.scaleAnim < 0) b.scaleAnim = 0;
+      b.scaleY = 1 - Math.sin(b.scaleAnim * Math.PI) * 0.15;
+    } else {
+      b.scaleY = 1;
+    }
+  }
+}
+
+// ─── Camera ───────────────────────────────────────────────────────────────────
+function updateCamera() {
+  const targetBlock = blocks[currentBlockIdx];
+  if (!targetBlock) return;
+  const s = toScreen(targetBlock.wx, targetBlock.wy, 0);
+  targetCameraX = s.x;
+  targetCameraY = s.y;
+
+  cameraX += (targetCameraX - cameraX) * CFG.lerpSpeed;
+  cameraY += (targetCameraY - cameraY) * CFG.lerpSpeed;
+}
+
+// ─── Jump physics ─────────────────────────────────────────────────────────────
+function startJump() {
+  if (state !== 'pressing') return;
+  pressActive = false;
+
+  const nextBlock = blocks[currentBlockIdx + 1];
+  if (!nextBlock) return;
+
+  const dist = power / CFG.maxPower * CFG.maxDist;
+  const dx = nextBlock.wx - player.wx;
+  const dy = nextBlock.wy - player.wy;
+  const totalDist = Math.sqrt(dx * dx + dy * dy) * CFG.tileW;
+
+  // Direction towards next block
+  const angle = Math.atan2(dy * CFG.tileH, dx * CFG.tileW);
+
+  // Horizontal speed in world units/frame
+  const speed = dist / 40; // 40 frames of flight
+  const springBoost = (blocks[currentBlockIdx].type === 2) ? 1.4 : 1;
+  const vwx = Math.cos(angle) * speed * springBoost / CFG.tileW;
+  const vwy = Math.sin(angle) * speed * springBoost / CFG.tileH;
+
+  // Vertical: parabolic, peak at frame 20
+  const flightFrames = 40;
+  const peakZ = CFG.jumpHeight * (1 + power / CFG.maxPower * 0.5) * (springBoost);
+  const vz0 = peakZ / (flightFrames / 2);
+  const gravZ = (2 * peakZ) / (flightFrames / 2 * flightFrames / 2);
+
+  player.vwx = vwx;
+  player.vwy = vwy;
+  player.vz = vz0;
+  player.gravZ = gravZ;
+  player.startWx = player.wx;
+  player.startWy = player.wy;
+  player.jumpPower = power;
+
+  // Stretch animation
+  player.squishX = -0.15;
+  player.squishY = 0.25;
+
+  state = 'jumping';
+  power = 0;
+}
+
+function updateJump() {
+  if (state !== 'jumping') return;
+
+  // Move horizontally
+  player.wx += player.vwx;
+  player.wy += player.vwy;
+
+  // Move vertically (z)
+  player.wz += player.vz;
+  player.vz -= player.gravZ;
+
+  // Gradually normalize squish during flight
+  const lerpAmt = 0.1;
+  player.squishX += (-player.squishX) * lerpAmt * 0.5;
+  player.squishY += (-player.squishY) * lerpAmt * 0.5;
+
+  // Stretch body while going up, compress while going down
+  const vertStretch = player.vz > 0 ? 0.2 : -0.1;
+  player.squishY = vertStretch * Math.abs(player.vz) / 8;
+  player.squishX = -player.squishY * 0.5;
+
+  // Landing check
+  if (player.wz <= 0) {
+    player.wz = 0;
+    player.vz = 0;
+    player.squishX = 0.3;
+    player.squishY = -0.3;
+
+    // Reset squish after delay
+    setTimeout(() => {
+      player.squishX = 0;
+      player.squishY = 0;
+    }, 200);
+
+    // Check landing
+    checkLanding();
+  }
+}
+
+function checkLanding() {
+  const nextBlock = blocks[currentBlockIdx + 1];
+  if (!nextBlock) { endGame(); return; }
+
+  const hw = blockHalfW(nextBlock);
+  const hh = blockHalfH(nextBlock);
+
+  const dx = player.wx - nextBlock.wx;
+  const dy = player.wy - nextBlock.wy;
+
+  // Check if within block bounds (isometric top face is a rhombus)
+  // For axis-aligned rhombus: |dx/hw| + |dy/hh| <= 1
+  const inBlock = (Math.abs(dx) / hw + Math.abs(dy) / hh) <= 1.0;
+
+  const ps = worldToCanvas(player.wx, player.wy, 0);
+
+  if (inBlock) {
+    // Landed!
+    currentBlockIdx++;
+    player.wx = player.wx; // keep position
+    player.wy = player.wy;
+
+    // Block squish
+    nextBlock.scaleAnim = 1;
+
+    // Score calculation
+    const distToCenter = Math.sqrt(dx * dx + dy * dy) * CFG.tileW;
+    const isPerfect = distToCenter < CFG.centerRadius * (hw * 2);
+
+    let points = 1;
+    if (isPerfect) {
+      consecutivePerfect++;
+      combo = Math.min(consecutivePerfect + 1, 8);
+      points = 2 * combo;
+      spawnPerfectBurst(ps.x, ps.y);
+      spawnFloatingText(ps.x, ps.y - 30, `完美！×${combo}`, '#ffd700');
+    } else {
+      consecutivePerfect = 0;
+      combo = 1;
+      points = 1;
+      spawnParticles(ps.x, ps.y, 8, '#00ccff', 3);
+    }
+
+    // Special blocks
+    if (nextBlock.type === 1) {
+      // Music box
+      points += 10;
+      spawnParticles(ps.x, ps.y - 20, 16, '#ffd700', 5);
+      spawnFloatingText(ps.x, ps.y - 50, '+10 音乐盒！', '#ffd700');
+      spawnRipple(ps.x, ps.y, '#ffd700');
+    } else if (nextBlock.type === 2) {
+      spawnRipple(ps.x, ps.y, '#00ff88');
+    }
+
+    score += points;
+    if (score > bestScore) {
+      bestScore = score;
+      localStorage.setItem('jumpBest', bestScore);
+    }
+
+    updateScoreUI();
+
+    // Generate next block if needed
+    while (blocks.length < currentBlockIdx + 5) {
+      blocks.push(genNextBlock(blocks[blocks.length - 1], blocks.length));
+    }
+
+    state = 'playing';
+  } else {
+    // Missed!
+    spawnParticles(ps.x, ps.y, 16, '#ff4466', 5);
+    endGame();
+  }
+}
+
+// ─── Game control ─────────────────────────────────────────────────────────────
+function initGame() {
+  score = 0;
+  combo = 1;
+  consecutivePerfect = 0;
+  power = 0;
+  pressActive = false;
+  particles = [];
+  floatingTexts = [];
+  ripples = [];
+
+  initBlocks();
+  currentBlockIdx = 0;
+
+  const b0 = blocks[0];
+  player = {
+    wx: b0.wx,
+    wy: b0.wy,
+    wz: 0,
+    vwx: 0,
+    vwy: 0,
+    vz: 0,
+    gravZ: 0,
+    squishX: 0,
+    squishY: 0,
+    jumpPower: 0,
+  };
+
+  // Set camera to starting position
+  const s = toScreen(b0.wx, b0.wy, 0);
+  cameraX = s.x;
+  cameraY = s.y;
+  targetCameraX = s.x;
+  targetCameraY = s.y;
+
+  updateScoreUI();
+  state = 'playing';
+}
+
+function endGame() {
+  state = 'dead';
+
+  // Show overlay after brief delay
+  setTimeout(() => {
+    showGameOver();
+  }, 800);
+}
+
+function showGameOver() {
+  const overlay = document.getElementById('overlay');
+  overlay.innerHTML = `
+    <div class="overlay-title">游戏结束</div>
+    <div class="overlay-sub">挑战更高分吧！</div>
+    <div class="score-display">
+      <div class="s-label">本次得分</div>
+      <div class="s-val">${score}</div>
+      <div class="s-best">最高分：${bestScore}</div>
+    </div>
+    <div class="ad-wrap">
+      <ins class="adsbygoogle"
+           style="display:block;width:300px;height:60px"
+           data-ad-client="ca-pub-4328689115224962"
+           data-ad-slot="7765106927"
+           data-ad-format="horizontal"></ins>
+    </div>
+    <button class="btn-restart" id="restartBtn">再来一局</button>
+  `;
+  overlay.classList.remove('hidden');
+
+  // Init ad
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    overlay.classList.add('hidden');
+    initGame();
+  });
+}
+
+function updateScoreUI() {
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('bestDisplay').textContent = bestScore;
+  document.getElementById('comboDisplay').textContent = `×${combo}`;
+  document.getElementById('mScoreDisplay').textContent = score;
+  document.getElementById('mBestDisplay').textContent = bestScore;
+  document.getElementById('mComboDisplay').textContent = `×${combo}`;
+}
+
+// ─── Input handling ────────────────────────────────────────────────────────────
+function onPressStart(e) {
+  if (state !== 'playing') return;
+  e.preventDefault();
+  pressActive = true;
+  pressStart = Date.now();
+  power = 0;
+  state = 'pressing';
+}
+
+function onPressEnd(e) {
+  if (state !== 'pressing') return;
+  e.preventDefault();
+  startJump();
+}
+
+canvas.addEventListener('mousedown', onPressStart);
+canvas.addEventListener('mouseup', onPressEnd);
+canvas.addEventListener('touchstart', onPressStart, { passive: false });
+canvas.addEventListener('touchend', onPressEnd, { passive: false });
+
+// Also allow pressing anywhere on mobile
+document.addEventListener('touchstart', (e) => {
+  if (window.innerWidth <= 600 && state === 'playing') {
+    onPressStart(e);
+  }
+}, { passive: false });
+
+document.addEventListener('touchend', (e) => {
+  if (window.innerWidth <= 600 && state === 'pressing') {
+    onPressEnd(e);
+  }
+}, { passive: false });
+
+// ─── Main game loop ───────────────────────────────────────────────────────────
+function gameLoop() {
+  // Update power
+  if (state === 'pressing' && pressActive) {
+    power = Math.min(CFG.maxPower, power + CFG.powerRate);
+    // Squish player based on power
+    player.squishY = -(power / CFG.maxPower) * 0.35;
+    player.squishX = -player.squishY * 0.5;
+  }
+
+  // Update jump
+  if (state === 'jumping') {
+    updateJump();
+  }
+
+  // Update camera
+  updateCamera();
+
+  // Update animations
+  updateBlockSquish();
+  updateEffects();
+
+  // Draw
+  drawBackground();
+
+  // Draw blocks (back to front for correct z-order)
+  // Sort blocks by wx + wy (painter's algorithm)
+  const visibleBlocks = blocks.slice(
+    Math.max(0, currentBlockIdx - 2),
+    currentBlockIdx + 6
+  );
+  visibleBlocks.sort((a, b) => (a.wx + a.wy) - (b.wx + b.wy));
+  for (const b of visibleBlocks) {
+    drawBlock(b);
+  }
+
+  // Draw charge ring
+  drawChargeRing();
+
+  // Draw player
+  if (state !== 'dead') {
+    drawPlayer();
+  }
+
+  // Draw effects on top
+  drawEffects();
+
+  // Draw power bar
+  drawPowerBar();
+
+  frameId = requestAnimationFrame(gameLoop);
+}
+
+// ─── Start ────────────────────────────────────────────────────────────────────
+// Init best score display
+document.getElementById('bestDisplay').textContent = bestScore;
+document.getElementById('mBestDisplay').textContent = bestScore;
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('overlay').classList.add('hidden');
+  initGame();
+  if (frameId) cancelAnimationFrame(frameId);
+  gameLoop();
+});
+
+// Start the render loop (idle mode)
+gameLoop();
+
+// Handle canvas resize for mobile
+function resizeCanvas() {
+  if (window.innerWidth <= 600) {
+    const availH = window.innerHeight - 52;
+    const availW = window.innerWidth;
+    // Keep aspect ratio 480:620
+    const scale = Math.min(availW / 480, availH / 620);
+    canvas.style.width = (480 * scale) + 'px';
+    canvas.style.height = (620 * scale) + 'px';
+  } else {
+    canvas.style.width = '';
+    canvas.style.height = '';
+  }
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+</script>
+</body>
+</html>

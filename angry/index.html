@@ -456,7 +456,7 @@ function spawnNextBird() {
     type, x: SLING_X, y: SLING_Y - info.radius - 4,
     vx:0, vy:0, r: info.radius,
     color: info.color, hiColor: info.hiColor, mass: info.mass,
-    alive: true, flying: false, activated: false,
+    alive: true, flying: false, launched: false, activated: false,
     angle: 0, trail: []
   };
 }
@@ -1142,8 +1142,8 @@ function gameLoop(ts) {
     });
   });
 
-  // Check if bird settled
-  if (activeBird && !activeBird.flying && activeBird.alive) {
+  // Check if bird settled (only after it has been launched)
+  if (activeBird && activeBird.launched && !activeBird.flying && activeBird.alive) {
     waitTimer--;
     if (waitTimer <= 0) {
       activeBird = null;
@@ -1151,7 +1151,7 @@ function gameLoop(ts) {
       spawnNextBird();
     }
   }
-  if (activeBird && !activeBird.alive) {
+  if (activeBird && activeBird.launched && !activeBird.alive) {
     waitTimer--;
     if (waitTimer <= 0) {
       activeBird = null;
@@ -1164,12 +1164,12 @@ function gameLoop(ts) {
   const alivePigs = pigs.filter(p=>p.alive).length;
   if (alivePigs === 0) {
     // Win!
-    const remaining = birds.length + (activeBird ? 1 : 0);
+    const remaining = birds.length; // birds[] still includes active bird (not yet shifted)
     score += remaining * 10000;
     endLevel(true);
     return;
   }
-  if (!activeBird && birds.length === 0 && splitBirds.length === 0) {
+  if (!activeBird && birds.length === 0 && splitBirds.length === 0 && alivePigs > 0) {
     // all birds used, still pigs alive
     // wait for blocks to settle
     const anyMoving = blocks.some(b=>b.alive && (Math.abs(b.vx)>0.1||Math.abs(b.vy)>0.1));
@@ -1362,6 +1362,7 @@ function onUp(e) {
   activeBird.vx = Math.cos(angle)*speed;
   activeBird.vy = Math.sin(angle)*speed;
   activeBird.flying = true;
+  activeBird.launched = true;
   trailPoints = [];
   dragStart = null;
   dragCurrent = null;
