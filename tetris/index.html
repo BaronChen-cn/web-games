@@ -432,19 +432,19 @@
   top: 10px;
   left: 10px;
   z-index: 99999;
-  background: rgba(7,8,15,0.82);
-  border: 1px solid rgba(255,255,255,0.18);
+  width: 32px;
+  height: 32px;
+  background: rgba(7,8,15,0.75);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 8px;
-  padding: 5px 11px;
-  color: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.5px;
   backdrop-filter: blur(6px);
-  transition: background 0.2s;
-  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
 }
-#back-home:hover { background: rgba(255,255,255,0.12); }
+#back-home:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
 
 #more-games {
   position: fixed;
@@ -546,7 +546,7 @@
 </script>
 </head>
 <body>
-<a href="../" id="back-home" aria-label="返回游戏中心">🏠 游戏中心</a>
+<a href="../" id="back-home" title="返回游戏中心"><svg viewBox="0 0 24 24" width="16" height="16" fill="rgba(255,255,255,0.8)" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
 <div id="app">
 
   <!-- ===== LEFT PANEL (desktop) ===== -->
