@@ -507,7 +507,7 @@ const MAZE_TEMPLATE = [
   [1,2,1,1,2,1,2,1,1,1,1,1,1,1,2,1,2,1,1,2,1],
   [1,2,2,2,2,1,2,2,2,2,1,2,2,2,2,1,2,2,2,2,1],
   [1,1,1,1,2,1,1,1,0,0,0,0,0,1,1,1,2,1,1,1,1],
-  [1,1,1,1,2,1,0,0,0,1,1,1,0,0,0,1,2,1,1,1,1],
+  [1,1,1,1,2,1,0,0,0,1,0,1,0,0,0,1,2,1,1,1,1],
   [1,1,1,1,2,1,0,1,1,4,4,4,1,1,0,1,2,1,1,1,1],
   [0,0,0,0,2,0,0,1,4,4,4,4,4,1,0,0,2,0,0,0,0],
   [1,1,1,1,2,1,0,1,1,1,1,1,1,1,0,1,2,1,1,1,1],
@@ -723,7 +723,8 @@ function isPassable(col, row, excludeRow) {
 function isWall(col, row) {
   col = ((col % COLS) + COLS) % COLS;
   if (row < 0 || row >= ROWS) return true;
-  return maze[row][col] === 1;
+  const cell = maze[row][col];
+  return cell === 1 || cell === 4; // treat ghost house cells as walls for player
 }
 
 // ─────────────── GHOST AI ───────────────
@@ -1035,9 +1036,9 @@ function update(dt) {
       g.houseTimer -= dt;
       if (g.houseTimer <= 0) {
         g.state = chasing ? 'chase' : 'scatter';
-        g.col = 10; g.row = 8;
+        g.col = 10; g.row = 7;
         g.x = 10 * CELL + CELL / 2;
-        g.y = 8 * CELL + CELL / 2;
+        g.y = 7 * CELL + CELL / 2;
         g.dir = DIR.LEFT;
       }
     }
@@ -1174,12 +1175,14 @@ function updateGhosts(dt) {
       g.col = ((gc % COLS) + COLS) % COLS;
       g.row = gr;
 
-      // If eaten and reached house
+      // If eaten and reached house door
       if (g.state === 'eaten' && g.col === 10 && g.row === 9) {
-        g.state = chasing ? 'chase' : 'scatter';
+        g.state = 'house';
+        g.houseTimer = 1500; // brief pause before re-releasing
         g.col = 10; g.row = 10;
         g.x = 10 * CELL + CELL/2;
         g.y = 10 * CELL + CELL/2;
+        g.dir = DIR.NONE;
         continue;
       }
 
