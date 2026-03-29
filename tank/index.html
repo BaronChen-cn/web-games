@@ -405,6 +405,64 @@ kbd {
   #mobile-stats { display: none; }
   #virtual-pad { display: none; }
 }
+
+#back-home {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 99999;
+  background: rgba(7,8,15,0.82);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 5px 11px;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+#back-home:hover { background: rgba(255,255,255,0.12); }
+
+#more-games {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: rgba(7,8,15,0.92);
+  border-top: 1px solid rgba(255,255,255,0.10);
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  backdrop-filter: blur(8px);
+}
+#more-games::-webkit-scrollbar { display: none; }
+#more-games .more-label {
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  white-space: nowrap;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+#more-games a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 12px;
+  white-space: nowrap;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+#more-games a:hover { background: rgba(255,255,255,0.14); color: #fff; }
 </style>
 <script type="application/ld+json">
 {
@@ -467,6 +525,7 @@ kbd {
 </script>
 </head>
 <body>
+<a href="../" id="back-home" aria-label="返回游戏中心">🏠 游戏中心</a>
 
 <!-- Mobile Stats Bar -->
 <div id="mobile-stats">
@@ -1938,5 +1997,13 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 document.addEventListener('DOMContentLoaded', init);
 })();
 </script>
+<nav id="more-games" aria-label="更多游戏">
+  <span class="more-label">更多游戏</span>
+  <a href="../contra/">🔫魂斗罗</a>
+  <a href="../invaders/">👽太空侵略者</a>
+  <a href="../pvz/">🌻植物大战僵尸</a>
+  <a href="../shooter/">🚀飞行射击</a>
+  <a href="../platform/">🏃平台跳跃</a>
+</nav>
 </body>
 </html>
