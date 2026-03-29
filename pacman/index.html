@@ -1273,6 +1273,8 @@ function gameLoop(ts) {
   const dt = Math.min(ts - lastTime, 50); // cap at 50ms
   lastTime = ts;
 
+  update(dt);
+
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
   ctx.fillStyle = '#07080f';
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
