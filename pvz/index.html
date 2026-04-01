@@ -262,30 +262,30 @@ const PLANT_DEFS = [
 
 // Zombie definitions
 const ZOMBIE_DEFS = {
-  normal:  { name:'普通僵尸', hp:100,  speed:30,  dmg:1,  armor:0,   score:10  },
-  cone:    { name:'路障僵尸', hp:180,  speed:30,  dmg:1,  armor:80,  score:20  },
-  bucket:  { name:'铁桶僵尸', hp:340,  speed:20,  dmg:1,  armor:200, score:40  },
-  jumper:  { name:'跳跳僵尸', hp:120,  speed:38,  dmg:1,  armor:0,   score:25  },
+  normal:  { name:'普通僵尸', hp:80,   speed:24,  dmg:1,  armor:0,   score:10  },
+  cone:    { name:'路障僵尸', hp:150,  speed:24,  dmg:1,  armor:60,  score:20  },
+  bucket:  { name:'铁桶僵尸', hp:280,  speed:16,  dmg:1,  armor:160, score:40  },
+  jumper:  { name:'跳跳僵尸', hp:100,  speed:30,  dmg:1,  armor:0,   score:25  },
 };
 
 // Level definitions: waves array, each wave is array of {type,count,interval}
 const LEVELS = [
   { // Level 1
     waves:[
-      [{type:'normal',count:3,interval:2500}],
-      [{type:'normal',count:4,interval:2200}],
-      [{type:'normal',count:3,interval:2000},{type:'cone',count:1,interval:3000}],
-      [{type:'normal',count:5,interval:2000},{type:'cone',count:2,interval:2500}],
-      [{type:'normal',count:8,interval:1500},{type:'cone',count:3,interval:2000}],
+      [{type:'normal',count:2,interval:3500}],
+      [{type:'normal',count:3,interval:3000}],
+      [{type:'normal',count:3,interval:2800},{type:'cone',count:1,interval:4000}],
+      [{type:'normal',count:4,interval:2500},{type:'cone',count:1,interval:3500}],
+      [{type:'normal',count:5,interval:2000},{type:'cone',count:2,interval:3000}],
     ]
   },
   { // Level 2
     waves:[
-      [{type:'normal',count:4,interval:2200},{type:'cone',count:1,interval:3000}],
-      [{type:'normal',count:5,interval:2000},{type:'cone',count:2,interval:2500}],
-      [{type:'cone',count:4,interval:2200},{type:'jumper',count:1,interval:3500}],
-      [{type:'normal',count:6,interval:1800},{type:'cone',count:3,interval:2200},{type:'bucket',count:1,interval:4000}],
-      [{type:'normal',count:8,interval:1500},{type:'cone',count:4,interval:2000},{type:'bucket',count:2,interval:3500}],
+      [{type:'normal',count:3,interval:2800},{type:'cone',count:1,interval:3500}],
+      [{type:'normal',count:4,interval:2500},{type:'cone',count:2,interval:3000}],
+      [{type:'cone',count:3,interval:2500},{type:'jumper',count:1,interval:4000}],
+      [{type:'normal',count:5,interval:2000},{type:'cone',count:2,interval:2500},{type:'bucket',count:1,interval:4500}],
+      [{type:'normal',count:6,interval:1800},{type:'cone',count:3,interval:2200},{type:'bucket',count:2,interval:4000}],
     ]
   },
   { // Level 3
@@ -332,7 +332,7 @@ const ctx = canvas.getContext('2d');
 let W, H, offsetX, offsetY;
 
 let gameState = 'menu'; // menu, playing, paused, win, lose
-let sun = 150;
+let sun = 200;
 let lives = 3;
 let currentLevel = 0;
 let currentWave = 0;
@@ -351,9 +351,9 @@ let notifications = [];
 // Timers
 let lastTime = 0;
 let sunDropTimer = 0;
-let sunDropInterval = 6000; // ms
+let sunDropInterval = 4500; // ms
 let waveTimer = 0;
-let waveDelay = 20000; // ms between waves
+let waveDelay = 25000; // ms between waves
 let waveActive = false;
 let waveSpawnQueue = [];
 let waveSpawnTimer = 0;
@@ -1490,7 +1490,7 @@ function update(dt){
       // Sunflower produces sun
       if(p.type==='sunflower'){
         p.sunTimer+=dt;
-        if(p.sunTimer>=25000){
+        if(p.sunTimer>=15000){
           p.sunTimer=0;
           sunDrops.push(createSunDrop(p.x,p.y,true));
         }
@@ -1806,7 +1806,7 @@ function startLevel(){
   hideOverlay();
   gameState='playing';
   lives=3;
-  sun=150;
+  sun=200;
   score=score||0;
   initGrid();
   zombies=[];
@@ -1816,7 +1816,7 @@ function startLevel(){
   explosions=[];
   notifications=[];
   sunDropTimer=0;
-  sunDropInterval=6000;
+  sunDropInterval=4500;
   waveActive=false;
   allWavesDone=false;
   currentWave=0;
