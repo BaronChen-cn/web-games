@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Stack 叠叠乐 - 免费在线叠方块游戏，手机电脑均可玩</title>
+<meta name="description" content="免费在线玩 Stack 叠叠乐，精准点击叠砖块，挑战最高层数！无需下载，手机电脑均可畅玩。">
+<meta name="keywords" content="Stack叠叠乐,叠方块游戏,在线叠叠乐,免费叠叠乐,手机小游戏">
+<link rel="canonical" href="https://play.mini-games.win/stack/">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-X9Q3GDPLZC');</script>
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962" crossorigin="anonymous"></script>
+<!-- Baidu push -->
+<script>(function(){var bp=document.createElement('script');var curProtocol=window.location.protocol.split(':')[0];if(curProtocol==='https'){bp.src='https://zz.bdstatic.com/linksubmit/push.js';}else{bp.src='http://push.zhanzhang.baidu.com/push.js';}var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(bp,s);})();</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":["SoftwareApplication","VideoGame"],"name":"Stack 叠叠乐","applicationCategory":"GameApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"url":"https://play.mini-games.win/stack/"}
+</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:100%;height:100%;overflow:hidden;background:#07080f;font-family:'Segoe UI',system-ui,sans-serif;}
+  canvas{display:block;touch-action:none;}
+
+  #back-home{position:fixed;top:10px;left:10px;z-index:99999;width:32px;height:32px;background:rgba(7,8,15,0.75);border:1px solid rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;backdrop-filter:blur(6px);transition:background 0.2s,border-color 0.2s;}
+  #back-home:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);}
+  #more-games{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:rgba(7,8,15,0.92);border-top:1px solid rgba(255,255,255,0.10);padding:6px 14px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;backdrop-filter:blur(8px);}
+  #more-games::-webkit-scrollbar{display:none;}
+  #more-games .more-label{color:rgba(255,255,255,0.4);font-size:11px;white-space:nowrap;margin-right:4px;flex-shrink:0;}
+  #more-games a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:12px;white-space:nowrap;padding:3px 9px;border-radius:6px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);transition:background 0.2s;flex-shrink:0;}
+  #more-games a:hover{background:rgba(255,255,255,0.14);color:#fff;}
+
+  #ui{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;}
+
+  /* Score display */
+  #score-display{
+    position:fixed;top:16px;left:50%;transform:translateX(-50%);
+    z-index:200;text-align:center;pointer-events:none;
+  }
+  #score-num{
+    font-size:72px;font-weight:900;line-height:1;
+    color:#fff;
+    text-shadow:0 0 20px rgba(120,180,255,0.8),0 0 40px rgba(120,180,255,0.4);
+    letter-spacing:-2px;
+  }
+  #score-label{font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-top:2px;}
+  #best-display{
+    position:fixed;top:16px;right:16px;z-index:200;text-align:right;pointer-events:none;
+  }
+  #best-num{font-size:22px;font-weight:700;color:rgba(255,200,80,0.9);text-shadow:0 0 12px rgba(255,180,0,0.5);}
+  #best-label{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;}
+
+  /* Overlay */
+  #overlay{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(7,8,15,0.88);backdrop-filter:blur(4px);
+    transition:opacity 0.4s;
+  }
+  #overlay.hidden{opacity:0;pointer-events:none;}
+
+  .overlay-title{
+    font-size:52px;font-weight:900;letter-spacing:-1px;
+    background:linear-gradient(135deg,#6ee7f7,#a78bfa,#f472b6);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    text-shadow:none;margin-bottom:8px;
+  }
+  .overlay-sub{font-size:14px;color:rgba(255,255,255,0.45);letter-spacing:2px;margin-bottom:48px;}
+  .overlay-score-wrap{margin-bottom:36px;text-align:center;display:none;}
+  .overlay-score-wrap.visible{display:block;}
+  .overlay-final-score{font-size:80px;font-weight:900;color:#fff;line-height:1;text-shadow:0 0 30px rgba(120,180,255,0.7);}
+  .overlay-final-label{font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:3px;margin-top:4px;}
+  .overlay-best-wrap{font-size:14px;color:rgba(255,200,80,0.8);margin-top:8px;margin-bottom:32px;display:none;}
+  .overlay-best-wrap.visible{display:block;}
+
+  .play-btn{
+    pointer-events:all;cursor:pointer;
+    padding:14px 48px;border-radius:50px;border:none;
+    font-size:18px;font-weight:700;letter-spacing:1px;
+    background:linear-gradient(135deg,#6ee7f7,#a78bfa);
+    color:#07080f;
+    box-shadow:0 0 30px rgba(110,231,247,0.4),0 4px 20px rgba(0,0,0,0.4);
+    transition:transform 0.15s,box-shadow 0.15s;
+  }
+  .play-btn:hover{transform:scale(1.06);box-shadow:0 0 40px rgba(110,231,247,0.6),0 4px 24px rgba(0,0,0,0.5);}
+  .play-btn:active{transform:scale(0.97);}
+
+  .hint-text{margin-top:20px;font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:1px;}
+
+  /* Flash overlay for perfect */
+  #flash{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:600;pointer-events:none;
+    background:rgba(180,255,255,0.0);
+    transition:background 0.05s;
+  }
+
+  /* Perfect text */
+  #perfect-text{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    z-index:601;pointer-events:none;
+    font-size:42px;font-weight:900;
+    color:#fff;
+    text-shadow:0 0 20px rgba(110,231,247,1),0 0 40px rgba(110,231,247,0.6);
+    opacity:0;transition:opacity 0.1s;
+    letter-spacing:2px;
+  }
+
+  /* Layer counter on side */
+  #layer-display{
+    position:fixed;top:50%;right:16px;transform:translateY(-50%);
+    z-index:200;pointer-events:none;text-align:right;
+  }
+  #layer-num{font-size:16px;font-weight:700;color:rgba(255,255,255,0.35);}
+  #layer-label{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<a href="../" id="back-home" title="返回游戏中心"><svg viewBox="0 0 24 24" width="16" height="16" fill="rgba(255,255,255,0.8)" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="score-display">
+  <div id="score-num">0</div>
+  <div id="score-label">SCORE</div>
+</div>
+<div id="best-display">
+  <div id="best-num">0</div>
+  <div id="best-label">BEST</div>
+</div>
+<div id="layer-display">
+  <div id="layer-num">1</div>
+  <div id="layer-label">LAYER</div>
+</div>
+
+<div id="flash"></div>
+<div id="perfect-text">PERFECT!</div>
+
+<div id="overlay">
+  <div class="overlay-title">STACK</div>
+  <div class="overlay-sub">叠叠乐</div>
+  <div class="overlay-score-wrap" id="finalScoreWrap">
+    <div class="overlay-final-score" id="finalScore">0</div>
+    <div class="overlay-final-label">FINAL SCORE</div>
+  </div>
+  <div class="overlay-best-wrap" id="newBestWrap">NEW BEST!</div>
+  <button class="play-btn" id="playBtn">开始游戏</button>
+  <div class="hint-text">点击 / 空格 / 回车 放下方块</div>
+</div>
+
+<nav id="more-games" aria-label="更多游戏">
+  <span class="more-label">更多游戏</span>
+  <a href="../flappy/">🐦FlappyBird</a>
+  <a href="../tetris/">🧩俄罗斯方块</a>
+  <a href="../pvz/">🌻植物大战僵尸</a>
+  <a href="../pacman/">👾吃豆人</a>
+  <a href="../snake/">🐍贪吃蛇</a>
+</nav>
+
+<script>
+(function(){
+'use strict';
+
+// ── Canvas setup ──────────────────────────────────────────────────────────────
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+
+function resize(){
+  dpr = window.devicePixelRatio || 1;
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+window.addEventListener('resize', () => { resize(); if(state !== 'playing') drawIdle(); });
+
+// ── Color palette (gradient pairs cycling) ───────────────────────────────────
+const PALETTES = [
+  ['#3b82f6','#6ee7f7'],  // blue → cyan
+  ['#8b5cf6','#a78bfa'],  // violet → purple
+  ['#ec4899','#f472b6'],  // pink → rose
+  ['#f97316','#fb923c'],  // orange
+  ['#eab308','#fde68a'],  // yellow
+  ['#10b981','#6ee7b7'],  // green → teal
+  ['#f43f5e','#fb7185'],  // red → pink
+  ['#06b6d4','#67e8f9'],  // cyan
+];
+
+function getPalette(layer){
+  return PALETTES[layer % PALETTES.length];
+}
+
+// ── Game constants ────────────────────────────────────────────────────────────
+const BLOCK_HEIGHT = 28;
+const BOTTOM_MARGIN = 44; // more-games bar
+const INITIAL_BLOCK_W = () => Math.min(W * 0.55, 240);
+const MIN_BLOCK_W = 20;
+const STACK_COUNT = () => Math.floor((H - 120 - BOTTOM_MARGIN) / BLOCK_HEIGHT); // visible layers
+const BASE_SPEED = 3.2;
+const MAX_SPEED = 11;
+const SPEED_STEP = 0.18; // per layer
+const PERFECT_THRESHOLD = 4; // px
+
+// ── Game state ────────────────────────────────────────────────────────────────
+let state = 'idle'; // idle | playing | dead
+let score = 0;
+let bestScore = parseInt(localStorage.getItem('stack_best') || '0');
+let layers = [];       // placed blocks: {x, w, y_logical, color pair index}
+let currentBlock = {}; // moving block
+let debris = [];       // falling pieces
+let particles = [];    // perfect particles
+let cameraY = 0;       // logical camera offset (blocks scroll down)
+let targetCameraY = 0;
+let animId = null;
+let lastTime = 0;
+let perfectFlashTimer = 0;
+
+// ── UI refs ───────────────────────────────────────────────────────────────────
+const overlay = document.getElementById('overlay');
+const playBtn = document.getElementById('playBtn');
+const scoreNum = document.getElementById('score-num');
+const bestNum = document.getElementById('best-num');
+const layerNum = document.getElementById('layer-num');
+const finalScoreEl = document.getElementById('finalScore');
+const finalScoreWrap = document.getElementById('finalScoreWrap');
+const newBestWrap = document.getElementById('newBestWrap');
+const flashEl = document.getElementById('flash');
+const perfectTextEl = document.getElementById('perfect-text');
+
+bestNum.textContent = bestScore;
+
+// ── Init / Reset ──────────────────────────────────────────────────────────────
+function initGame(){
+  score = 0;
+  layers = [];
+  debris = [];
+  particles = [];
+  cameraY = 0;
+  targetCameraY = 0;
+  perfectFlashTimer = 0;
+
+  // Base block (ground)
+  const bw = INITIAL_BLOCK_W();
+  const bx = (W - bw) / 2;
+  layers.push({ x: bx, w: bw, layer: 0, colorIdx: 0 });
+
+  spawnBlock();
+  updateScoreUI();
+}
+
+function spawnBlock(){
+  const prevLayer = layers[layers.length - 1];
+  const layer = layers.length;
+  const colorIdx = layer % PALETTES.length;
+  const bw = prevLayer.w; // same width as last placed
+  // direction: even layers go right-to-left, odd go left-to-right
+  const goingRight = layer % 2 === 1;
+  const startX = goingRight ? -bw - 10 : W + 10;
+
+  currentBlock = {
+    x: startX,
+    w: bw,
+    layer: layer,
+    colorIdx: colorIdx,
+    goingRight: goingRight,
+    speed: Math.min(BASE_SPEED + SPEED_STEP * score, MAX_SPEED),
+  };
+}
+
+// ── Logical Y → screen Y ──────────────────────────────────────────────────────
+function layerToScreenY(layerIdx){
+  // layer 0 at bottom, stack grows up
+  const visibleLayers = STACK_COUNT();
+  const baseY = H - BOTTOM_MARGIN - BLOCK_HEIGHT; // bottom block screen y
+  return baseY - layerIdx * BLOCK_HEIGHT + cameraY;
+}
+
+// ── Drop block ────────────────────────────────────────────────────────────────
+function dropBlock(){
+  if(state !== 'playing') return;
+
+  const prev = layers[layers.length - 1];
+  const cur = currentBlock;
+
+  // overlap
+  const left = Math.max(cur.x, prev.x);
+  const right = Math.min(cur.x + cur.w, prev.x + prev.w);
+  const overlap = right - left;
+
+  if(overlap <= 0){
+    // complete miss → game over
+    gameOver();
+    return;
+  }
+
+  // Check cut ratio
+  const cutAmount = cur.w - overlap;
+  if(cutAmount > cur.w * 0.5){
+    gameOver();
+    return;
+  }
+
+  const isPerfect = cutAmount <= PERFECT_THRESHOLD;
+
+  let newX, newW;
+  if(isPerfect){
+    // snap to perfect
+    newX = prev.x;
+    newW = prev.w;
+    triggerPerfect();
+    score += 2;
+  } else {
+    newX = left;
+    newW = overlap;
+    score += 1;
+
+    // spawn debris
+    spawnDebris(cur, prev, left, right);
+  }
+
+  layers.push({ x: newX, w: newW, layer: cur.layer, colorIdx: cur.colorIdx });
+
+  // scroll camera up if stack is getting tall
+  const topLayer = layers.length - 1;
+  const visibleLayers = STACK_COUNT();
+  if(topLayer >= visibleLayers - 2){
+    targetCameraY = (topLayer - (visibleLayers - 3)) * BLOCK_HEIGHT;
+  }
+
+  updateScoreUI();
+  spawnBlock();
+}
+
+function spawnDebris(cur, prev, keepLeft, keepRight){
+  const [c1, c2] = getPalette(cur.colorIdx);
+  // left piece
+  if(cur.x < keepLeft){
+    debris.push({
+      x: cur.x, y: layerToScreenY(cur.layer),
+      w: keepLeft - cur.x, h: BLOCK_HEIGHT,
+      vx: -1.5 - Math.random(), vy: -1,
+      gravity: 0.4, alpha: 1,
+      c1, c2, rot: 0, rotV: (Math.random()-0.5)*0.08
+    });
+  }
+  // right piece
+  if(cur.x + cur.w > keepRight){
+    debris.push({
+      x: keepRight, y: layerToScreenY(cur.layer),
+      w: (cur.x + cur.w) - keepRight, h: BLOCK_HEIGHT,
+      vx: 1.5 + Math.random(), vy: -1,
+      gravity: 0.4, alpha: 1,
+      c1, c2, rot: 0, rotV: (Math.random()-0.5)*0.08
+    });
+  }
+}
+
+// ── Perfect effects ───────────────────────────────────────────────────────────
+function triggerPerfect(){
+  // Screen flash
+  flashEl.style.background = 'rgba(110,231,247,0.18)';
+  setTimeout(()=>{ flashEl.style.background = 'rgba(110,231,247,0)'; }, 180);
+
+  // Perfect text
+  perfectTextEl.style.opacity = '1';
+  setTimeout(()=>{ perfectTextEl.style.opacity = '0'; }, 700);
+
+  // Particles
+  const cx = W / 2;
+  const cy = layerToScreenY(currentBlock.layer) + BLOCK_HEIGHT / 2;
+  for(let i = 0; i < 36; i++){
+    const angle = (Math.PI * 2 * i) / 36 + Math.random() * 0.2;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 2,
+      alpha: 1, size: 3 + Math.random() * 3,
+      gravity: 0.12,
+      hue: 180 + Math.random() * 60
+    });
+  }
+}
+
+// ── Game over ─────────────────────────────────────────────────────────────────
+function gameOver(){
+  state = 'dead';
+  if(animId) cancelAnimationFrame(animId);
+
+  const isNewBest = score > bestScore;
+  if(isNewBest){
+    bestScore = score;
+    localStorage.setItem('stack_best', bestScore);
+    bestNum.textContent = bestScore;
+  }
+
+  finalScoreEl.textContent = score;
+  finalScoreWrap.classList.add('visible');
+  newBestWrap.classList.toggle('visible', isNewBest);
+  playBtn.textContent = '再来一局';
+  overlay.classList.remove('hidden');
+}
+
+// ── UI update ─────────────────────────────────────────────────────────────────
+function updateScoreUI(){
+  scoreNum.textContent = score;
+  bestNum.textContent = Math.max(score, bestScore);
+  layerNum.textContent = layers.length;
+}
+
+// ── Drawing helpers ───────────────────────────────────────────────────────────
+function drawBlock(x, y, w, h, colorIdx, alpha, shadow){
+  if(alpha <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  const [c1, c2] = getPalette(colorIdx);
+
+  // glow / shadow
+  if(shadow !== false){
+    ctx.shadowColor = c1;
+    ctx.shadowBlur = 14;
+  }
+
+  // gradient fill
+  const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+  grad.addColorStop(0, c1);
+  grad.addColorStop(1, c2);
+  ctx.fillStyle = grad;
+
+  // slight 3d top edge
+  const r = 4;
+  roundRect(ctx, x, y, w, h, r);
+  ctx.fill();
+
+  // top highlight stripe
+  ctx.shadowBlur = 0;
+  const hiGrad = ctx.createLinearGradient(x, y, x, y + h * 0.35);
+  hiGrad.addColorStop(0, 'rgba(255,255,255,0.22)');
+  hiGrad.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = hiGrad;
+  roundRect(ctx, x, y, w, h, r);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h);
+  ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r);
+  ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+// ── Main draw ─────────────────────────────────────────────────────────────────
+function draw(){
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#07080f');
+  bgGrad.addColorStop(1, '#0d1020');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid lines (subtle)
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+  ctx.lineWidth = 1;
+  const gridSpacing = 40;
+  for(let gx = 0; gx < W; gx += gridSpacing){
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+  }
+  for(let gy = 0; gy < H; gy += gridSpacing){
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+  }
+  ctx.restore();
+
+  if(state === 'idle') return;
+
+  // Placed layers
+  const topLayer = layers.length - 1;
+  for(let i = 0; i < layers.length; i++){
+    const lyr = layers[i];
+    const sy = layerToScreenY(i);
+    if(sy > H + BLOCK_HEIGHT || sy < -BLOCK_HEIGHT * 3) continue;
+
+    // fade older layers slightly
+    const distFromTop = topLayer - i;
+    const alpha = distFromTop > 20 ? 0.35 : 1 - distFromTop * 0.03;
+    drawBlock(lyr.x, sy, lyr.w, BLOCK_HEIGHT, lyr.colorIdx, alpha);
+  }
+
+  // Moving block
+  if(state === 'playing'){
+    const msy = layerToScreenY(currentBlock.layer);
+    drawBlock(currentBlock.x, msy, currentBlock.w, BLOCK_HEIGHT, currentBlock.colorIdx, 1);
+  }
+
+  // Debris
+  for(const d of debris){
+    ctx.save();
+    ctx.globalAlpha = d.alpha;
+    ctx.translate(d.x + d.w/2, d.y + d.h/2);
+    ctx.rotate(d.rot);
+    const dGrad = ctx.createLinearGradient(-d.w/2, -d.h/2, d.w/2, d.h/2);
+    dGrad.addColorStop(0, d.c1);
+    dGrad.addColorStop(1, d.c2);
+    ctx.fillStyle = dGrad;
+    ctx.shadowColor = d.c1;
+    ctx.shadowBlur = 8;
+    ctx.fillRect(-d.w/2, -d.h/2, d.w, d.h);
+    ctx.restore();
+  }
+
+  // Particles
+  for(const p of particles){
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = `hsla(${p.hue},90%,75%,1)`;
+    ctx.shadowColor = `hsl(${p.hue},90%,75%)`;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawIdle(){
+  ctx.clearRect(0, 0, W, H);
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#07080f');
+  bgGrad.addColorStop(1, '#0d1020');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// ── Game loop ─────────────────────────────────────────────────────────────────
+function loop(ts){
+  const dt = Math.min((ts - lastTime) / 16.67, 3); // normalized to 60fps
+  lastTime = ts;
+
+  // Move current block
+  if(state === 'playing'){
+    currentBlock.x += currentBlock.goingRight
+      ? currentBlock.speed * dt
+      : -currentBlock.speed * dt;
+
+    // Bounce off edges
+    if(currentBlock.goingRight && currentBlock.x > W + 10){
+      currentBlock.x = W + 10;
+      currentBlock.goingRight = false;
+    } else if(!currentBlock.goingRight && currentBlock.x + currentBlock.w < -10){
+      currentBlock.x = -currentBlock.w - 10;
+      currentBlock.goingRight = true;
+    }
+  }
+
+  // Camera smooth scroll
+  cameraY += (targetCameraY - cameraY) * 0.1 * dt;
+
+  // Update debris
+  for(let i = debris.length - 1; i >= 0; i--){
+    const d = debris[i];
+    d.x += d.vx * dt;
+    d.y += d.vy * dt;
+    d.vy += d.gravity * dt;
+    d.rot += d.rotV * dt;
+    d.alpha -= 0.018 * dt;
+    if(d.alpha <= 0) debris.splice(i, 1);
+  }
+
+  // Update particles
+  for(let i = particles.length - 1; i >= 0; i--){
+    const p = particles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vy += p.gravity * dt;
+    p.alpha -= 0.022 * dt;
+    p.size *= 0.985;
+    if(p.alpha <= 0) particles.splice(i, 1);
+  }
+
+  draw();
+  animId = requestAnimationFrame(loop);
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function handleAction(){
+  if(state === 'playing'){
+    dropBlock();
+  }
+}
+
+canvas.addEventListener('click', handleAction);
+canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); handleAction(); }, {passive:false});
+document.addEventListener('keydown', (e)=>{
+  if(e.code === 'Space' || e.code === 'Enter'){
+    e.preventDefault();
+    handleAction();
+  }
+});
+
+playBtn.addEventListener('click', ()=>{
+  finalScoreWrap.classList.remove('visible');
+  newBestWrap.classList.remove('visible');
+  overlay.classList.add('hidden');
+  playBtn.textContent = '开始游戏';
+
+  initGame();
+  state = 'playing';
+  lastTime = performance.now();
+  if(animId) cancelAnimationFrame(animId);
+  animId = requestAnimationFrame(loop);
+});
+
+// ── Initial render ────────────────────────────────────────────────────────────
+drawIdle();
+bestNum.textContent = bestScore;
+
+})();
+</script>
+</body>
+</html>

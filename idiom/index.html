@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成语接龙 - 免费在线成语接龙游戏，挑战你的成语量！</title>
+<meta name="description" content="免费在线玩成语接龙，系统给出成语，你来接龙！内置150+常见成语，限时挑战，看你能接多少个。无需下载。">
+<meta name="keywords" content="成语接龙,在线成语接龙,成语游戏,成语接龙游戏,免费成语游戏">
+<link rel="canonical" href="https://play.mini-games.win/idiom/">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X9Q3GDPLZC"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-X9Q3GDPLZC');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4328689115224962" crossorigin="anonymous"></script>
+<script>(function(){var bp=document.createElement('script');var curProtocol=window.location.protocol.split(':')[0];if(curProtocol==='https'){bp.src='https://zz.bdstatic.com/linksubmit/push.js';}else{bp.src='http://push.zhanzhang.baidu.com/push.js';}var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(bp,s);})();</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":["SoftwareApplication","VideoGame"],"name":"成语接龙","applicationCategory":"GameApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"url":"https://play.mini-games.win/idiom/"}
+</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#07080f;color:#fff;font-family:'PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 16px 80px;overflow-x:hidden}
+
+#back-home{position:fixed;top:10px;left:10px;z-index:99999;width:32px;height:32px;background:rgba(7,8,15,0.75);border:1px solid rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;backdrop-filter:blur(6px);transition:background 0.2s,border-color 0.2s;}
+#back-home:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);}
+#more-games{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:rgba(7,8,15,0.92);border-top:1px solid rgba(255,255,255,0.10);padding:6px 14px;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;backdrop-filter:blur(8px);}
+#more-games::-webkit-scrollbar{display:none;}
+#more-games .more-label{color:rgba(255,255,255,0.4);font-size:11px;white-space:nowrap;margin-right:4px;flex-shrink:0;}
+#more-games a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:12px;white-space:nowrap;padding:3px 9px;border-radius:6px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);transition:background 0.2s;flex-shrink:0;}
+#more-games a:hover{background:rgba(255,255,255,0.14);color:#fff;}
+
+/* Layout */
+.game-container{width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;gap:20px}
+
+/* Title */
+.game-title{font-size:26px;font-weight:700;letter-spacing:4px;text-shadow:0 0 20px #a78bfa,0 0 40px #7c3aed;color:#e9d5ff;margin-bottom:4px}
+
+/* Score row */
+.score-row{display:flex;gap:24px;align-items:center;justify-content:center;width:100%}
+.score-box{display:flex;flex-direction:column;align-items:center;gap:2px}
+.score-label{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px}
+.score-value{font-size:22px;font-weight:700;color:#a78bfa;text-shadow:0 0 12px #7c3aed}
+.best-value{color:#fbbf24;text-shadow:0 0 12px #d97706}
+
+/* Combo */
+.combo-box{display:flex;flex-direction:column;align-items:center;gap:2px}
+.combo-value{font-size:28px;font-weight:900;color:#34d399;text-shadow:0 0 16px #059669;transition:transform 0.15s;transform:scale(1)}
+.combo-value.pop{transform:scale(1.5)}
+.combo-label{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px}
+
+/* Timer ring */
+.timer-wrap{position:relative;width:80px;height:80px;flex-shrink:0}
+.timer-svg{transform:rotate(-90deg);width:80px;height:80px}
+.timer-bg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:6}
+.timer-arc{fill:none;stroke:#a78bfa;stroke-width:6;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:0;transition:stroke-dashoffset 0.2s linear,stroke 0.3s}
+.timer-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:700;color:#fff;text-shadow:0 0 12px #a78bfa}
+
+/* Current idiom */
+.current-wrap{width:100%;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.25);border-radius:16px;padding:22px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+.current-label{font-size:11px;color:rgba(167,139,250,0.6);letter-spacing:2px}
+.current-idiom{font-size:40px;font-weight:900;letter-spacing:8px;color:#fff;text-shadow:0 0 24px #a78bfa,0 0 48px #7c3aed;transition:all 0.3s}
+.tail-char{color:#f0abfc;text-shadow:0 0 20px #e879f9,0 0 40px #a21caf}
+.hint-btn{background:none;border:1px solid rgba(167,139,250,0.3);color:rgba(167,139,250,0.7);font-size:12px;padding:4px 12px;border-radius:20px;cursor:pointer;transition:all 0.2s;margin-top:2px}
+.hint-btn:hover{background:rgba(167,139,250,0.15);color:#e9d5ff}
+.hint-text{font-size:13px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.5;display:none;padding:0 8px}
+.hint-text.show{display:block}
+
+/* History */
+.history-wrap{width:100%;min-height:36px;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding:4px 0;scrollbar-width:none}
+.history-wrap::-webkit-scrollbar{display:none}
+.history-item{flex-shrink:0;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:4px 10px;font-size:13px;color:rgba(255,255,255,0.5);white-space:nowrap}
+.history-item.player{border-color:rgba(52,211,153,0.3);color:rgba(52,211,153,0.8)}
+.history-item.system{border-color:rgba(167,139,250,0.3);color:rgba(167,139,250,0.8)}
+
+/* Input area */
+.input-wrap{width:100%;display:flex;flex-direction:column;gap:10px;align-items:center}
+.input-hint{font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:1px}
+.input-hint span{color:#f0abfc;font-weight:700}
+.idiom-input{width:100%;background:rgba(255,255,255,0.04);border:2px solid rgba(167,139,250,0.3);border-radius:14px;padding:16px 20px;font-size:26px;font-weight:700;letter-spacing:6px;color:#fff;text-align:center;outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;caret-color:#a78bfa}
+.idiom-input::placeholder{color:rgba(255,255,255,0.2);font-size:16px;letter-spacing:2px;font-weight:400}
+.idiom-input:focus{border-color:rgba(167,139,250,0.7);box-shadow:0 0 20px rgba(167,139,250,0.2)}
+.idiom-input.valid{border-color:#34d399;box-shadow:0 0 20px rgba(52,211,153,0.25);background:rgba(52,211,153,0.05)}
+.idiom-input.invalid{border-color:#f87171;box-shadow:0 0 16px rgba(248,113,113,0.2);background:rgba(248,113,113,0.04)}
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#a21caf);border:none;border-radius:14px;font-size:18px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:3px;transition:opacity 0.2s,transform 0.1s;box-shadow:0 0 24px rgba(124,58,237,0.4)}
+.submit-btn:hover{opacity:0.9}
+.submit-btn:active{transform:scale(0.98)}
+.submit-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Validation message */
+.valid-msg{font-size:12px;height:16px;color:rgba(255,255,255,0.4);transition:color 0.2s}
+.valid-msg.ok{color:#34d399}
+.valid-msg.err{color:#f87171}
+
+/* Start screen */
+.start-screen{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:480px}
+.start-title{font-size:36px;font-weight:900;letter-spacing:6px;text-shadow:0 0 30px #a78bfa,0 0 60px #7c3aed;color:#e9d5ff;text-align:center}
+.start-subtitle{font-size:14px;color:rgba(255,255,255,0.45);text-align:center;line-height:1.8}
+.start-rules{background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.2);border-radius:14px;padding:18px 22px;width:100%;display:flex;flex-direction:column;gap:10px}
+.start-rule{font-size:13px;color:rgba(255,255,255,0.6);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.rule-icon{color:#a78bfa;flex-shrink:0;font-style:normal}
+.start-btn{width:100%;padding:16px;background:linear-gradient(135deg,#7c3aed,#a21caf);border:none;border-radius:14px;font-size:20px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:4px;box-shadow:0 0 30px rgba(124,58,237,0.5);transition:opacity 0.2s,transform 0.1s}
+.start-btn:hover{opacity:0.9}
+.start-btn:active{transform:scale(0.98)}
+.best-record{font-size:13px;color:rgba(255,255,255,0.4)}
+.best-record span{color:#fbbf24;font-weight:700}
+
+/* Game over screen */
+.over-screen{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:400px}
+.over-title{font-size:32px;font-weight:900;letter-spacing:4px;color:#f87171;text-shadow:0 0 24px #dc2626}
+.over-stats{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;width:100%;display:flex;flex-direction:column;gap:12px}
+.over-stat{display:flex;justify-content:space-between;align-items:center}
+.over-stat-label{font-size:13px;color:rgba(255,255,255,0.5)}
+.over-stat-value{font-size:18px;font-weight:700;color:#e9d5ff}
+.over-stat-value.highlight{color:#fbbf24;text-shadow:0 0 12px #d97706}
+.over-chain{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;max-height:160px;overflow-y:auto}
+.over-chain-title{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:10px;letter-spacing:1px}
+.over-chain-list{display:flex;flex-wrap:wrap;gap:6px}
+.over-chain-item{font-size:13px;padding:3px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.55)}
+.over-chain-item.p{border-color:rgba(52,211,153,0.3);color:rgba(52,211,153,0.75)}
+.over-chain-item.s{border-color:rgba(167,139,250,0.3);color:rgba(167,139,250,0.75)}
+.restart-btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#a21caf);border:none;border-radius:14px;font-size:18px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:3px;box-shadow:0 0 24px rgba(124,58,237,0.4);transition:opacity 0.2s}
+.restart-btn:hover{opacity:0.9}
+.new-record-badge{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;font-size:13px;font-weight:700;padding:6px 18px;border-radius:20px;letter-spacing:2px;display:none}
+.new-record-badge.show{display:block}
+
+/* Particles */
+.particle{position:fixed;pointer-events:none;border-radius:50%;z-index:9999;animation:particle-fall linear forwards}
+@keyframes particle-fall{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(200px) scale(0);opacity:0}}
+
+/* Shake */
+@keyframes shake{0%,100%{transform:translateX(0)}10%,50%,90%{transform:translateX(-8px)}30%,70%{transform:translateX(8px)}}
+.shake{animation:shake 0.4s ease}
+
+/* Glow pulse */
+@keyframes glow-pulse{0%,100%{text-shadow:0 0 24px #a78bfa,0 0 48px #7c3aed}50%{text-shadow:0 0 40px #c084fc,0 0 80px #9333ea}}
+
+/* Visible toggle */
+.hidden{display:none!important}
+
+/* Responsive */
+@media(max-width:400px){
+  .current-idiom{font-size:32px;letter-spacing:5px}
+  .idiom-input{font-size:22px;letter-spacing:4px}
+  .game-title{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<a href="../" id="back-home" title="返回游戏中心"><svg viewBox="0 0 24 24" width="16" height="16" fill="rgba(255,255,255,0.8)" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+
+<!-- START SCREEN -->
+<div class="start-screen" id="startScreen">
+  <div class="start-title">成语接龙</div>
+  <div class="start-subtitle">用上一个成语的最后一个字<br>作为下一个成语的第一个字</div>
+  <div class="start-rules">
+    <div class="start-rule"><i class="rule-icon">⏱</i><span>每个成语限时 <strong>15秒</strong>，超时游戏结束</span></div>
+    <div class="start-rule"><i class="rule-icon">🔥</i><span>连续答对获得连击加分，最高 ×5 倍</span></div>
+    <div class="start-rule"><i class="rule-icon">💡</i><span>可查看当前成语释义作为提示</span></div>
+    <div class="start-rule"><i class="rule-icon">🏆</i><span>历史最高连击数自动保存</span></div>
+  </div>
+  <div class="best-record">历史最高连击：<span id="startBest">0</span></div>
+  <button class="start-btn" onclick="startGame()">开始挑战</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="game-container hidden" id="gameScreen">
+  <div class="game-title">成语接龙</div>
+
+  <div class="score-row">
+    <div class="score-box">
+      <div class="score-label">得分</div>
+      <div class="score-value" id="scoreVal">0</div>
+    </div>
+    <div class="timer-wrap">
+      <svg class="timer-svg" viewBox="0 0 80 80">
+        <circle class="timer-bg" cx="40" cy="40" r="35"/>
+        <circle class="timer-arc" id="timerArc" cx="40" cy="40" r="35"/>
+      </svg>
+      <div class="timer-num" id="timerNum">15</div>
+    </div>
+    <div class="combo-box">
+      <div class="combo-value" id="comboVal">0</div>
+      <div class="combo-label">连击</div>
+    </div>
+  </div>
+
+  <div class="score-box" style="flex-direction:row;gap:8px;align-items:center">
+    <div class="score-label">最高连击</div>
+    <div class="score-value best-value" id="bestVal">0</div>
+  </div>
+
+  <div class="history-wrap" id="historyWrap"></div>
+
+  <div class="current-wrap">
+    <div class="current-label">当前成语</div>
+    <div class="current-idiom" id="currentIdiom">-</div>
+    <button class="hint-btn" onclick="toggleHint()">查看释义</button>
+    <div class="hint-text" id="hintText"></div>
+  </div>
+
+  <div class="input-wrap">
+    <div class="input-hint">请输入以「<span id="tailHint">?</span>」开头的成语</div>
+    <input class="idiom-input" id="idiomInput" type="text" maxlength="4" placeholder="输入四字成语" autocomplete="off" autocorrect="off" spellcheck="false" oninput="onInputChange()" onkeydown="onKeyDown(event)">
+    <div class="valid-msg" id="validMsg"></div>
+    <button class="submit-btn" id="submitBtn" onclick="submitAnswer()" disabled>确认</button>
+  </div>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div class="over-screen hidden" id="overScreen">
+  <div class="over-title">游戏结束</div>
+  <div class="new-record-badge" id="newRecordBadge">🏆 新纪录！</div>
+  <div class="over-stats">
+    <div class="over-stat">
+      <div class="over-stat-label">本局得分</div>
+      <div class="over-stat-value" id="overScore">0</div>
+    </div>
+    <div class="over-stat">
+      <div class="over-stat-label">接龙数量</div>
+      <div class="over-stat-value" id="overCount">0</div>
+    </div>
+    <div class="over-stat">
+      <div class="over-stat-label">最高连击</div>
+      <div class="over-stat-value highlight" id="overCombo">0</div>
+    </div>
+    <div class="over-stat">
+      <div class="over-stat-label">历史最高连击</div>
+      <div class="over-stat-value highlight" id="overBest">0</div>
+    </div>
+  </div>
+  <div class="over-chain">
+    <div class="over-chain-title">本局接龙记录</div>
+    <div class="over-chain-list" id="overChainList"></div>
+  </div>
+  <button class="restart-btn" onclick="startGame()">再来一局</button>
+  <button class="restart-btn" style="background:rgba(255,255,255,0.07);box-shadow:none;border:1px solid rgba(255,255,255,0.12)" onclick="showStart()">返回主页</button>
+</div>
+
+<nav id="more-games" aria-label="更多游戏">
+  <span class="more-label">更多游戏</span>
+  <a href="../flappy/">🐦FlappyBird</a>
+  <a href="../tetris/">🧩俄罗斯方块</a>
+  <a href="../sudoku/">📐数独</a>
+  <a href="../gomoku/">⚫五子棋</a>
+  <a href="../minesweeper/">💣扫雷</a>
+</nav>
+
+<script>
+// =============================================
+// IDIOM DATABASE (200+ idioms)
+// =============================================
+const IDIOMS = {
+  // 一
+  '一石二鸟':{meaning:'比喻做一件事得到两种好处，一举两得'},
+  '一马当先':{meaning:'比喻工作积极，行动快，领先于众人'},
+  '一鸣惊人':{meaning:'比喻平时没有特殊表现，一下子做出惊人的成绩'},
+  '一箭双雕':{meaning:'比喻做一件事达到两个目的'},
+  '一往无前':{meaning:'形容勇往直前，不怕困难'},
+  '一帆风顺':{meaning:'比喻非常顺利，没有任何阻碍'},
+  '一诺千金':{meaning:'一句许诺价值千金，形容说话算数，守信用'},
+  '一字千金':{meaning:'形容诗文作品精妙，价值极高'},
+  '一触即发':{meaning:'比喻形势紧张，一旦触动就会爆发'},
+  '一见钟情':{meaning:'初次见面就产生了爱情'},
+  '一无所有':{meaning:'什么都没有，形容非常贫穷'},
+  '一叶知秋':{meaning:'从一片树叶的凋落，知道秋天的来临。比喻通过个别的、细小的现象，可以预见事物的发展趋向'},
+  '一日千里':{meaning:'形容进步或发展极快'},
+  '一事无成':{meaning:'什么事情都没做成，形容毫无成就'},
+  '一生一世':{meaning:'从生到死，形容很长时间或指终身'},
+  // 二
+  '二话不说':{meaning:'不说任何别的话，比喻态度坚决，毫不犹豫'},
+  '二龙戏珠':{meaning:'两条龙相对，戏弄一颗宝珠，是常见的传统图案'},
+  '二虎相争':{meaning:'两强相争，比喻实力相当的双方争斗'},
+  // 三
+  '三人行':{meaning:'比喻同行者中必有可做老师的人'},
+  '三心二意':{meaning:'又想这样，又想那样，犹豫不决，意志不坚定'},
+  '三番五次':{meaning:'屡次，多次，形容反复多次'},
+  '三言两语':{meaning:'几句话，形容话语简短'},
+  '三足鼎立':{meaning:'比喻三方面力量对峙，像鼎的三足相互支撑'},
+  '三头六臂':{meaning:'形容本领极大，神通广大'},
+  // 四
+  '四面楚歌':{meaning:'比喻陷入四面受敌、孤立无援的困境'},
+  '四海为家':{meaning:'形容走遍天下到处漫游，也形容居无定所'},
+  '四通八达':{meaning:'四面八方，交通便利，形容交通方便'},
+  '四平八稳':{meaning:'形容说话、做事稳当，也指刻板保守'},
+  // 五
+  '五光十色':{meaning:'形容色彩鲜艳，花样繁多'},
+  '五颜六色':{meaning:'形容色彩复杂或种类繁多'},
+  '五湖四海':{meaning:'泛指全国各地，也指世界各地'},
+  '五花八门':{meaning:'比喻变化多端或花样繁多'},
+  '五体投地':{meaning:'形容佩服得无以复加'},
+  // 六
+  '六神无主':{meaning:'形容心慌意乱，不知所措'},
+  '六亲不认':{meaning:'形容不重情义，不顾亲情'},
+  // 七
+  '七上八下':{meaning:'形容心里忐忑不安'},
+  '七嘴八舌':{meaning:'形容人多口杂，议论纷纷'},
+  '七零八落':{meaning:'形容零散稀疏的样子'},
+  '七拼八凑':{meaning:'比喻把零散的东西凑集在一起'},
+  // 八
+  '八面玲珑':{meaning:'形容为人处世圆滑，各方面都应付得很好'},
+  '八仙过海':{meaning:'比喻各自施展本领，各显神通'},
+  // 九
+  '九牛一毛':{meaning:'比喻极大数量中极微小的数量，无关紧要'},
+  '九死一生':{meaning:'形容经历极大危险而幸存下来'},
+  '九霄云外':{meaning:'形容距离很远或全然忘掉'},
+  // 十
+  '十全十美':{meaning:'形容完满，没有缺陷'},
+  '十年寒窗':{meaning:'形容长期刻苦读书'},
+  '十拿九稳':{meaning:'比喻很有把握'},
+  // 百
+  '百发百中':{meaning:'形容射击技术非常高超，每次都能打中靶心'},
+  '百折不挠':{meaning:'形容意志坚强，不畏挫折'},
+  '百年大计':{meaning:'指长远的、重要的计划或措施'},
+  '百花齐放':{meaning:'比喻艺术和学术自由发展，也形容各种事物百花争艳的局面'},
+  '百步穿杨':{meaning:'形容箭法或枪法极为高明'},
+  '百感交集':{meaning:'各种感触交织在一起，形容感慨万分'},
+  // 千
+  '千方百计':{meaning:'想尽各种办法，用尽各种计谋'},
+  '千变万化':{meaning:'形容变化极多'},
+  '千军万马':{meaning:'形容雄壮的队伍或浩大的声势'},
+  '千载难逢':{meaning:'形容机会难得，极为罕见'},
+  '千丝万缕':{meaning:'比喻关系很多，关系十分密切'},
+  '千山万水':{meaning:'形容路途艰难遥远，险阻很多'},
+  // 万
+  '万紫千红':{meaning:'形容百花盛开，颜色鲜艳多彩'},
+  '万水千山':{meaning:'万道河，千重山，形容路途遥远，跋山涉水'},
+  '万事如意':{meaning:'指一切事情都称心如意'},
+  '万古长青':{meaning:'形容崇高的精神或美好的事物永远存在'},
+  '万众一心':{meaning:'百万人民，一条心，形容人民团结，共同向着一个目标'},
+  '万马奔腾':{meaning:'成千上万匹马在奔跑腾跃，形容场面宏大壮观'},
+  // 人
+  '人山人海':{meaning:'形容人聚集得非常多'},
+  '人才济济':{meaning:'形容有很多有才能的人'},
+  '人杰地灵':{meaning:'指杰出的人物产生在灵秀的地方，或好地方出好人'},
+  '人定胜天':{meaning:'意思是人力可以战胜自然'},
+  '人心所向':{meaning:'众人所向往的，形容得到大家的一致支持'},
+  '人模人样':{meaning:'模仿人的样子，也指像个人样'},
+  '人面桃花':{meaning:'形容男女相悦，或者对过去的人或事的怀念'},
+  '人云亦云':{meaning:'人家说什么，自己也说什么，形容没有主见'},
+  // 心
+  '心花怒放':{meaning:'形容高兴到极点'},
+  '心旷神怡':{meaning:'形容心情舒畅，精神愉快'},
+  '心想事成':{meaning:'心里想到的，都能成功，祝贺成功的话'},
+  '心平气和':{meaning:'心情平稳，态度温和，不急躁，不生气'},
+  '心惊肉跳':{meaning:'心里害怕，身上的肉随之跳动，形容非常恐惧'},
+  '心猿意马':{meaning:'心意像猿猴和马一样不安分，比喻心里不专一'},
+  '心直口快':{meaning:'形容人心思直爽，说话不绕弯，直来直去'},
+  // 山
+  '山穷水尽':{meaning:'山和水都到了尽头，比喻无路可走，陷入绝境'},
+  '山清水秀':{meaning:'形容风景秀丽'},
+  '山高水长':{meaning:'像山那样高，像水那样长，形容情谊深厚，也形容精神长远'},
+  '山盟海誓':{meaning:'比喻男女相爱时所立的誓言，多用于男女爱情'},
+  '山重水复':{meaning:'形容山峦重叠，道路曲折'},
+  // 水
+  '水到渠成':{meaning:'水流到的地方自然形成一条水道，比喻条件成熟，事情自然成功'},
+  '水落石出':{meaning:'水落下去，水底的石头就露出来，比喻事情真相大白'},
+  '水深火热':{meaning:'比喻人民生活极端痛苦'},
+  '水涨船高':{meaning:'水位升高，船也随之上升，比喻事物随着周围情况的变化而发展'},
+  '水乳交融':{meaning:'水和乳汁混合融化，比喻关系非常密切，融洽'},
+  // 天
+  '天衣无缝':{meaning:'形容事物周密完善，无懈可击'},
+  '天下无敌':{meaning:'普天之下没有敌手，形容战无不胜'},
+  '天长地久':{meaning:'跟天地存在的时间一样长，形容时间悠久'},
+  '天南地北':{meaning:'一个南天一个北地，形容相隔遥远，也说明差异很大'},
+  '天罗地网':{meaning:'天上有罗，地上有网，比喻包围严密，无法逃脱'},
+  '天高气爽':{meaning:'形容秋日晴空万里，天气清爽宜人'},
+  '天壤之别':{meaning:'形容相差极远，差别极大'},
+  '天马行空':{meaning:'马在天空中飞驰，形容思维活跃，奔放自由'},
+  // 地
+  '地大物博':{meaning:'形容国家疆域辽阔，物产丰富'},
+  '地广人稀':{meaning:'地方大，人口少'},
+  '地动山摇':{meaning:'形容声势浩大，雷霆万钧'},
+  '地老天荒':{meaning:'指经过的时间很长久，形容永久'},
+  // 风
+  '风调雨顺':{meaning:'形容风雨适时，五谷丰收'},
+  '风平浪静':{meaning:'没有风浪，水面很平静，比喻平静无事'},
+  '风花雪月':{meaning:'原指诗文中描绘的自然景物，后泛指男女爱情'},
+  '风声鹤唳':{meaning:'听到风声和鹤叫声，都以为是追兵，形容人心惶惶，自相惊扰'},
+  '风吹草动':{meaning:'微风一吹，草就摇动，形容轻微的动静或细小的变动'},
+  '风雨同舟':{meaning:'比喻共同渡过困难，患难与共'},
+  '风靡一时':{meaning:'形容事物在一个时期里极为流行'},
+  '风卷残云':{meaning:'风把残云一扫而尽，比喻一举消除干净'},
+  // 火
+  '火上加油':{meaning:'使火势更旺，比喻使事态更加严重'},
+  '火树银花':{meaning:'形容烟火绚烂，夜景美丽'},
+  '火急火燎':{meaning:'形容非常着急，十分焦急'},
+  '火眼金睛':{meaning:'形容眼光锐利，能看出问题的实质'},
+  // 花
+  '花好月圆':{meaning:'花儿正盛开，月亮正圆满，比喻美好圆满'},
+  '花团锦簇':{meaning:'形容五彩缤纷，十分华丽的景象'},
+  '花言巧语':{meaning:'用漂亮、动听的话哄骗人'},
+  '花开富贵':{meaning:'比喻生活美好，幸福富足'},
+  // 鸟
+  '鸟语花香':{meaning:'形容大自然美好的景色'},
+  '鸟尽弓藏':{meaning:'比喻事情完成后，把帮助过自己的人丢掉'},
+  // 龙
+  '龙争虎斗':{meaning:'形容两方面势均力敌，斗争或竞赛十分激烈'},
+  '龙腾虎跃':{meaning:'形容奔腾跳跃的姿态，也形容活跃勇猛的气势'},
+  '龙飞凤舞':{meaning:'形容笔势雄奇活泼，多形容书法作品'},
+  '龙潭虎穴':{meaning:'比喻极险恶的地方'},
+  '龙马精神':{meaning:'比喻精神旺盛，意气风发'},
+  // 虎
+  '虎背熊腰':{meaning:'形容人身体魁梧，孔武有力'},
+  '虎头蛇尾':{meaning:'比喻做事前紧后松，有始无终'},
+  '虎视眈眈':{meaning:'像老虎要扑食物时那样注视，形容贪婪凶狠地盯着'},
+  '虎口余生':{meaning:'比喻经历极大危险，侥幸保存了生命'},
+  '虎落平阳':{meaning:'老虎离开深山，到了平地，比喻有权有势者失去了权力'},
+  // 马
+  '马到成功':{meaning:'形容工作刚开始就取得成功'},
+  '马不停蹄':{meaning:'形容不休息，继续前进'},
+  '马首是瞻':{meaning:'看着马头的方向决定行动，比喻服从领导'},
+  '马革裹尸':{meaning:'用马皮包裹尸体，指英雄战死沙场'},
+  '马失前蹄':{meaning:'比喻偶然发生差错而失败'},
+  // 牛
+  '牛刀小试':{meaning:'比喻有大本领的人，先在小事情上略施本领'},
+  '牛气冲天':{meaning:'形容气势极为旺盛'},
+  // 大
+  '大海捞针':{meaning:'比喻找一个极难找到的人或物，形容事情的困难程度'},
+  '大公无私':{meaning:'完全为人民群众的利益着想，没有一点儿私心'},
+  '大展宏图':{meaning:'大规模地施展远大的抱负和计划'},
+  '大风大浪':{meaning:'比喻斗争激烈，考验很大，也形容极大的困难'},
+  '大言不惭':{meaning:'说大话，不感到难为情'},
+  '大是大非':{meaning:'指带有原则性的重大是非问题'},
+  '大庭广众':{meaning:'指聚集了很多人的公开场合'},
+  '大惊失色':{meaning:'非常害怕，脸色都变了'},
+  // 小
+  '小心翼翼':{meaning:'形容谨慎小心，一点不敢疏忽'},
+  '小题大做':{meaning:'比喻不恰当地把小事当作大事来处理，有故意夸大的意思'},
+  '小打小闹':{meaning:'形容规模小，能力弱，影响小'},
+  // 好
+  '好事多磨':{meaning:'美好的事情往往遭遇磨难，经历坎坷'},
+  '好高骛远':{meaning:'形容不切实际地追求过高的目标'},
+  '好为人师':{meaning:'指喜欢以教导别人，形容好指教别人'},
+  // 长
+  '长驱直入':{meaning:'形容长途进军，沿途没有什么阻挡'},
+  '长治久安':{meaning:'长期治理好了，可以长久安定'},
+  '长篇大论':{meaning:'滔滔不绝的言论，冗长的文章'},
+  '长袖善舞':{meaning:'比喻有所凭借，事情就容易成功，也形容有能力的人善于钻营'},
+  // 生
+  '生龙活虎':{meaning:'形容活泼矫健，富有生气'},
+  '生死攸关':{meaning:'关系到生存或死亡，形容情况极为重要'},
+  '生机勃勃':{meaning:'形容自然界充满生命力'},
+  '生生不息':{meaning:'不断地生长、繁殖'},
+  // 死
+  '死灰复燃':{meaning:'比喻已经消失了的恶势力重新活动起来'},
+  '死而复生':{meaning:'死去了又活过来，形容生命力极强'},
+  // 金
+  '金玉良言':{meaning:'形容语言非常正确而珍贵'},
+  '金碧辉煌':{meaning:'形容建筑物装饰华丽，光彩夺目'},
+  '金口玉言':{meaning:'旧指皇帝说的话，现用来讽刺说话不算数'},
+  '金蝉脱壳':{meaning:'比喻用计谋脱身，使对方不能及时发觉'},
+  '金光闪闪':{meaning:'金色光芒闪耀，形容光亮夺目'},
+  '金戈铁马':{meaning:'形容战争场面或军队雄壮的气势'},
+  // 玉
+  '玉树临风':{meaning:'形容人风度潇洒，仪态优雅'},
+  '玉洁冰清':{meaning:'形容人品纯洁高尚，多形容女子操行贞洁'},
+  // 春
+  '春风化雨':{meaning:'比喻良好的教育和影响，使人在不知不觉中受到熏陶'},
+  '春暖花开':{meaning:'春天气候温暖，百花开放，比喻好时机到来了'},
+  '春色满园':{meaning:'整个园子里充满了春天的景色'},
+  '春华秋实':{meaning:'春天开花，秋天结果，比喻文采和品德，也比喻学习有成就'},
+  '春风得意':{meaning:'旧时用来形容考中进士后的兴奋心情，现也形容处境顺利，心情愉快'},
+  // 秋
+  '秋高气爽':{meaning:'形容秋天天空晴朗，气候凉爽宜人'},
+  '秋毫无犯':{meaning:'形容纪律严明，丝毫不侵犯别人的利益'},
+  // 冬
+  '冬暖夏凉':{meaning:'冬天温暖，夏天凉爽，形容环境条件好'},
+  // 夏
+  '夏虫不可语冰':{meaning:'比喻见识短浅的人，不能跟他说大道理'},
+  // 明
+  '明知故犯':{meaning:'明明知道是错误的，却故意去做'},
+  '明察秋毫':{meaning:'形容目光敏锐，对细小的事情也能分辨清楚'},
+  '明哲保身':{meaning:'指聪明的人能够及早察觉危险，保全自己'},
+  '明月清风':{meaning:'形容美好的环境和心境'},
+  '明枪暗箭':{meaning:'比喻公开的和暗地里的攻击'},
+  // 暗
+  '暗中摸索':{meaning:'在黑暗中摸索，比喻在不明情况下探索'},
+  '暗箭伤人':{meaning:'放冷箭伤害人，比喻暗中用阴谋手段伤害别人'},
+  '暗渡陈仓':{meaning:'比喻用明显的行动迷惑对方，从而暗中进行秘密活动'},
+  // 气
+  '气吞山河':{meaning:'气势可以吞下高山和大河，形容气概雄伟豪迈'},
+  '气宇轩昂':{meaning:'形容人精力充沛，气度不凡'},
+  '气势磅礴':{meaning:'形容气势极盛，非常雄伟'},
+  '气喘吁吁':{meaning:'形容呼吸急促，十分喘气'},
+  // 力
+  '力挽狂澜':{meaning:'比喻在局势动荡时扭转局面，做出挽救的举动'},
+  '力争上游':{meaning:'努力奋斗，争取上进，不甘落后'},
+  '力所能及':{meaning:'在自己的能力范围之内'},
+  // 情
+  '情深似海':{meaning:'比喻情感深厚，像大海一样深'},
+  '情比金坚':{meaning:'感情比金石还要坚固，形容情感坚定不变'},
+  '情不自禁':{meaning:'感情激动，控制不住自己'},
+  // 义
+  '义不容辞':{meaning:'道义上不允许推辞，形容应尽的责任'},
+  '义正言辞':{meaning:'理由正当，措辞严正'},
+  '义无反顾':{meaning:'从道义上只有勇往直前，不能犹豫退缩'},
+  // 志
+  '志同道合':{meaning:'彼此的志向和信仰相同，形容情趣相投'},
+  '志在必得':{meaning:'立志务必要得到，形容想要得到的决心十分坚定'},
+  '志存高远':{meaning:'追求远大的理想，有高度的志向'},
+  // 勇
+  '勇往直前':{meaning:'勇敢地一直向前进，形容为达到某目标而不停奋进'},
+  '勇冠三军':{meaning:'勇敢在全军中是第一位，形容勇猛无敌'},
+  // 智
+  '智勇双全':{meaning:'又有智谋，又很勇敢'},
+  '智珠在握':{meaning:'比喻处理事情有把握'},
+  // 忠
+  '忠心耿耿':{meaning:'形容非常忠诚'},
+  '忠言逆耳':{meaning:'真诚的劝告往往不好听，忠实的建议往往不合心意'},
+  // 信
+  '信手拈来':{meaning:'随手拿来，形容写文章时词汇或材料丰富，不需费力'},
+  '信誓旦旦':{meaning:'誓言说得极为诚恳可信'},
+  // 望
+  '望尘莫及':{meaning:'比喻远远落后，赶不上'},
+  '望洋兴叹':{meaning:'比喻做事时因力量不够或没有条件而感到无可奈何'},
+  '望梅止渴':{meaning:'比喻用空想来安慰自己'},
+  // 喜
+  '喜出望外':{meaning:'因遇到出乎意料的好事而感到特别高兴'},
+  '喜怒无常':{meaning:'形容人的情绪变化不定'},
+  '喜气洋洋':{meaning:'形容充满了欢喜的气氛和神色'},
+  // 悲
+  '悲天悯人':{meaning:'形容对世界感到悲哀，对人们的命运深感同情'},
+  '悲欢离合':{meaning:'形容人一生中的种种遭遇'},
+  // 欢
+  '欢天喜地':{meaning:'形容非常高兴、欢乐的样子'},
+  '欢呼雀跃':{meaning:'高兴地欢呼跳跃，形容很高兴'},
+  '欢聚一堂':{meaning:'欢乐地聚集在一起'},
+  // 乐
+  '乐极生悲':{meaning:'高兴到极点时，发生使人悲伤的事'},
+  '乐此不疲':{meaning:'因喜爱某事而不觉疲倦，形容对某事特别爱好而沉浸其中'},
+  '乐在其中':{meaning:'喜欢做某事，并在其中得到快乐'},
+  // 苦
+  '苦尽甘来':{meaning:'艰难的日子过完，美好的日子来到了'},
+  '苦口婆心':{meaning:'形容劝说不辞烦劳，真诚恳切'},
+  '苦中作乐':{meaning:'在艰苦的条件下强自寻找欢乐'},
+  // 甘
+  '甘拜下风':{meaning:'表示真心佩服，自认为不如对方'},
+  '甘愿受罚':{meaning:'心甘情愿地接受惩罚'},
+  // 苦
+  '苦心积虑':{meaning:'费尽心思，深谋远虑'},
+  // 青
+  '青出于蓝':{meaning:'比喻学生超过老师，后来者胜于前人'},
+  '青春永驻':{meaning:'形容青春气息常在，不随时间流逝'},
+  '青山绿水':{meaning:'形容风景秀丽的地方'},
+  '青梅竹马':{meaning:'比喻男女幼年时代两小无猜的情感'},
+  // 绿
+  '绿草如茵':{meaning:'绿草像毯子一样铺在地上，形容草地茂盛而美好'},
+  // 红
+  '红光满面':{meaning:'脸上红润，精力充沛，形容身体健康，精神饱满'},
+  '红旗招展':{meaning:'形容旗帜飘扬，欢庆热闹'},
+  // 白
+  '白手起家':{meaning:'形容在没有基础和条件很差的情况下自力更生，艰苦创业'},
+  '白雪皑皑':{meaning:'形容雪白的样子'},
+  '白驹过隙':{meaning:'形容时间过得极快'},
+  // 黑
+  '黑白分明':{meaning:'形容界限十分清楚，是非十分明确'},
+  // 路
+  '路遥知马力':{meaning:'路途遥远才能知道马的力气大小，日久才能看出人心好坏'},
+  '路见不平':{meaning:'比喻见到不公平的事情，就挺身而出，加以干涉'},
+  // 言
+  '言而有信':{meaning:'说话算数，有信用'},
+  '言传身教':{meaning:'一边用言语讲解，一边以行动示范'},
+  '言行一致':{meaning:'说的和做的完全一个样'},
+  // 步
+  '步步为营':{meaning:'每前进一步都要设置营垒，形容行动谨慎稳重'},
+  '步履维艰':{meaning:'形容行走困难，也比喻行动艰难'},
+  // 名
+  '名不虚传':{meaning:'确实很好，不是空有虚名'},
+  '名副其实':{meaning:'名声和实际完全相符，也说名符其实'},
+  '名列前茅':{meaning:'比喻名次列在前面'},
+  // 利
+  '利令智昏':{meaning:'贪图私利使头脑发昏，不辨是非'},
+  // 成
+  '成竹在胸':{meaning:'比喻做事之前已做好充分准备，对事情的成功已有了十分的把握'},
+  '成群结队':{meaning:'成批的，成群的，形容很多人聚集在一起'},
+  '成人之美':{meaning:'成全别人的好事，帮人实现愿望'},
+  // 败
+  '败军之将':{meaning:'打了败仗的将领，比喻失败者'},
+  // 落
+  '落花流水':{meaning:'形容残败的零落，也指被打得七零八落'},
+  '落落大方':{meaning:'形容人举止自然，毫不拘束'},
+  '落地生根':{meaning:'比喻在某地安家定居或永久立足'},
+  // 起
+  '起死回生':{meaning:'形容医术高明，也比喻挽救了看来已经没有希望的事情'},
+  '起伏跌宕':{meaning:'形容变化很大或声音高低起伏'},
+  // 回
+  '回头是岸':{meaning:'比喻迷途知返，悔过自新'},
+  '回味无穷':{meaning:'形容令人回味的余韵无穷无尽'},
+  // 高
+  '高瞻远瞩':{meaning:'站得高，看得远，形容眼光远大'},
+  '高枕无忧':{meaning:'垫高枕头睡觉，无忧无虑，比喻思想麻痹，丧失警惕'},
+  '高山流水':{meaning:'比喻知音或知己，也比喻乐曲高妙'},
+  '高谈阔论':{meaning:'多指不着边际地大发议论，形容说话漫无边际'},
+  '高风亮节':{meaning:'形容崇高的品格和气质'},
+  // 低
+  '低头认罪':{meaning:'承认自己的错误，接受对方的批评'},
+  // 深
+  '深谋远虑':{meaning:'计划得很周密，考虑得很长远'},
+  '深入浅出':{meaning:'文章或讲话的内容很深，语言通俗易懂'},
+  '深思熟虑':{meaning:'深刻思考，充分考虑'},
+  // 浅
+  '浅尝辄止':{meaning:'刚尝了一下就不再继续，比喻不深入研究'},
+  // 远
+  '远见卓识':{meaning:'有远大的眼光和卓越的见识'},
+  '远走高飞':{meaning:'形容离开一个不好的地方，到更广阔的地方去'},
+  // 近
+  '近朱者赤':{meaning:'靠着朱砂的变红，比喻接近好人可以使人变好'},
+  // 亲
+  '亲密无间':{meaning:'亲密得没有任何间隔，形容非常亲密'},
+  // 疏
+  '疏而不漏':{meaning:'法网虽然稀疏，但坏人逃不了，比喻正义终能胜邪'},
+};
+
+// =============================================
+// GAME STATE
+// =============================================
+const TIME_LIMIT = 15;
+const CIRCUMFERENCE = 2 * Math.PI * 35; // ~220
+
+let gameState = 'start'; // 'start' | 'playing' | 'over'
+let currentIdiom = '';
+let score = 0;
+let combo = 0;
+let maxCombo = 0;
+let countdown = TIME_LIMIT;
+let timerInterval = null;
+let history = []; // {text, who: 'system'|'player'}
+let usedIdioms = new Set();
+let bestCombo = parseInt(localStorage.getItem('idiom_best_combo') || '0');
+
+// =============================================
+// INIT
+// =============================================
+function init() {
+  document.getElementById('startBest').textContent = bestCombo;
+  document.getElementById('bestVal').textContent = bestCombo;
+}
+
+function showStart() {
+  gameState = 'start';
+  clearInterval(timerInterval);
+  document.getElementById('startScreen').classList.remove('hidden');
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('overScreen').classList.add('hidden');
+  document.getElementById('startBest').textContent = bestCombo;
+}
+
+function startGame() {
+  gameState = 'playing';
+  score = 0;
+  combo = 0;
+  maxCombo = 0;
+  history = [];
+  usedIdioms = new Set();
+
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('overScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+
+  updateScore();
+  updateCombo();
+  clearHistory();
+
+  // Pick random starting idiom
+  const keys = Object.keys(IDIOMS);
+  const start = keys[Math.floor(Math.random() * keys.length)];
+  setCurrentIdiom(start, 'system');
+  resetInput();
+  startTimer();
+}
+
+// =============================================
+// IDIOM LOGIC
+// =============================================
+function setCurrentIdiom(idiom, who) {
+  currentIdiom = idiom;
+  usedIdioms.add(idiom);
+
+  const el = document.getElementById('currentIdiom');
+  const chars = idiom.split('');
+  const tailChar = chars[chars.length - 1];
+  el.innerHTML = chars.slice(0, -1).map(c => `<span>${c}</span>`).join('') +
+    `<span class="tail-char">${tailChar}</span>`;
+
+  document.getElementById('tailHint').textContent = tailChar;
+  document.getElementById('hintText').textContent = IDIOMS[idiom]?.meaning || '';
+  document.getElementById('hintText').classList.remove('show');
+  document.getElementById('hintBtn') && (document.getElementById('hintBtn').textContent = '查看释义');
+
+  addHistory(idiom, who);
+}
+
+function addHistory(idiom, who) {
+  history.push({ text: idiom, who });
+  if (history.length > 8) history.shift();
+  renderHistory();
+}
+
+function renderHistory() {
+  const wrap = document.getElementById('historyWrap');
+  wrap.innerHTML = history.map(h =>
+    `<div class="history-item ${h.who === 'player' ? 'player' : 'system'}">${h.text}</div>`
+  ).join('');
+  wrap.scrollLeft = wrap.scrollWidth;
+}
+
+function clearHistory() {
+  document.getElementById('historyWrap').innerHTML = '';
+}
+
+function getTailChar() {
+  return currentIdiom ? currentIdiom[currentIdiom.length - 1] : '';
+}
+
+function isValidAnswer(input) {
+  if (!input || input.length !== 4) return false;
+  if (!(input in IDIOMS)) return false;
+  if (usedIdioms.has(input)) return false;
+  if (input[0] !== getTailChar()) return false;
+  return true;
+}
+
+// =============================================
+// INPUT
+// =============================================
+function onInputChange() {
+  const input = document.getElementById('idiomInput').value.trim();
+  const validMsg = document.getElementById('validMsg');
+  const inputEl = document.getElementById('idiomInput');
+  const btn = document.getElementById('submitBtn');
+
+  inputEl.classList.remove('valid', 'invalid');
+  validMsg.className = 'valid-msg';
+  validMsg.textContent = '';
+  btn.disabled = true;
+
+  if (!input) return;
+
+  if (input.length < 4) {
+    validMsg.textContent = '请输入四个字';
+    return;
+  }
+
+  // Check first char
+  const tail = getTailChar();
+  if (input[0] !== tail) {
+    inputEl.classList.add('invalid');
+    validMsg.className = 'valid-msg err';
+    validMsg.textContent = `首字必须是「${tail}」`;
+    return;
+  }
+
+  if (!(input in IDIOMS)) {
+    inputEl.classList.add('invalid');
+    validMsg.className = 'valid-msg err';
+    validMsg.textContent = '词库中未收录此成语';
+    return;
+  }
+
+  if (usedIdioms.has(input)) {
+    inputEl.classList.add('invalid');
+    validMsg.className = 'valid-msg err';
+    validMsg.textContent = '这个成语已经用过了';
+    return;
+  }
+
+  inputEl.classList.add('valid');
+  validMsg.className = 'valid-msg ok';
+  validMsg.textContent = '成语有效！';
+  btn.disabled = false;
+}
+
+function onKeyDown(e) {
+  if (e.key === 'Enter') {
+    const btn = document.getElementById('submitBtn');
+    if (!btn.disabled) submitAnswer();
+  }
+}
+
+function resetInput() {
+  const inputEl = document.getElementById('idiomInput');
+  inputEl.value = '';
+  inputEl.classList.remove('valid', 'invalid');
+  document.getElementById('validMsg').className = 'valid-msg';
+  document.getElementById('validMsg').textContent = '';
+  document.getElementById('submitBtn').disabled = true;
+  setTimeout(() => inputEl.focus(), 100);
+}
+
+// =============================================
+// SUBMIT
+// =============================================
+function submitAnswer() {
+  if (gameState !== 'playing') return;
+  const input = document.getElementById('idiomInput').value.trim();
+  if (!isValidAnswer(input)) return;
+
+  // Correct!
+  combo++;
+  if (combo > maxCombo) maxCombo = combo;
+
+  const multiplier = Math.min(combo, 5);
+  const earned = 10 * multiplier;
+  score += earned;
+
+  updateScore();
+  updateCombo();
+  spawnParticles();
+
+  // Find next system idiom (starts with last char of player's idiom)
+  const playerTail = input[input.length - 1];
+  setCurrentIdiom(input, 'player');
+
+  // System picks next
+  const next = pickSystemIdiom(playerTail);
+  if (!next) {
+    // Player wins this round - system can't continue
+    // Give bonus and keep going with a fresh chain
+    const freshNext = pickFreshIdiom();
+    if (!freshNext) {
+      endGame();
+      return;
+    }
+    setCurrentIdiom(freshNext, 'system');
+  } else {
+    setCurrentIdiom(next, 'system');
+  }
+
+  resetInput();
+  resetTimer();
+}
+
+function pickSystemIdiom(startChar) {
+  const candidates = Object.keys(IDIOMS).filter(
+    k => k[0] === startChar && !usedIdioms.has(k)
+  );
+  if (!candidates.length) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function pickFreshIdiom() {
+  const keys = Object.keys(IDIOMS).filter(k => !usedIdioms.has(k));
+  if (!keys.length) return null;
+  return keys[Math.floor(Math.random() * keys.length)];
+}
+
+// =============================================
+// TIMER
+// =============================================
+function startTimer() {
+  countdown = TIME_LIMIT;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    countdown--;
+    updateTimerUI();
+    if (countdown <= 0) {
+      clearInterval(timerInterval);
+      endGame('timeout');
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  startTimer();
+}
+
+function updateTimerUI() {
+  const arc = document.getElementById('timerArc');
+  const num = document.getElementById('timerNum');
+  const pct = countdown / TIME_LIMIT;
+  const offset = CIRCUMFERENCE * (1 - pct);
+  arc.style.strokeDashoffset = offset;
+
+  if (pct > 0.5) {
+    arc.style.stroke = '#a78bfa';
+  } else if (pct > 0.25) {
+    arc.style.stroke = '#fbbf24';
+  } else {
+    arc.style.stroke = '#f87171';
+  }
+
+  num.textContent = countdown;
+  num.style.color = pct <= 0.25 ? '#f87171' : '#fff';
+}
+
+// =============================================
+// SCORE / COMBO
+// =============================================
+function updateScore() {
+  document.getElementById('scoreVal').textContent = score;
+}
+
+function updateCombo() {
+  const el = document.getElementById('comboVal');
+  el.textContent = combo;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 150);
+}
+
+// =============================================
+// GAME OVER
+// =============================================
+function endGame(reason) {
+  clearInterval(timerInterval);
+  gameState = 'over';
+
+  // Shake on timeout/wrong
+  if (reason === 'timeout') {
+    document.body.classList.add('shake');
+    document.body.style.boxShadow = 'inset 0 0 80px rgba(248,113,113,0.3)';
+    setTimeout(() => {
+      document.body.classList.remove('shake');
+      document.body.style.boxShadow = '';
+    }, 500);
+  }
+
+  // Update best
+  let isNewBest = false;
+  if (maxCombo > bestCombo) {
+    bestCombo = maxCombo;
+    localStorage.setItem('idiom_best_combo', bestCombo);
+    isNewBest = true;
+  }
+
+  document.getElementById('overScore').textContent = score;
+  document.getElementById('overCount').textContent = history.filter(h => h.who === 'player').length;
+  document.getElementById('overCombo').textContent = maxCombo;
+  document.getElementById('overBest').textContent = bestCombo;
+
+  const badge = document.getElementById('newRecordBadge');
+  if (isNewBest && maxCombo > 0) {
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+
+  // Chain list
+  const list = document.getElementById('overChainList');
+  list.innerHTML = history.map(h =>
+    `<span class="over-chain-item ${h.who === 'player' ? 'p' : 's'}">${h.text}</span>`
+  ).join('');
+
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('overScreen').classList.remove('hidden');
+
+  document.getElementById('bestVal').textContent = bestCombo;
+}
+
+// =============================================
+// HINT
+// =============================================
+function toggleHint() {
+  const ht = document.getElementById('hintText');
+  ht.classList.toggle('show');
+  const btn = document.querySelector('.hint-btn');
+  btn.textContent = ht.classList.contains('show') ? '隐藏释义' : '查看释义';
+}
+
+// =============================================
+// PARTICLES
+// =============================================
+function spawnParticles() {
+  const colors = ['#a78bfa','#34d399','#fbbf24','#f0abfc','#60a5fa'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 6 + Math.random() * 8;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      left:${20 + Math.random() * 60}vw;
+      top:${20 + Math.random() * 40}vh;
+      animation-duration:${0.6 + Math.random() * 0.6}s;
+      animation-delay:${Math.random() * 0.2}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1200);
+  }
+}
+
+// =============================================
+// START
+// =============================================
+init();
+</script>
+
+</body>
+</html>
