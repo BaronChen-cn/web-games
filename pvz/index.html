@@ -254,9 +254,9 @@ const SIDEBAR_W = 90;
 const PLANT_DEFS = [
   { id:'sunflower',  name:'向日葵',   cost:50,  cd:7,   hp:100, color:'#f5e200', desc:'产出阳光' },
   { id:'peashooter', name:'豌豆射手', cost:100, cd:7.5, hp:100, color:'#39ff14', desc:'射出豌豆' },
-  { id:'wallnut',    name:'坚果',     cost:50,  cd:30,  hp:600, color:'#c8830a', desc:'高血量防墙' },
+  { id:'wallnut',    name:'坚果',     cost:50,  cd:20,  hp:600, color:'#c8830a', desc:'高血量防墙' },
   { id:'iceshooter', name:'寒冰射手', cost:175, cd:7.5, hp:100, color:'#00cfff', desc:'冰冻减速' },
-  { id:'cherry',     name:'樱桃炸弹', cost:150, cd:45,  hp:100, color:'#ff3333', desc:'范围爆炸' },
+  { id:'cherry',     name:'樱桃炸弹', cost:150, cd:15,  hp:100, color:'#ff3333', desc:'范围爆炸' },
   { id:'twinsun',    name:'双枪向日葵',cost:200,cd:7.5, hp:100, color:'#ffaa00', desc:'双豌豆射击' },
 ];
 
@@ -276,7 +276,7 @@ const LEVELS = [
       [{type:'normal',count:3,interval:3000}],
       [{type:'normal',count:3,interval:2800},{type:'cone',count:1,interval:4000}],
       [{type:'normal',count:4,interval:2500},{type:'cone',count:1,interval:3500}],
-      [{type:'normal',count:5,interval:2000},{type:'cone',count:2,interval:3000}],
+      [{type:'normal',count:4,interval:2000},{type:'cone',count:1,interval:3000}],
     ]
   },
   { // Level 2
@@ -332,7 +332,7 @@ const ctx = canvas.getContext('2d');
 let W, H, offsetX, offsetY;
 
 let gameState = 'menu'; // menu, playing, paused, win, lose
-let sun = 200;
+let sun = 300;
 let lives = 3;
 let currentLevel = 0;
 let currentWave = 0;
@@ -351,7 +351,7 @@ let notifications = [];
 // Timers
 let lastTime = 0;
 let sunDropTimer = 0;
-let sunDropInterval = 4500; // ms
+let sunDropInterval = 3500; // ms
 let waveTimer = 0;
 let waveDelay = 25000; // ms between waves
 let waveActive = false;
@@ -1490,7 +1490,7 @@ function update(dt){
       // Sunflower produces sun
       if(p.type==='sunflower'){
         p.sunTimer+=dt;
-        if(p.sunTimer>=15000){
+        if(p.sunTimer>=10000){
           p.sunTimer=0;
           sunDrops.push(createSunDrop(p.x,p.y,true));
         }
@@ -1806,7 +1806,7 @@ function startLevel(){
   hideOverlay();
   gameState='playing';
   lives=3;
-  sun=200;
+  sun=300;
   score=score||0;
   initGrid();
   zombies=[];
@@ -1816,7 +1816,7 @@ function startLevel(){
   explosions=[];
   notifications=[];
   sunDropTimer=0;
-  sunDropInterval=4500;
+  sunDropInterval=3500;
   waveActive=false;
   allWavesDone=false;
   currentWave=0;
