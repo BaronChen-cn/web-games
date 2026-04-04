@@ -125,7 +125,7 @@ const TILE=36;
 
 // ===== GAME STATE =====
 let state='start'; // start, playing, paused, dying, levelclear, gameover, win
-let score=0,lives=3,coins=0,level=1;
+let score=0,lives=3,coinCount=0,level=1;
 let hiScore=parseInt(localStorage.getItem('mario_hi')||'0');
 let particles=[];
 let frameCount=0;
@@ -953,7 +953,7 @@ function drawUI(){
   ctx.fillStyle='#ffd700';
   ctx.fillText('◎',14,68);
   ctx.fillStyle='white';
-  ctx.fillText('x'+coins,34,68);
+  ctx.fillText('x'+coinCount,34,68);
   // Level
   ctx.fillStyle='#aaffaa';
   ctx.fillText('LVL '+level,150,32);
@@ -1022,7 +1022,7 @@ function hidePause(){}
 
 // ===== GAME LOGIC =====
 function startGame(){
-  score=0;lives=3;coins=0;level=1;
+  score=0;lives=3;coinCount=0;level=1;
   initLevel(level);
   state='playing';
   hideOverlay();
@@ -1033,7 +1033,7 @@ function nextLevel(){
     state='win';
     playWin();
     if(score>hiScore){hiScore=score;localStorage.setItem('mario_hi',hiScore);}
-    showOverlay('🎉 恭喜通关！',`最终得分：${score}<br>金币：${coins}<br>最高分：${hiScore}`,'再玩一次');
+    showOverlay('🎉 恭喜通关！',`最终得分：${score}<br>金币：${coinCount}<br>最高分：${hiScore}`,'再玩一次');
     return;
   }
   initLevel(level);
@@ -1136,7 +1136,7 @@ function updateCoins(){
     if(c.collected) return;
     if(rectOverlap(player.x,player.y,player.w,player.h,c.x,c.y,c.w,c.h)){
       c.collected=true;
-      coins++;score+=100;
+      coinCount++;score+=100;
       playCoin();
       spawnParticles(c.x+10-cameraX+cameraX,c.y,8,['#ffd700','#ffee44','#ffffff'],[2,6],[20,40]);
     }
@@ -1320,7 +1320,7 @@ function loop(ts){
         state='win';
         playWin();
         if(score>hiScore){hiScore=score;localStorage.setItem('mario_hi',hiScore);}
-        showOverlay('🎉 恭喜通关！',`最终得分：${score}<br>金币数：${coins}<br>最高分：${hiScore}`,'再玩一次');
+        showOverlay('🎉 恭喜通关！',`最终得分：${score}<br>金币数：${coinCount}<br>最高分：${hiScore}`,'再玩一次');
       } else {
         nextLevel();
       }
