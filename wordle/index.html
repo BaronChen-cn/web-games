@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Wordle 猜词</title>
+<script src="../shared/utils.js"></script>
+<script src="../shared/storage.js"></script>
+<script src="../shared/scoreboard.js"></script>
+<script src="words-en.js"></script>
+<script src="words-zh.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07080f;--surface:#0e1020;--border:rgba(255,255,255,0.07);
+  --text:#e8eaff;--muted:rgba(180,185,230,0.55);--accent:#5b6aff;
+  --green:#00d470;--yellow:#ffd700;--gray:#3a3f5c;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;
+  min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+  padding:16px 12px 40px;}
+a.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;
+  font-size:13px;margin-bottom:12px;align-self:flex-start;transition:color .15s;}
+a.back:hover{color:var(--text);}
+header{display:flex;align-items:center;gap:12px;margin-bottom:10px;width:100%;max-width:420px;justify-content:space-between;}
+h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,#fff,#a8b0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.lang-btn{padding:5px 14px;border-radius:6px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.05);color:var(--text);cursor:pointer;
+  font-size:12px;font-weight:700;letter-spacing:1px;transition:all .15s;}
+.lang-btn:hover{background:rgba(255,255,255,0.1);}
+#msg{height:24px;font-size:13px;font-weight:600;letter-spacing:0.5px;
+  margin-bottom:8px;text-align:center;transition:opacity .3s;width:100%;max-width:420px;}
+#grid{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;align-items:center;}
+.row{display:flex;gap:6px;}
+.cell{width:56px;height:56px;border:2px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;
+  transition:background .25s,border-color .25s,transform .1s;
+  user-select:none;}
+.cell.filled{border-color:rgba(255,255,255,0.25);}
+.cell.pop{animation:pop .1s;}
+@keyframes pop{0%{transform:scale(1.15)}100%{transform:scale(1)}}
+.cell.green{background:var(--green);border-color:var(--green);color:#fff;}
+.cell.yellow{background:var(--yellow);border-color:var(--yellow);color:#111;}
+.cell.gray{background:var(--gray);border-color:var(--gray);color:var(--muted);}
+.cell.shake{animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+#keyboard{display:flex;flex-direction:column;gap:6px;width:100%;max-width:420px;}
+.kb-row{display:flex;gap:5px;justify-content:center;}
+.key{padding:0;height:52px;min-width:34px;border-radius:6px;border:none;
+  background:rgba(255,255,255,0.08);color:var(--text);cursor:pointer;
+  font-size:13px;font-weight:700;flex:1;max-width:42px;
+  transition:background .15s,color .15s;touch-action:manipulation;}
+.key.wide{min-width:56px;max-width:70px;font-size:11px;}
+.key.green{background:var(--green);color:#fff;}
+.key.yellow{background:var(--yellow);color:#111;}
+.key.gray{background:var(--gray);color:var(--muted);}
+.key:active{filter:brightness(1.2);}
+#scoreboard-area{margin-top:14px;width:100%;max-width:420px;}
+@media(max-width:380px){
+  .cell{width:44px;height:44px;font-size:16px;}
+  .key{height:44px;min-width:28px;}
+}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回游戏中心</a>
+<header>
+  <h1>Wordle</h1>
+  <button class="lang-btn" id="langBtn">切换中文</button>
+</header>
+<div id="msg"></div>
+<div id="grid"></div>
+<div id="keyboard"></div>
+<div id="scoreboard-area"></div>
+<script>
+const storage = new GameStorage('wordle');
+let lang = 'en';
+let wordLen = 5;
+const MAX_ROWS = 6;
+let target = '';
+let board = [];
+let currentRow = 0;
+let currentCol = 0;
+let gameOver = false;
+
+// ── 键盘状态 ──
+const keyStates = {};
+
+// ── 每日单词 ──
+function todayKey() { return new Date().toISOString().slice(0,10); }
+
+function pickDailyWord(words, len) {
+  const filtered = words.filter(w => [...w].length === len);
+  const rng = seededRandom(todayKey() + lang);
+  const idx = Math.floor(rng() * filtered.length);
+  return filtered[idx].toUpperCase();
+}
+
+// ── 初始化游戏 ──
+function initGame() {
+  wordLen = lang === 'en' ? 5 : 4;
+  target = lang === 'en'
+    ? pickDailyWord(WORDS_EN, 5)
+    : pickDailyWord(WORDS_ZH, 4);
+
+  board = Array.from({ length: MAX_ROWS }, () =>
+    Array.from({ length: wordLen }, () => ({ letter: '', state: 'empty' }))
+  );
+  currentRow = 0; currentCol = 0; gameOver = false;
+  Object.keys(keyStates).forEach(k => delete keyStates[k]);
+  renderGrid(); renderKeyboard(); showMsg('');
+  updateScoreboard();
+}
+
+// ── 渲染网格 ──
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  board.forEach((row, r) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'row'; rowEl.id = `row-${r}`;
+    row.forEach((cell, c) => {
+      const el = document.createElement('div');
+      el.className = 'cell' +
+        (cell.state !== 'empty' ? ` ${cell.state}` : '') +
+        (cell.letter ? ' filled' : '');
+      el.textContent = cell.letter;
+      el.id = `cell-${r}-${c}`;
+      rowEl.appendChild(el);
+    });
+    grid.appendChild(rowEl);
+  });
+}
+
+// ── 键盘布局 ──
+const EN_ROWS = [
+  ['Q','W','E','R','T','Y','U','I','O','P'],
+  ['A','S','D','F','G','H','J','K','L'],
+  ['ENTER','Z','X','C','V','B','N','M','⌫'],
+];
+// 中文模式用简化拼音首字母键盘（用于按键颜色反馈，实际输入靠选字）
+const ZH_ROWS = [
+  ['一','心','马','百','天','风','春','步','前','事'],
+  ['光','义','勇','运','决','出','精','学','温','融'],
+  ['ENTER','博','文','滴','同','众','相','珠','如','⌫'],
+];
+
+function renderKeyboard() {
+  const kb = document.getElementById('keyboard');
+  kb.innerHTML = '';
+  const rows = lang === 'en' ? EN_ROWS : ZH_ROWS;
+  rows.forEach(row => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'kb-row';
+    row.forEach(key => {
+      const btn = document.createElement('button');
+      btn.className = 'key' + (key === 'ENTER' || key === '⌫' ? ' wide' : '');
+      btn.textContent = key;
+      btn.dataset.key = key;
+      const st = keyStates[key];
+      if (st) btn.classList.add(st);
+      btn.addEventListener('click', () => handleKey(key));
+      rowEl.appendChild(btn);
+    });
+    kb.appendChild(rowEl);
+  });
+}
+
+// ── 输入处理 ──
+function handleKey(key) {
+  if (gameOver) return;
+  if (key === '⌫' || key === 'Backspace') {
+    if (currentCol > 0) {
+      currentCol--;
+      board[currentRow][currentCol].letter = '';
+      updateCell(currentRow, currentCol);
+    }
+    return;
+  }
+  if (key === 'ENTER' || key === 'Enter') { submitRow(); return; }
+  // 英文：单字母；中文：单汉字
+  const char = key.length === 1 ? key.toUpperCase() : null;
+  if (char && currentCol < wordLen) {
+    board[currentRow][currentCol].letter = char;
+    updateCell(currentRow, currentCol, true);
+    currentCol++;
+  }
+}
+
+function updateCell(r, c, pop = false) {
+  const el = document.getElementById(`cell-${r}-${c}`);
+  if (!el) return;
+  const cell = board[r][c];
+  el.textContent = cell.letter;
+  el.className = 'cell' +
+    (cell.letter ? ' filled' : '') +
+    (cell.state !== 'empty' ? ` ${cell.state}` : '');
+  if (pop) { el.classList.add('pop'); }
+}
+
+// ── 提交猜测 ──
+function submitRow() {
+  if (currentCol < wordLen) { showMsg('字数不够！'); shakeRow(currentRow); return; }
+  const guess = board[currentRow].map(c => c.letter).join('');
+  const result = evaluateGuess(guess, target);
+  result.forEach((state, c) => { board[currentRow][c].state = state; });
+  revealRow(currentRow, () => {
+    updateKeyStates(board[currentRow]);
+    renderKeyboard();
+    if (guess === target) {
+      gameOver = true; showMsg('🎉 答对了！'); updateStats(true);
+    } else if (currentRow === MAX_ROWS - 1) {
+      gameOver = true; showMsg(`答案：${target}`); updateStats(false);
+    }
+    currentRow++; currentCol = 0;
+  });
+}
+
+// ── 评估猜测（绿/黄/灰）──
+function evaluateGuess(guess, target) {
+  const result = Array(wordLen).fill('gray');
+  const targetArr = [...target];
+  const used = Array(wordLen).fill(false);
+  // 第一轮：标绿
+  [...guess].forEach((ch, i) => {
+    if (ch === targetArr[i]) { result[i] = 'green'; used[i] = true; }
+  });
+  // 第二轮：标黄
+  [...guess].forEach((ch, i) => {
+    if (result[i] === 'green') return;
+    const j = targetArr.findIndex((t, ti) => t === ch && !used[ti]);
+    if (j !== -1) { result[i] = 'yellow'; used[j] = true; }
+  });
+  return result;
+}
+
+// ── 翻牌动画 ──
+function revealRow(r, cb) {
+  board[r].forEach((cell, c) => {
+    setTimeout(() => {
+      updateCell(r, c);
+      if (c === wordLen - 1 && cb) setTimeout(cb, 60);
+    }, c * 220);
+  });
+}
+
+function shakeRow(r) {
+  document.getElementById(`row-${r}`)?.querySelectorAll('.cell').forEach(el => {
+    el.classList.add('shake');
+    el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
+  });
+}
+
+// ── 键盘状态更新 ──
+const STATE_PRI = { green: 3, yellow: 2, gray: 1 };
+function updateKeyStates(rowData) {
+  rowData.forEach(({ letter, state }) => {
+    if (!letter) return;
+    const prev = keyStates[letter];
+    if (!prev || STATE_PRI[state] > STATE_PRI[prev]) keyStates[letter] = state;
+  });
+}
+
+function showMsg(text) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.style.opacity = text ? '1' : '0';
+}
+
+// ── 统计与记分板 ──
+function updateStats(won) {
+  const today = todayKey();
+  const lastDate = storage.get('lastDate_' + lang, null);
+  let streak = storage.get('streak_' + lang, 0);
+  if (won) {
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    streak = (lastDate === yesterday || lastDate === today) ? streak + 1 : 1;
+    storage.set('streak_' + lang, streak);
+    storage.set('lastDate_' + lang, today);
+  }
+  storage.set('total_' + lang, (storage.get('total_' + lang, 0)) + 1);
+  if (won) storage.set('wins_' + lang, (storage.get('wins_' + lang, 0)) + 1);
+  updateScoreboard();
+}
+
+function updateScoreboard() {
+  const total  = storage.get('total_' + lang, 0);
+  const wins   = storage.get('wins_' + lang, 0);
+  const streak = storage.get('streak_' + lang, 0);
+  const winRate = total > 0 ? Math.round(wins / total * 100) + '%' : '—';
+  renderScoreboard(document.getElementById('scoreboard-area'), [
+    { label: '总局数', value: String(total || 0) },
+    { label: '胜率',   value: winRate },
+    { label: '连胜',   value: String(streak || 0), highlight: streak >= 3 },
+  ]);
+}
+
+// ── 语言切换 ──
+document.getElementById('langBtn').addEventListener('click', () => {
+  lang = lang === 'en' ? 'zh' : 'en';
+  document.getElementById('langBtn').textContent = lang === 'en' ? '切换中文' : 'Switch EN';
+  initGame();
+});
+
+// ── 物理键盘支持（仅英文模式）──
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || lang !== 'en') return;
+  const k = e.key;
+  if (k === 'Backspace' || k === 'Enter' || (k.length === 1 && /[a-zA-Z]/.test(k))) {
+    e.preventDefault();
+    handleKey(k);
+  }
+});
+
+initGame();
+</script>
+</body>
+</html>
