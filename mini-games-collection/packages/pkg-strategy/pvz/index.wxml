@@ -1,1 +1,70 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <!-- HUD: Sun count, wave, lives -->
+  <view class="hud" wx:if="{{overlayType === 'playing'}}">
+    <view class="hud-left">
+      <text class="sun-icon">☀</text>
+      <text class="sun-count">{{sunCount}}</text>
+    </view>
+    <view class="hud-center">
+      <text class="wave-label">{{waveLabel}}</text>
+      <view class="wave-bar-bg">
+        <view class="wave-bar-fill" style="width: {{waveProgress}}%"></view>
+      </view>
+    </view>
+    <view class="hud-right">
+      <text class="level-label">{{levelLabel}}</text>
+      <view class="lives-row">
+        <text wx:for="{{livesArray}}" wx:key="*this" class="life-icon">❤</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Card panel -->
+  <scroll-view class="card-panel" scroll-x wx:if="{{overlayType === 'playing'}}">
+    <view wx:for="{{cards}}" wx:key="id"
+      class="plant-card {{item.selected ? 'selected' : ''}} {{item.affordable && !item.cooling ? '' : 'disabled'}}"
+      bindtap="onCardTap" data-id="{{item.id}}">
+      <view class="card-icon" style="background: {{item.color}}">{{item.emoji}}</view>
+      <text class="card-name">{{item.name}}</text>
+      <text class="card-cost">☀{{item.cost}}</text>
+      <view class="cooldown-overlay" wx:if="{{item.cooling}}" style="height: {{item.cooldownPct}}%"></view>
+    </view>
+  </scroll-view>
+
+  <!-- Canvas -->
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <!-- Menu overlay -->
+  <view class="overlay" wx:if="{{overlayType === 'menu'}}">
+    <text class="overlay-title">植物守卫战</text>
+    <text class="overlay-sub">保护你的家园！种植植物阻挡僵尸。</text>
+    <text class="overlay-desc">点击收集阳光，选择植物卡片后点击格子种植。</text>
+    <text class="overlay-info">6种植物 · 4种僵尸 · 6个关卡</text>
+    <button class="btn-primary" bindtap="onStartGame">开始游戏</button>
+  </view>
+
+  <!-- Level win overlay -->
+  <view class="overlay" wx:if="{{overlayType === 'levelwin'}}">
+    <text class="overlay-title title-gold">关卡完成！</text>
+    <text class="overlay-sub">第{{currentLevel + 1}}关通过！</text>
+    <text class="overlay-score">得分：{{score}}</text>
+    <button class="btn-primary" bindtap="onNextLevel">下一关</button>
+  </view>
+
+  <!-- Win overlay -->
+  <view class="overlay" wx:if="{{overlayType === 'win'}}">
+    <text class="overlay-title title-gold">通关！</text>
+    <text class="overlay-sub">恭喜！你成功击退了所有僵尸！</text>
+    <text class="overlay-score">得分：{{score}}</text>
+    <button class="btn-primary" bindtap="onStartGame">再玩一次</button>
+  </view>
+
+  <!-- Dead overlay -->
+  <view class="overlay" wx:if="{{overlayType === 'dead'}}">
+    <text class="overlay-title title-red">游戏结束</text>
+    <text class="overlay-sub">僵尸攻破了你的防线！</text>
+    <text class="overlay-score">得分：{{score}}</text>
+    <button class="btn-primary" bindtap="onRetry">重试本关</button>
+    <button class="btn-secondary" bindtap="onBackToMenu">返回菜单</button>
+  </view>
+</view>
