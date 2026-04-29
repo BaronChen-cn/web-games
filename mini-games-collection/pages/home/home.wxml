@@ -1,1 +1,45 @@
-<view>Placeholder</view>
+<!-- pages/home/home.wxml -->
+<view class="home-page">
+  <!-- Search -->
+  <view class="search-bar">
+    <icon type="search" size="14" color="#6b7280"/>
+    <input class="search-input" placeholder="搜索游戏..." bindinput="onSearch" value="{{searchText}}" />
+  </view>
+
+  <!-- Hot Banner -->
+  <swiper class="hot-banner" autoplay circular interval="4000" indicator-dots indicator-color="rgba(255,255,255,0.3)" indicator-active-color="#818cf8">
+    <swiper-item wx:for="{{hotGames}}" wx:key="id" bindtap="onGameTap" data-id="{{item.id}}">
+      <view class="banner-card" style="background: linear-gradient(135deg, {{item.gradientFrom}}, {{item.gradientTo}})">
+        <view class="banner-tag">热门推荐</view>
+        <text class="banner-title">{{item.name}}</text>
+        <text class="banner-emoji">{{item.emoji}}</text>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- Category Tabs -->
+  <scroll-view class="category-tabs" scroll-x>
+    <view wx:for="{{categories}}" wx:key="key"
+      class="tab {{activeCategory === item.key ? 'active' : ''}}"
+      bindtap="onCategoryTap" data-key="{{item.key}}">
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <!-- Game Grid -->
+  <scroll-view class="game-grid-scroll" scroll-y>
+    <view class="game-grid">
+      <view wx:for="{{filteredGames}}" wx:key="id"
+        class="game-card" bindtap="onGameTap" data-id="{{item.id}}">
+        <view class="game-icon" style="background: linear-gradient(135deg, {{item.gradientFrom}}, {{item.gradientTo}})">
+          <text class="game-emoji">{{item.emoji}}</text>
+        </view>
+        <text class="game-name">{{item.name}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Banner Ad Placeholder -->
+  <ad wx:if="{{showAd}}" unit-id="adunit-banner-placeholder" ad-type="banner"
+    ad-theme="dark" binderror="onAdError"></ad>
+</view>

@@ -1,1 +1,5 @@
-{}
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "游戏合集",
+  "enablePullDownRefresh": false
+}

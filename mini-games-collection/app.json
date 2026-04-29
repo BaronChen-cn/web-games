@@ -12,5 +12,6 @@
     "navigationBarTextStyle": "white",
     "backgroundColor": "#07080f"
   },
-  "permission": { "scope.userInfo": { "desc": "用于好友排行榜" } }
+  "permission": { "scope.userInfo": { "desc": "用于好友排行榜" } },
+  "openDataContext": "open-data/"
 }
