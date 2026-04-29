@@ -1,0 +1,3 @@
+.action-btns { display: flex; gap: 12px; align-items: center; }
+.action-btn { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 2px solid rgba(99,102,241,0.3); color: #818cf8; font-size: 14px; font-weight: 600; }
+.action-btn.active { background: rgba(99,102,241,0.3); border-color: #818cf8; }

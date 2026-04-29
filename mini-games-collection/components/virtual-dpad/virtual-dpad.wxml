@@ -1,0 +1,13 @@
+<view class="dpad-container">
+  <view class="dpad-row">
+    <view class="dpad-btn dpad-up {{activeDir === 'up' ? 'active' : ''}}" catchtouchstart="onUp" catchtouchend="onRelease">▲</view>
+  </view>
+  <view class="dpad-row dpad-middle">
+    <view class="dpad-btn dpad-left {{activeDir === 'left' ? 'active' : ''}}" catchtouchstart="onLeft" catchtouchend="onRelease">◀</view>
+    <view class="dpad-center"></view>
+    <view class="dpad-btn dpad-right {{activeDir === 'right' ? 'active' : ''}}" catchtouchstart="onRight" catchtouchend="onRelease">▶</view>
+  </view>
+  <view class="dpad-row">
+    <view class="dpad-btn dpad-down {{activeDir === 'down' ? 'active' : ''}}" catchtouchstart="onDown" catchtouchend="onRelease">▼</view>
+  </view>
+</view>

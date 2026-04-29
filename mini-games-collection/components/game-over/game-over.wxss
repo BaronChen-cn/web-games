@@ -1,0 +1,49 @@
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(7, 8, 15, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.overlay-card {
+  background: rgba(15, 16, 30, 0.95);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 280px;
+  text-align: center;
+}
+.overlay-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #818cf8;
+  display: block;
+  margin-bottom: 20px;
+}
+.score-section {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.score-section .stat-box { min-width: 80px; }
+.new-record {
+  color: #fbbf24;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+.btn-primary, .btn-secondary { width: 100%; line-height: 1.2; }
+.btn-share {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  border-color: transparent;
+}

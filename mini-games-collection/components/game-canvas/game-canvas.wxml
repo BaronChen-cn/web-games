@@ -1,0 +1,1 @@
+<canvas type="2d" id="gameCanvas" style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd"></canvas>

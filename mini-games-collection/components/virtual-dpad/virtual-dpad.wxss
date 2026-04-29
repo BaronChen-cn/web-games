@@ -1,0 +1,6 @@
+.dpad-container { display: flex; flex-direction: column; align-items: center; gap: 2px; user-select: none; }
+.dpad-row { display: flex; justify-content: center; }
+.dpad-middle { gap: 2px; }
+.dpad-btn { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(99,102,241,0.2); border-radius: 8px; color: #818cf8; font-size: 18px; }
+.dpad-btn.active { background: rgba(99,102,241,0.3); border-color: #818cf8; }
+.dpad-center { width: 52px; height: 52px; }

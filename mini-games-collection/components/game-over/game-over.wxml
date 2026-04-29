@@ -1,0 +1,24 @@
+<view class="overlay" wx:if="{{visible}}">
+  <view class="overlay-card">
+    <text class="overlay-title">{{title || '游戏结束'}}</text>
+    <view class="score-section">
+      <view class="stat-box" wx:if="{{score !== undefined}}">
+        <text class="stat-label">得分</text>
+        <text class="stat-value">{{score}}</text>
+      </view>
+      <view class="stat-box" wx:if="{{best !== undefined}}">
+        <text class="stat-label">最佳</text>
+        <text class="stat-value">{{best}}</text>
+      </view>
+    </view>
+    <view class="new-record" wx:if="{{isNewRecord}}">
+      <text>新纪录!</text>
+    </view>
+    <view class="btn-group">
+      <button class="btn-primary" bindtap="onRetry">再来一局</button>
+      <button class="btn-secondary btn-share" open-type="share" wx:if="{{showShare}}">挑战好友</button>
+      <button class="btn-secondary" bindtap="onRank" wx:if="{{showRank}}">排行榜</button>
+      <button class="btn-secondary" bindtap="onHome">返回大厅</button>
+    </view>
+  </view>
+</view>

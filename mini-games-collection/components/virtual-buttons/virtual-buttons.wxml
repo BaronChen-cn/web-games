@@ -1,0 +1,3 @@
+<view class="action-btns">
+  <view wx:for="{{buttons}}" wx:key="label" class="action-btn {{item.active ? 'active' : ''}}" catchtouchstart="onPress" catchtouchend="onRelease" data-index="{{index}}">{{item.label}}</view>
+</view>
