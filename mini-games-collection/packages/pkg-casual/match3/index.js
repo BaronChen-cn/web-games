@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -10,10 +11,21 @@ Page({
     moves: 20,
     showToast: false,
     toastText: '',
-    isNewRecord: false
+    isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'match3', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -28,13 +40,6 @@ Page({
 
     this._game = game.initGame(this._adapter);
     this._game.start();
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '我在消消乐第' + this.data.level + '关得了' + this.data.score + '分，你来挑战！',
-      path: '/packages/pkg-casual/match3/index'
-    };
   },
 
   onUnload: function () {

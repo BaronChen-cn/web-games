@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -6,10 +7,21 @@ Page({
     score: 0,
     bestScore: 0,
     layers: 0,
-    isNewRecord: false
+    isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'stack', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -24,13 +36,6 @@ Page({
 
     this._game = game.initGame(this._adapter);
     this._game.start();
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '我在叠叠乐叠了' + this.data.layers + '层，你能超过我吗？',
-      path: '/packages/pkg-casual/stack/index'
-    };
   },
 
   onUnload: function () {

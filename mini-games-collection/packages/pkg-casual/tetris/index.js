@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -8,6 +9,8 @@ Page({
     level: 1,
     lines: 0,
     isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false,
     tetrisButtons: [
       { label: '↻', code: 'ArrowUp', key: 'ArrowUp' },
       { label: '↺', code: 'KeyZ', key: 'z' },
@@ -18,6 +21,15 @@ Page({
 
   _game: null,
   _adapter: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'tetris', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -53,13 +65,6 @@ Page({
     if (this._game) {
       this._game.togglePause();
     }
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '俄罗斯方块得分' + this.data.score + '，等级' + this.data.level + '，来挑战！',
-      path: '/packages/pkg-casual/tetris/index'
-    };
   },
 
   onUnload: function () {

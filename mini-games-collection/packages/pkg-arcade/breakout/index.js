@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -7,11 +8,22 @@ Page({
     bestScore: 0,
     level: 1,
     lives: 3,
-    isNewRecord: false
+    isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
   _adapter: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'breakout', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -44,13 +56,6 @@ Page({
     if (this._game) {
       this._game.togglePause();
     }
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '我在打砖块得了' + this.data.score + '分，第' + this.data.level + '关，你能超过我吗？',
-      path: '/packages/pkg-arcade/breakout/index'
-    };
   },
 
   onUnload: function () {

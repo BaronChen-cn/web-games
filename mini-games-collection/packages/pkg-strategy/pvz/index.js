@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -10,10 +11,21 @@ Page({
     livesArray: [1, 2, 3],
     overlayType: 'menu',
     currentLevel: 0,
-    score: 0
+    score: 0,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'pvz', function () { return { level: self.data.currentLevel + 1, score: self.data.score }; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -45,13 +57,6 @@ Page({
   onBackToMenu: function () {
     if (!this._game) return;
     this._game.goToMenu();
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '植物守卫战 - 我通关了第' + (this.data.currentLevel + 1) + '关！',
-      path: '/packages/pkg-strategy/pvz/index'
-    };
   },
 
   onUnload: function () {

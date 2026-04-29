@@ -1,3 +1,5 @@
+var adManager = require('../../lib/ad-manager');
+
 Component({
   properties: {
     visible: { type: Boolean, value: false },
@@ -8,9 +10,16 @@ Component({
     showShare: { type: Boolean, value: true },
     showRank: { type: Boolean, value: true }
   },
+  observers: {
+    'visible': function (val) {
+      if (val) {
+        adManager.getAdManager().showInterstitial();
+      }
+    }
+  },
   methods: {
-    onRetry() { this.triggerEvent('retry'); },
-    onRank() { this.triggerEvent('rank'); },
-    onHome() { wx.navigateBack({ delta: 1 }); }
+    onRetry: function () { this.triggerEvent('retry'); },
+    onRank: function () { this.triggerEvent('rank'); },
+    onHome: function () { wx.navigateBack({ delta: 1 }); }
   }
 });

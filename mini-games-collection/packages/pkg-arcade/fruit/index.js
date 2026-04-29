@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -8,10 +9,21 @@ Page({
     lives: 3,
     livesStr: '♥♥♥',
     combo: '',
-    isNewRecord: false
+    isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'fruit', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -26,13 +38,6 @@ Page({
 
     this._game = game.initGame(this._adapter);
     this._game.start();
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '我在水果忍者得了' + this.data.score + '分，你能超过我吗？',
-      path: '/packages/pkg-arcade/fruit/index'
-    };
   },
 
   onUnload: function () {

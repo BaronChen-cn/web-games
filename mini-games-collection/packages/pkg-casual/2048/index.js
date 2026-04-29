@@ -1,15 +1,27 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
     gameState: 'idle',
     score: 0,
     bestScore: 0,
-    isNewRecord: false
+    isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
   _adapter: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, '2048', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -43,13 +55,6 @@ Page({
     if (this._game) {
       this._game.continueGame();
     }
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '2048得分' + this.data.score + '，来挑战！',
-      path: '/packages/pkg-casual/2048/index'
-    };
   },
 
   onUnload: function () {

@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -6,10 +7,21 @@ Page({
     score: 0,
     bestScore: 0,
     sessionBest: 0,
-    isNewRecord: false
+    isNewRecord: false,
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'flappy', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -26,13 +38,6 @@ Page({
 
     this._game.start();
     this.setData({ gameState: 'playing' });
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '我在 Flappy Bird 得了' + this.data.score + '分，你能超过我吗？',
-      path: '/packages/pkg-arcade/flappy/index'
-    };
   },
 
   onUnload: function () {

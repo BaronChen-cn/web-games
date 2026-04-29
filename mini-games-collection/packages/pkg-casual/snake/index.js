@@ -1,4 +1,5 @@
 var game = require('./game');
+var share = require('../../../lib/share');
 
 Page({
   data: {
@@ -8,11 +9,22 @@ Page({
     level: 1,
     foodEaten: 0,
     isNewRecord: false,
-    pauseBtn: [{ label: '暂停', code: 'KeyP', key: 'p' }]
+    pauseBtn: [{ label: '暂停', code: 'KeyP', key: 'p' }],
+    challengeScore: 0,
+    showChallenge: false
   },
 
   _game: null,
   _adapter: null,
+
+  onLoad: function (options) {
+    var self = this;
+    share.configShare(this, 'snake', function () { return self.data; });
+    var challenge = share.handleShareLanding(options);
+    if (challenge.isChallenge) {
+      this.setData({ challengeScore: challenge.challengeScore, showChallenge: true });
+    }
+  },
 
   onCanvasReady: function (e) {
     this._adapter = e.detail.adapter;
@@ -41,13 +53,6 @@ Page({
 
     this._game = game.initGame(this._adapter);
     this._game.start();
-  },
-
-  onShareAppMessage: function () {
-    return {
-      title: '贪吃蛇得分' + this.data.score + '，等级' + this.data.level + '，来挑战！',
-      path: '/packages/pkg-casual/snake/index'
-    };
   },
 
   onUnload: function () {
