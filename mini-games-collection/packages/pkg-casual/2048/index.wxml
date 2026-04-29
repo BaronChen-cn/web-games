@@ -1,1 +1,43 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <view class="hud" wx:if="{{gameState === 'playing'}}">
+    <view class="stat-box">
+      <text class="stat-label">分数</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">最佳</text>
+      <text class="stat-value">{{bestScore}}</text>
+    </view>
+  </view>
+
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <view class="controls-bottom" wx:if="{{gameState === 'playing'}}">
+    <view class="action-buttons">
+      <button class="btn-action" bindtap="onUndo">撤销</button>
+      <button class="btn-action" bindtap="onNewGame">新游戏</button>
+    </view>
+    <virtual-dpad bind:direction="onDirection" />
+  </view>
+
+  <view class="overlay" wx:if="{{gameState === 'idle'}}">
+    <text class="overlay-title">2048</text>
+    <text class="overlay-sub">滑动或方向键合并方块</text>
+    <button class="btn-primary" bindtap="onNewGame">开始游戏</button>
+  </view>
+
+  <view class="overlay" wx:if="{{gameState === 'won'}}">
+    <text class="overlay-title">恭喜!</text>
+    <text class="overlay-sub">你达到了2048！得分：{{score}}</text>
+    <button class="btn-primary" bindtap="onContinue">继续游戏</button>
+    <button class="btn-secondary" bindtap="onNewGame">新游戏</button>
+  </view>
+
+  <game-over
+    visible="{{gameState === 'dead'}}"
+    score="{{score}}"
+    best="{{bestScore}}"
+    is-new-record="{{isNewRecord}}"
+    bind:retry="onNewGame"
+  />
+</view>

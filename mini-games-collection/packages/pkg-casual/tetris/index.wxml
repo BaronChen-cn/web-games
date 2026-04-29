@@ -1,1 +1,49 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <view class="hud" wx:if="{{gameState === 'playing' || gameState === 'paused'}}">
+    <view class="stat-box">
+      <text class="stat-label">分数</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">最佳</text>
+      <text class="stat-value">{{bestScore}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">等级</text>
+      <text class="stat-value">{{level}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">行数</text>
+      <text class="stat-value">{{lines}}</text>
+    </view>
+  </view>
+
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <view class="controls-left">
+    <virtual-dpad bind:direction="onDirection" />
+  </view>
+  <view class="controls-right">
+    <virtual-buttons config="{{tetrisButtons}}" bind:action="onAction" />
+  </view>
+
+  <view class="overlay" wx:if="{{gameState === 'idle'}}">
+    <text class="overlay-title">俄罗斯方块</text>
+    <text class="overlay-sub">方向键移动，按钮旋转/掉落/暂存</text>
+    <button class="btn-primary" bindtap="onStartGame">开始游戏</button>
+  </view>
+
+  <view class="pause-overlay" wx:if="{{gameState === 'paused'}}">
+    <text class="overlay-title">暂停</text>
+    <text class="overlay-sub">点击继续按钮恢复游戏</text>
+    <button class="btn-primary" bindtap="onStartGame">继续</button>
+  </view>
+
+  <game-over
+    visible="{{gameState === 'dead'}}"
+    score="{{score}}"
+    best="{{bestScore}}"
+    is-new-record="{{isNewRecord}}"
+    bind:retry="onStartGame"
+  />
+</view>

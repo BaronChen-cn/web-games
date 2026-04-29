@@ -1,0 +1,109 @@
+.game-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.stat-box {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 2px;
+  display: block;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(237,197,63,0.6);
+  display: block;
+}
+
+.controls-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-action {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(26,27,46,0.8);
+  color: #fff;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7,8,15,0.88);
+  z-index: 20;
+}
+
+.overlay-title {
+  font-size: 48px;
+  font-weight: 900;
+  color: #edc22e;
+  margin-bottom: 8px;
+}
+
+.overlay-sub {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  padding: 14px 48px;
+  border-radius: 50px;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #edc22e, #f59563);
+  color: #07080f;
+  margin-bottom: 12px;
+}
+
+.btn-secondary {
+  padding: 10px 36px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.3);
+  font-size: 14px;
+  font-weight: 600;
+  background: transparent;
+  color: #fff;
+}
