@@ -1,0 +1,16 @@
+{
+  "pages": ["pages/home/home"],
+  "subpackages": [
+    { "root": "packages/pkg-casual", "pages": ["stack/index", "snake/index", "tetris/index", "match3/index", "2048/index"] },
+    { "root": "packages/pkg-arcade", "pages": ["flappy/index", "fruit/index", "breakout/index"] },
+    { "root": "packages/pkg-strategy", "pages": ["pvz/index"] }
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#07080f",
+    "navigationBarTitleText": "游戏合集",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#07080f"
+  },
+  "permission": { "scope.userInfo": { "desc": "用于好友排行榜" } }
+}
