@@ -1,0 +1,96 @@
+.game-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.stat-box {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 2px;
+  display: block;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(120,180,255,0.6);
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5,0,15,0.92);
+  z-index: 20;
+}
+
+.overlay-title {
+  font-size: 48px;
+  font-weight: 900;
+  color: #bf00ff;
+  margin-bottom: 8px;
+}
+
+.overlay-sub {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  padding: 14px 48px;
+  border-radius: 50px;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #bf00ff, #ff3355);
+  color: #fff;
+}
+
+.level-toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.85);
+  border: 2px solid #bf00ff;
+  border-radius: 16px;
+  padding: 20px 40px;
+  z-index: 30;
+  animation: toastPop 0.3s ease-out;
+}
+
+.toast-text {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255,215,0,0.6);
+}
+
+@keyframes toastPop {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
