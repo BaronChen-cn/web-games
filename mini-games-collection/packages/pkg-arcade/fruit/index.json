@@ -1,1 +1,7 @@
-{}
+{
+  "usingComponents": {
+    "game-canvas": "/components/game-canvas/game-canvas",
+    "game-over": "/components/game-over/game-over"
+  },
+  "navigationBarTitleText": "水果忍者"
+}

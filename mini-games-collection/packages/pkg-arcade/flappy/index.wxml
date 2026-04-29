@@ -1,1 +1,28 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <view class="hud" wx:if="{{gameState === 'playing'}}">
+    <view class="stat-box">
+      <text class="stat-label">分数</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">最佳</text>
+      <text class="stat-value">{{bestScore}}</text>
+    </view>
+  </view>
+
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <view class="overlay" wx:if="{{gameState === 'idle'}}">
+    <text class="overlay-title">Flappy Bird</text>
+    <text class="overlay-sub">点击屏幕控制小鸟飞行</text>
+    <button class="btn-primary" bindtap="onStartGame">开始游戏</button>
+  </view>
+
+  <game-over
+    visible="{{gameState === 'dead'}}"
+    score="{{score}}"
+    best="{{bestScore}}"
+    is-new-record="{{isNewRecord}}"
+    bind:retry="onStartGame"
+  />
+</view>

@@ -1,1 +1,36 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <view class="hud" wx:if="{{gameState === 'playing'}}">
+    <view class="stat-box">
+      <text class="stat-label">分数</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">最佳</text>
+      <text class="stat-value">{{best}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">生命</text>
+      <text class="stat-value lives">{{livesStr}}</text>
+    </view>
+    <view class="stat-box" wx:if="{{combo}}">
+      <text class="stat-label">连击</text>
+      <text class="stat-value combo">{{combo}}</text>
+    </view>
+  </view>
+
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <view class="overlay" wx:if="{{gameState === 'idle'}}">
+    <text class="overlay-title">水果忍者</text>
+    <text class="overlay-sub">滑动手指切开水果，避开炸弹</text>
+    <button class="btn-primary" bindtap="onStartGame">开始游戏</button>
+  </view>
+
+  <game-over
+    visible="{{gameState === 'dead'}}"
+    score="{{score}}"
+    best="{{best}}"
+    is-new-record="{{isNewRecord}}"
+    bind:retry="onStartGame"
+  />
+</view>

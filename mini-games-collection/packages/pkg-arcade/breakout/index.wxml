@@ -1,1 +1,52 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <view class="hud" wx:if="{{gameState === 'playing' || gameState === 'paused'}}">
+    <view class="stat-box">
+      <text class="stat-label">分数</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">最佳</text>
+      <text class="stat-value">{{bestScore}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">关卡</text>
+      <text class="stat-value">{{level}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">生命</text>
+      <text class="stat-value lives-value">{{lives}}</text>
+    </view>
+    <view class="pause-btn" bindtap="onPause">
+      <text class="pause-icon">||</text>
+    </view>
+  </view>
+
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <view class="overlay" wx:if="{{gameState === 'idle'}}">
+    <text class="overlay-title">打砖块</text>
+    <text class="overlay-sub">滑动控制挡板，点击发射小球</text>
+    <button class="btn-primary" bindtap="onStartGame">开始游戏</button>
+  </view>
+
+  <view class="overlay" wx:if="{{gameState === 'paused'}}">
+    <text class="overlay-title">暂停</text>
+    <text class="overlay-sub">游戏已暂停</text>
+    <button class="btn-primary" bindtap="onResume">继续游戏</button>
+  </view>
+
+  <view class="overlay" wx:if="{{gameState === 'levelclear'}}">
+    <text class="overlay-title">第{{level}}关通过!</text>
+    <text class="overlay-sub">得分: {{score}}</text>
+    <button class="btn-primary" bindtap="onNextLevel">下一关</button>
+  </view>
+
+  <game-over
+    visible="{{gameState === 'gameover'}}"
+    title="游戏结束"
+    score="{{score}}"
+    best="{{bestScore}}"
+    is-new-record="{{isNewRecord}}"
+    bind:retry="onStartGame"
+  />
+</view>

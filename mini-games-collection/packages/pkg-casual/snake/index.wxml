@@ -1,1 +1,48 @@
-<view>Placeholder</view>
+<view class="game-page">
+  <view class="hud" wx:if="{{gameState === 'playing' || gameState === 'paused'}}">
+    <view class="stat-box">
+      <text class="stat-label">分数</text>
+      <text class="stat-value">{{score}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">最佳</text>
+      <text class="stat-value">{{bestScore}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">等级</text>
+      <text class="stat-value">{{level}}</text>
+    </view>
+    <view class="stat-box">
+      <text class="stat-label">吃食</text>
+      <text class="stat-value">{{foodEaten}}</text>
+    </view>
+  </view>
+
+  <game-canvas bind:ready="onCanvasReady" />
+
+  <view class="controls-left">
+    <virtual-dpad bind:direction="onDirection" />
+  </view>
+  <view class="controls-right">
+    <virtual-buttons config="{{pauseBtn}}" bind:action="onAction" />
+  </view>
+
+  <view class="overlay" wx:if="{{gameState === 'idle'}}">
+    <text class="overlay-title">贪吃蛇</text>
+    <text class="overlay-sub">方向键或滑动控制方向</text>
+    <button class="btn-primary" bindtap="onStartGame">开始游戏</button>
+  </view>
+
+  <view class="pause-overlay" wx:if="{{gameState === 'paused'}}">
+    <text class="overlay-title">暂停</text>
+    <text class="overlay-sub">点击继续按钮恢复游戏</text>
+  </view>
+
+  <game-over
+    visible="{{gameState === 'dead'}}"
+    score="{{score}}"
+    best="{{bestScore}}"
+    is-new-record="{{isNewRecord}}"
+    bind:retry="onStartGame"
+  />
+</view>
